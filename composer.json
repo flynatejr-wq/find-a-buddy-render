@@ -1,0 +1,6 @@
+{
+    "name": "flynatejr/find-a-buddy",
+    "require-dev": {
+        "phpunit/phpunit": "^10"
+    }
+}
