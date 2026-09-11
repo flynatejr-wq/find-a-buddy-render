@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register — Find a Buddy</title>
+<link rel="stylesheet" href="../static/login.css">
+</head>
+<body>
+<main class="auth-card">
+  <h1>Create your account</h1>
+  <form id="register-form" novalidate>
+    <label>SSU Email <input type="email" name="email" placeholder="you@savannahstate.edu" required></label>
+    <label>Password <input type="password" name="password" minlength="8" required></label>
+    <label>First name <input type="text" name="first_name" required></label>
+    <label>Last name <input type="text" name="last_name" required></label>
+    <p id="form-error" class="form-error" hidden></p>
+    <button type="submit">Register</button>
+  </form>
+  <p>Already have an account? <a href="login.html">Log in</a></p>
+</main>
+<script src="api.js"></script>
+<script>
+  const form = document.getElementById('register-form');
+  const errorEl = document.getElementById('form-error');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    errorEl.hidden = true;
+    const data = Object.fromEntries(new FormData(form).entries());
+    try {
+      await api.register(data);
+      window.location.href = 'login.html';
+    } catch (err) {
+      const messages = err.data && err.data.errors ? Object.values(err.data.errors) : [err.message];
+      errorEl.textContent = messages.join(' ');
+      errorEl.hidden = false;
+    }
+  });
+</script>
+</body>
+</html>
