@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find a Buddy</title>
+</head>
+<body>
+<script src="api.js"></script>
+<script>
+  api.getUserInfo()
+    .then(() => { window.location.href = 'buddy.html'; })
+    .catch(() => { window.location.href = 'login.html'; });
+</script>
+<noscript>Please enable JavaScript, then visit <a href="login.html">login.html</a>.</noscript>
+</body>
+</html>
