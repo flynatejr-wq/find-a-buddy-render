@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profile — Find a Buddy</title>
+<link rel="stylesheet" href="../static/main.css">
+</head>
+<body>
+<nav class="app-nav">
+  <a href="buddy.html">Find a Buddy</a>
+  <a href="courses.html">My Courses</a>
+  <a href="mascot.html">Study Mascot</a>
+  <a href="profile.html" class="active">Profile</a>
+  <button id="logout-btn">Log out</button>
+</nav>
+<main>
+  <h1>My Profile</h1>
+  <dl id="profile-fields"></dl>
+</main>
+<script src="api.js"></script>
+<script>
+  api.getUserInfo().then(({ user }) => {
+    const dl = document.getElementById('profile-fields');
+    dl.innerHTML = `
+      <dt>Name</dt><dd>${user.first_name} ${user.last_name}</dd>
+      <dt>Email</dt><dd>${user.email}</dd>
+      <dt>Preferred locations</dt><dd>${user.preferred_locations || 'Not set'}</dd>
+    `;
+  }).catch(() => { window.location.href = 'login.html'; });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await api.logout();
+    window.location.href = 'login.html';
+  });
+</script>
+</body>
+</html>

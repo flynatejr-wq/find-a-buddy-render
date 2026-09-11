@@ -19,4 +19,5 @@ const api = {
   register: (payload) => apiRequest('register.php', { method: 'POST', body: JSON.stringify(payload) }),
   login: (payload) => apiRequest('login.php', { method: 'POST', body: JSON.stringify(payload) }),
   logout: () => apiRequest('logout.php', { method: 'POST' }),
+  getUserInfo: () => apiRequest('get_user_info.php'),
 };
