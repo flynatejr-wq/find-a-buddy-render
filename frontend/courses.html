@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Courses — Find a Buddy</title>
+<link rel="stylesheet" href="../static/main.css">
+</head>
+<body>
+<nav class="app-nav">
+  <a href="buddy.html">Find a Buddy</a>
+  <a href="courses.html" class="active">My Courses</a>
+  <a href="mascot.html">Study Mascot</a>
+  <a href="profile.html">Profile</a>
+</nav>
+<main>
+  <h1>My Courses</h1>
+
+  <section>
+    <h2>Add a course</h2>
+    <input type="text" id="course-search" placeholder="Search course code or name (e.g. CSCI 3350)" autocomplete="off">
+    <ul id="course-suggestions" class="suggestions" hidden></ul>
+    <form id="new-course-form" hidden>
+      <input type="hidden" name="course_code" id="new-course-code">
+      <input type="text" name="section" placeholder="Section (optional)">
+      <input type="text" name="course_name" placeholder="Course name">
+      <button type="submit">Add course</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Current courses</h2>
+    <ul id="course-list"></ul>
+  </section>
+
+  <section>
+    <h2>Preferred study locations</h2>
+    <label><input type="checkbox" name="location" value="Library"> Library</label>
+    <label><input type="checkbox" name="location" value="Student Union"> Student Union</label>
+    <label><input type="checkbox" name="location" value="Dorm Lounge"> Dorm Lounge</label>
+    <label><input type="checkbox" name="location" value="Online"> Online</label>
+  </section>
+
+  <section>
+    <h2>Availability</h2>
+    <table id="availability-grid">
+      <thead><tr><th></th><th>Morning</th><th>Afternoon</th><th>Evening</th></tr></thead>
+      <tbody>
+        <tr><th>Mon</th><td><input type="checkbox" data-slot="Mon-Morning"></td><td><input type="checkbox" data-slot="Mon-Afternoon"></td><td><input type="checkbox" data-slot="Mon-Evening"></td></tr>
+        <tr><th>Tue</th><td><input type="checkbox" data-slot="Tue-Morning"></td><td><input type="checkbox" data-slot="Tue-Afternoon"></td><td><input type="checkbox" data-slot="Tue-Evening"></td></tr>
+        <tr><th>Wed</th><td><input type="checkbox" data-slot="Wed-Morning"></td><td><input type="checkbox" data-slot="Wed-Afternoon"></td><td><input type="checkbox" data-slot="Wed-Evening"></td></tr>
+        <tr><th>Thu</th><td><input type="checkbox" data-slot="Thu-Morning"></td><td><input type="checkbox" data-slot="Thu-Afternoon"></td><td><input type="checkbox" data-slot="Thu-Evening"></td></tr>
+        <tr><th>Fri</th><td><input type="checkbox" data-slot="Fri-Morning"></td><td><input type="checkbox" data-slot="Fri-Afternoon"></td><td><input type="checkbox" data-slot="Fri-Evening"></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <button id="save-preferences-btn">Save locations & availability</button>
+  <p id="save-status" hidden></p>
+</main>
+<script src="api.js"></script>
+<script>
+  const searchInput = document.getElementById('course-search');
+  const suggestionsEl = document.getElementById('course-suggestions');
+  const courseListEl = document.getElementById('course-list');
+
+  async function loadCourses() {
+    const { courses } = await api.getCourses();
+    courseListEl.innerHTML = courses.map(c => `
+      <li>${escapeHtml(c.course_code)}${c.section ? ' — ' + escapeHtml(c.section) : ''} ${escapeHtml(c.course_name) || ''}
+        <button data-remove="${escapeHtml(String(c.id))}">Remove</button>
+      </li>
+    `).join('') || '<li>No courses yet.</li>';
+
+    courseListEl.querySelectorAll('[data-remove]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await api.saveCourses({ remove_course_id: Number(btn.dataset.remove) });
+        loadCourses();
+      });
+    });
+  }
+
+  searchInput.addEventListener('input', async () => {
+    const q = searchInput.value.trim();
+    if (q.length < 2) {
+      suggestionsEl.hidden = true;
+      return;
+    }
+    const { courses } = await api.getCourses(q);
+    suggestionsEl.innerHTML = courses.map(c =>
+      `<li data-code="${escapeHtml(c.course_code)}" data-section="${escapeHtml(c.section || '')}" data-name="${escapeHtml(c.course_name || '')}">${escapeHtml(c.course_code)}${c.section ? ' — ' + escapeHtml(c.section) : ''} ${escapeHtml(c.course_name) || ''}</li>`
+    ).join('') + `<li data-new="${escapeHtml(q)}">+ Add "${escapeHtml(q)}" as a new course</li>`;
+    suggestionsEl.hidden = false;
+  });
+
+  suggestionsEl.addEventListener('click', async (event) => {
+    const li = event.target.closest('li');
+    if (!li) return;
+    suggestionsEl.hidden = true;
+    searchInput.value = '';
+
+    if (li.dataset.new !== undefined) {
+      const name = prompt('Course name?') || '';
+      await api.saveCourses({ courses: [{ course_code: li.dataset.new, course_name: name }] });
+    } else {
+      await api.saveCourses({ courses: [{ course_code: li.dataset.code, section: li.dataset.section, course_name: li.dataset.name }] });
+    }
+    loadCourses();
+  });
+
+  document.getElementById('save-preferences-btn').addEventListener('click', async () => {
+    const locations = Array.from(document.querySelectorAll('input[name="location"]:checked')).map(el => el.value).join(', ');
+    const availability = Array.from(document.querySelectorAll('#availability-grid input:checked')).map(el => el.dataset.slot);
+    await api.saveCourses({ preferred_locations: locations, availability });
+    const status = document.getElementById('save-status');
+    status.textContent = 'Saved!';
+    status.hidden = false;
+  });
+
+  api.getUserInfo().then(loadCourses).catch(() => { window.location.href = 'login.html'; });
+</script>
+</body>
+</html>
