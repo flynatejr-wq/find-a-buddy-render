@@ -22,11 +22,16 @@
 <script>
   api.getUserInfo().then(({ user }) => {
     const dl = document.getElementById('profile-fields');
-    dl.innerHTML = `
-      <dt>Name</dt><dd>${user.first_name} ${user.last_name}</dd>
-      <dt>Email</dt><dd>${user.email}</dd>
-      <dt>Preferred locations</dt><dd>${user.preferred_locations || 'Not set'}</dd>
-    `;
+    const addRow = (term, value) => {
+      const dt = document.createElement('dt');
+      dt.textContent = term;
+      const dd = document.createElement('dd');
+      dd.textContent = value;
+      dl.append(dt, dd);
+    };
+    addRow('Name', `${user.first_name} ${user.last_name}`);
+    addRow('Email', user.email);
+    addRow('Preferred locations', user.preferred_locations || 'Not set');
   }).catch(() => { window.location.href = 'login.html'; });
 
   document.getElementById('logout-btn').addEventListener('click', async () => {
