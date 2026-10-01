@@ -1,6 +1,6 @@
 # Find a Buddy
 
-A study-buddy matching web app for Savannah State University students. Students register with an `@savannahstate.edu` email, add their current courses, and (in planned future features) get matched with classmates in the same class to coordinate study sessions.
+A study-buddy matching web app for Savannah State University students. Students register with an `@student.savannahstate.edu` email, add their current courses, and (in planned future features) get matched with classmates in the same class to coordinate study sessions.
 
 **Live demo:** https://find-a-buddy-yu1y.onrender.com/frontend/index.html
 
@@ -14,7 +14,7 @@ A study-buddy matching web app for Savannah State University students. Students 
 
 ## Features currently working
 
-- Registration restricted to `@savannahstate.edu` emails, with bcrypt password hashing
+- Registration restricted to `@student.savannahstate.edu` emails, with bcrypt password hashing
 - Login with session-based authentication (`HttpOnly` cookies, session regeneration on login to prevent session fixation)
 - Logout
 - Adding/removing courses, with a type-ahead search against an existing course catalog or adding a new course on the fly
