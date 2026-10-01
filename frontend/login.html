@@ -139,16 +139,8 @@
 
     const data = Object.fromEntries(new FormData(form).entries());
     try {
-      const result = await api.login(data);
-      document.body.innerHTML = `
-        <div class="auth-wrap">
-          <div class="auth-card" style="text-align:center;">
-            <h1 class="display" id="welcome-heading"></h1>
-            <p class="sub">You're logged in. The course/matching/mascot pages are next up.</p>
-          </div>
-        </div>
-      `;
-      document.getElementById('welcome-heading').textContent = `Welcome back, ${result.user.first_name}!`;
+      await api.login(data);
+      window.location.href = 'index.html?welcome=1';
     } catch (err) {
       errorEl.textContent = err.message;
       errorEl.hidden = false;

@@ -99,7 +99,7 @@
 
 <nav class="public-nav">
   <div class="wordmark">FIND A <span>BUDDY</span></div>
-  <div class="actions">
+  <div class="actions" id="nav-actions">
     <a class="link-btn" href="login.html">Log in</a>
     <a class="btn primary" href="register.html">Get started</a>
   </div>
@@ -107,10 +107,10 @@
 
 <div class="hero">
   <div class="hero-inner">
-    <span class="kicker">🐯 Built for Savannah State students</span>
-    <h1 class="display">Never study alone<span>Find your pack.</span></h1>
-    <p class="lede">Match with classmates in your exact courses, agree on a time and place, and get study tips from Rowdy whenever you're stuck.</p>
-    <div class="hero-ctas">
+    <span class="kicker" id="hero-kicker">🐯 Built for Savannah State students</span>
+    <h1 class="display" id="hero-heading">Never study alone<span>Find your pack.</span></h1>
+    <p class="lede" id="hero-lede">Match with classmates in your exact courses, agree on a time and place, and get study tips from Rowdy whenever you're stuck.</p>
+    <div class="hero-ctas" id="hero-ctas">
       <a class="btn primary" href="register.html">Get started free</a>
       <a class="btn outline-light" href="login.html">I already have an account</a>
     </div>
@@ -178,3 +178,36 @@
 </div>
 
 <footer class="public-footer">Find a Buddy &middot; a student project for Savannah State University</footer>
+
+<script src="api.js"></script>
+<script>
+  api.getUserInfo().then(({ user }) => {
+    const navActions = document.getElementById('nav-actions');
+    navActions.innerHTML = '';
+
+    const greeting = document.createElement('span');
+    greeting.className = 'link-btn';
+    greeting.textContent = `Hi, ${user.first_name}`;
+
+    const logoutBtn = document.createElement('button');
+    logoutBtn.className = 'btn primary';
+    logoutBtn.type = 'button';
+    logoutBtn.textContent = 'Log out';
+    logoutBtn.addEventListener('click', async () => {
+      await api.logout();
+      window.location.reload();
+    });
+
+    navActions.append(greeting, logoutBtn);
+
+    if (new URLSearchParams(window.location.search).get('welcome') === '1') {
+      document.getElementById('hero-kicker').textContent = '🐯 You\'re logged in';
+      document.getElementById('hero-heading').innerHTML = '';
+      document.getElementById('hero-heading').textContent = `Welcome back, ${user.first_name}!`;
+      document.getElementById('hero-lede').textContent = 'The course, matching, and mascot pages are coming next.';
+      document.getElementById('hero-ctas').style.display = 'none';
+    }
+  }).catch(() => {
+    // Not logged in -- leave the public homepage as-is.
+  });
+</script>
