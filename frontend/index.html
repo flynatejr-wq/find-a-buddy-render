@@ -189,6 +189,11 @@
     greeting.className = 'link-btn';
     greeting.textContent = `Hi, ${user.first_name}`;
 
+    const coursesLink = document.createElement('a');
+    coursesLink.className = 'link-btn';
+    coursesLink.href = 'courses.html';
+    coursesLink.textContent = 'My Courses';
+
     const logoutBtn = document.createElement('button');
     logoutBtn.className = 'btn primary';
     logoutBtn.type = 'button';
@@ -198,14 +203,20 @@
       window.location.reload();
     });
 
-    navActions.append(greeting, logoutBtn);
+    navActions.append(greeting, coursesLink, logoutBtn);
 
     if (new URLSearchParams(window.location.search).get('welcome') === '1') {
       document.getElementById('hero-kicker').textContent = '🐯 You\'re logged in';
       document.getElementById('hero-heading').innerHTML = '';
       document.getElementById('hero-heading').textContent = `Welcome back, ${user.first_name}!`;
-      document.getElementById('hero-lede').textContent = 'The course, matching, and mascot pages are coming next.';
+      document.getElementById('hero-lede').textContent = 'Add your courses next so we can start matching you with classmates.';
       document.getElementById('hero-ctas').style.display = 'none';
+
+      const coursesCta = document.createElement('a');
+      coursesCta.className = 'btn primary';
+      coursesCta.href = 'courses.html';
+      coursesCta.textContent = 'Add my courses';
+      document.getElementById('hero-ctas').insertAdjacentElement('afterend', coursesCta);
     }
   }).catch(() => {
     // Not logged in -- leave the public homepage as-is.
