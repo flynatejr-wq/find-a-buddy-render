@@ -8,8 +8,10 @@ function get_db(): PDO
 
         if ($databaseUrl) {
             // Render-style Postgres connection string: postgres://user:pass@host:port/dbname
+            // (Render sometimes omits the port when it's the Postgres default)
             $parts = parse_url($databaseUrl);
-            $dsn = "pgsql:host={$parts['host']};port={$parts['port']};dbname=" . ltrim($parts['path'], '/');
+            $port = $parts['port'] ?? 5432;
+            $dsn = "pgsql:host={$parts['host']};port={$port};dbname=" . ltrim($parts['path'], '/');
             $pdo = new PDO($dsn, $parts['user'], $parts['pass'], [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
