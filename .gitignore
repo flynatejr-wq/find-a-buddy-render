@@ -1,4 +1,7 @@
 /vendor/
 /backend/config.php
+/backend/config.infinityfree.php
+/backend/config.local-backup.php
 .DS_Store
 Thumbs.db
+.mockup/

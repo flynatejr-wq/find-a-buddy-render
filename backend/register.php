@@ -30,7 +30,7 @@ try {
     $stmt = $pdo->prepare('INSERT INTO users (email, password_hash, first_name, last_name) VALUES (?, ?, ?, ?)');
     $stmt->execute([$email, $hash, trim($input['first_name']), trim($input['last_name'])]);
 } catch (PDOException $e) {
-    if ($e->getCode() === '23000') {
+    if (in_array($e->getCode(), ['23000', '23505'], true)) {
         http_response_code(409);
         echo json_encode(['errors' => ['email' => 'An account with this email already exists.']]);
         exit;

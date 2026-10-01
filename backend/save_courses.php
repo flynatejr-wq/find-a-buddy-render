@@ -23,7 +23,8 @@ if (isset($input['courses']) && is_array($input['courses'])) {
             continue;
         }
 
-        $stmt = $pdo->prepare('SELECT id FROM courses WHERE course_code = ? AND section <=> ?');
+        $nullSafeEquals = db_is_postgres() ? 'section IS NOT DISTINCT FROM ?' : 'section <=> ?';
+        $stmt = $pdo->prepare("SELECT id FROM courses WHERE course_code = ? AND $nullSafeEquals");
         $stmt->execute([$code, $section !== '' ? $section : null]);
         $courseId = $stmt->fetchColumn();
 
@@ -33,7 +34,10 @@ if (isset($input['courses']) && is_array($input['courses'])) {
             $courseId = $pdo->lastInsertId();
         }
 
-        $stmt = $pdo->prepare('INSERT IGNORE INTO user_courses (user_id, course_id) VALUES (?, ?)');
+        $insertUserCourse = db_is_postgres()
+            ? 'INSERT INTO user_courses (user_id, course_id) VALUES (?, ?) ON CONFLICT (user_id, course_id) DO NOTHING'
+            : 'INSERT IGNORE INTO user_courses (user_id, course_id) VALUES (?, ?)';
+        $stmt = $pdo->prepare($insertUserCourse);
         $stmt->execute([$userId, $courseId]);
     }
 }
