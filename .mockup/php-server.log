@@ -38,3 +38,456 @@
 [Thu Oct  1 01:16:44 2026] [::1]:58999 Accepted
 [Thu Oct  1 01:16:44 2026] [::1]:58999 [200]: GET /frontend/index.html
 [Thu Oct  1 01:16:44 2026] [::1]:58999 Closing
+[Thu Oct  1 01:18:19 2026] [::1]:63772 Accepted
+[Thu Oct  1 01:18:19 2026] [::1]:63772 [200]: GET /frontend/login.html
+[Thu Oct  1 01:18:19 2026] [::1]:63772 Closing
+[Thu Oct  1 01:18:19 2026] [::1]:49232 Accepted
+[Thu Oct  1 01:18:19 2026] [::1]:49232 [200]: GET /frontend/api.js
+[Thu Oct  1 01:18:19 2026] [::1]:49232 Closing
+[Thu Oct  1 01:18:20 2026] [::1]:59286 Accepted
+[Thu Oct  1 01:18:20 2026] [::1]:59286 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:18:20 2026] [::1]:59286 Closing
+[Thu Oct  1 01:18:32 2026] [::1]:54425 Accepted
+[Thu Oct  1 01:18:32 2026] [::1]:54425 [200]: GET /frontend/register.html
+[Thu Oct  1 01:18:32 2026] [::1]:54425 Closing
+[Thu Oct  1 01:18:32 2026] [::1]:63385 Accepted
+[Thu Oct  1 01:18:32 2026] [::1]:63385 [200]: GET /frontend/api.js
+[Thu Oct  1 01:18:32 2026] [::1]:63385 Closing
+[Thu Oct  1 01:18:32 2026] [::1]:55945 Accepted
+[Thu Oct  1 01:18:32 2026] [::1]:55945 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:18:32 2026] [::1]:55945 Closing
+[Thu Oct  1 01:18:47 2026] [::1]:55729 Accepted
+[Thu Oct  1 01:18:47 2026] [::1]:55729 [200]: POST /backend/register.php
+[Thu Oct  1 01:18:47 2026] [::1]:55729 Closing
+[Thu Oct  1 01:18:47 2026] [::1]:62456 Accepted
+[Thu Oct  1 01:18:47 2026] [::1]:62456 [200]: GET /frontend/login.html?registered=1
+[Thu Oct  1 01:18:47 2026] [::1]:62456 Closing
+[Thu Oct  1 01:18:47 2026] [::1]:55843 Accepted
+[Thu Oct  1 01:18:47 2026] [::1]:55843 [200]: GET /frontend/api.js
+[Thu Oct  1 01:18:47 2026] [::1]:55843 Closing
+[Thu Oct  1 01:18:47 2026] [::1]:58579 Accepted
+[Thu Oct  1 01:18:47 2026] [::1]:58579 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:18:47 2026] [::1]:58579 Closing
+[Thu Oct  1 01:19:03 2026] [::1]:49863 Accepted
+[Thu Oct  1 01:19:03 2026] [::1]:49863 [200]: POST /backend/login.php
+[Thu Oct  1 01:19:03 2026] [::1]:49863 Closing
+[Thu Oct  1 01:19:03 2026] [::1]:65090 Accepted
+[Thu Oct  1 01:19:03 2026] [::1]:65090 [200]: GET /frontend/index.html?welcome=1
+[Thu Oct  1 01:19:03 2026] [::1]:65090 Closing
+[Thu Oct  1 01:19:03 2026] [::1]:55042 Accepted
+[Thu Oct  1 01:19:03 2026] [::1]:55042 [200]: GET /frontend/api.js
+[Thu Oct  1 01:19:03 2026] [::1]:55042 Closing
+[Thu Oct  1 01:19:03 2026] [::1]:60894 Accepted
+[Thu Oct  1 01:19:03 2026] [::1]:60894 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:19:03 2026] [::1]:60894 Closing
+[Thu Oct  1 01:19:03 2026] [::1]:55778 Accepted
+[Thu Oct  1 01:19:03 2026] [::1]:55778 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:19:03 2026] [::1]:55778 Closing
+[Thu Oct  1 01:19:23 2026] [::1]:60203 Accepted
+[Thu Oct  1 01:19:23 2026] [::1]:60203 [200]: GET /frontend/index.html?welcome=1
+[Thu Oct  1 01:19:23 2026] [::1]:60203 Closing
+[Thu Oct  1 01:19:23 2026] [::1]:53216 Accepted
+[Thu Oct  1 01:19:23 2026] [::1]:53216 [200]: GET /frontend/api.js
+[Thu Oct  1 01:19:23 2026] [::1]:53216 Closing
+[Thu Oct  1 01:19:23 2026] [::1]:50043 Accepted
+[Thu Oct  1 01:19:23 2026] [::1]:50043 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:19:23 2026] [::1]:50043 Closing
+[Thu Oct  1 01:19:23 2026] [::1]:57584 Accepted
+[Thu Oct  1 01:19:23 2026] [::1]:57584 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:19:23 2026] [::1]:57584 Closing
+[Thu Oct  1 01:20:48 2026] [::1]:63557 Accepted
+[Thu Oct  1 01:20:48 2026] [::1]:63557 [200]: GET /frontend/index.html
+[Thu Oct  1 01:20:48 2026] [::1]:63557 Closing
+[Thu Oct  1 01:21:18 2026] [::1]:53675 Accepted
+[Thu Oct  1 01:21:18 2026] [::1]:53675 [200]: GET /frontend/index.html
+[Thu Oct  1 01:21:18 2026] [::1]:53675 Closing
+[Thu Oct  1 01:21:18 2026] [::1]:53676 Accepted
+[Thu Oct  1 01:21:18 2026] [::1]:53676 [200]: GET /frontend/api.js
+[Thu Oct  1 01:21:18 2026] [::1]:53676 Closing
+[Thu Oct  1 01:21:18 2026] [::1]:53678 Accepted
+[Thu Oct  1 01:21:18 2026] [::1]:53678 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:21:18 2026] [::1]:53678 Closing
+[Thu Oct  1 01:21:22 2026] [::1]:53683 Accepted
+[Thu Oct  1 01:21:22 2026] [::1]:53683 [200]: GET /frontend/register.html
+[Thu Oct  1 01:21:22 2026] [::1]:53683 Closing
+[Thu Oct  1 01:21:22 2026] [::1]:53684 Accepted
+[Thu Oct  1 01:21:22 2026] [::1]:53684 [200]: GET /frontend/api.js
+[Thu Oct  1 01:21:22 2026] [::1]:53684 Closing
+[Thu Oct  1 01:21:26 2026] [::1]:57707 Accepted
+[Thu Oct  1 01:21:26 2026] [::1]:57707 [200]: GET /frontend/login.html
+[Thu Oct  1 01:21:26 2026] [::1]:57707 Closing
+[Thu Oct  1 01:21:26 2026] [::1]:57708 Accepted
+[Thu Oct  1 01:21:26 2026] [::1]:57708 [200]: GET /frontend/api.js
+[Thu Oct  1 01:21:26 2026] [::1]:57708 Closing
+[Thu Oct  1 01:21:26 2026] [::1]:57710 Accepted
+[Thu Oct  1 01:21:26 2026] [::1]:57711 Accepted
+[Thu Oct  1 01:21:26 2026] [::1]:57712 Accepted
+[Thu Oct  1 01:21:32 2026] [::1]:57710 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:21:32 2026] [::1]:57710 Closing
+[Thu Oct  1 01:21:32 2026] [::1]:57711 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:21:32 2026] [::1]:57711 Closing
+[Thu Oct  1 01:21:32 2026] [::1]:57712 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:21:32 2026] [::1]:57712 Closing
+[Thu Oct  1 01:21:36 2026] [::1]:57725 Accepted
+[Thu Oct  1 01:21:41 2026] [::1]:57725 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:21:41 2026] [::1]:57725 Closing
+[Thu Oct  1 01:22:57 2026] [::1]:57833 Accepted
+[Thu Oct  1 01:22:57 2026] [::1]:57833 [200]: POST /backend/login.php
+[Thu Oct  1 01:22:57 2026] [::1]:57833 Closing
+[Thu Oct  1 01:22:57 2026] [::1]:57835 Accepted
+[Thu Oct  1 01:22:57 2026] [::1]:57835 [200]: GET /frontend/index.html?welcome=1
+[Thu Oct  1 01:22:57 2026] [::1]:57835 Closing
+[Thu Oct  1 01:22:58 2026] [::1]:57836 Accepted
+[Thu Oct  1 01:22:58 2026] [::1]:57836 [200]: GET /frontend/api.js
+[Thu Oct  1 01:22:58 2026] [::1]:57836 Closing
+[Thu Oct  1 01:22:58 2026] [::1]:57837 Accepted
+[Thu Oct  1 01:22:58 2026] [::1]:57837 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:22:58 2026] [::1]:57837 Closing
+[Thu Oct  1 01:25:46 2026] [::1]:58055 Accepted
+[Thu Oct  1 01:25:46 2026] [::1]:58055 [200]: POST /backend/logout.php
+[Thu Oct  1 01:25:46 2026] [::1]:58055 Closing
+[Thu Oct  1 01:25:46 2026] [::1]:58057 Accepted
+[Thu Oct  1 01:25:46 2026] [::1]:58057 [200]: GET /frontend/index.html?welcome=1
+[Thu Oct  1 01:25:46 2026] [::1]:58057 Closing
+[Thu Oct  1 01:25:46 2026] [::1]:58058 Accepted
+[Thu Oct  1 01:25:46 2026] [::1]:58058 [200]: GET /frontend/api.js
+[Thu Oct  1 01:25:46 2026] [::1]:58058 Closing
+[Thu Oct  1 01:25:46 2026] [::1]:58059 Accepted
+[Thu Oct  1 01:25:46 2026] [::1]:58059 [401]: GET /backend/get_user_info.php
+[Thu Oct  1 01:25:46 2026] [::1]:58059 Closing
+[Thu Oct  1 01:25:47 2026] [::1]:58060 Accepted
+[Thu Oct  1 01:25:49 2026] [::1]:58060 [200]: GET /frontend/register.html
+[Thu Oct  1 01:25:49 2026] [::1]:58060 Closing
+[Thu Oct  1 01:25:49 2026] [::1]:58062 Accepted
+[Thu Oct  1 01:25:49 2026] [::1]:58062 [200]: GET /frontend/api.js
+[Thu Oct  1 01:25:49 2026] [::1]:58062 Closing
+[Thu Oct  1 01:26:41 2026] [::1]:58129 Accepted
+[Thu Oct  1 01:26:41 2026] [::1]:58129 [422]: POST /backend/register.php
+[Thu Oct  1 01:26:41 2026] [::1]:58129 Closing
+[Thu Oct  1 01:26:59 2026] [::1]:58153 Accepted
+[Thu Oct  1 01:26:59 2026] [::1]:58153 [200]: POST /backend/register.php
+[Thu Oct  1 01:26:59 2026] [::1]:58153 Closing
+[Thu Oct  1 01:26:59 2026] [::1]:58155 Accepted
+[Thu Oct  1 01:26:59 2026] [::1]:58155 [200]: GET /frontend/login.html?registered=1
+[Thu Oct  1 01:26:59 2026] [::1]:58155 Closing
+[Thu Oct  1 01:26:59 2026] [::1]:58156 Accepted
+[Thu Oct  1 01:26:59 2026] [::1]:58156 [200]: GET /frontend/api.js
+[Thu Oct  1 01:26:59 2026] [::1]:58156 Closing
+[Thu Oct  1 01:27:30 2026] [::1]:58153 Accepted
+[Thu Oct  1 01:27:30 2026] [::1]:58153 [200]: POST /backend/login.php
+[Thu Oct  1 01:27:30 2026] [::1]:58153 Closing
+[Thu Oct  1 01:27:30 2026] [::1]:58157 Accepted
+[Thu Oct  1 01:27:30 2026] [::1]:58157 [200]: GET /frontend/index.html?welcome=1
+[Thu Oct  1 01:27:30 2026] [::1]:58157 Closing
+[Thu Oct  1 01:27:30 2026] [::1]:58158 Accepted
+[Thu Oct  1 01:27:30 2026] [::1]:58158 [200]: GET /frontend/api.js
+[Thu Oct  1 01:27:30 2026] [::1]:58158 Closing
+[Thu Oct  1 01:27:30 2026] [::1]:58159 Accepted
+[Thu Oct  1 01:27:30 2026] [::1]:58159 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:27:30 2026] [::1]:58159 Closing
+[Thu Oct  1 01:27:41 2026] [::1]:58188 Accepted
+[Thu Oct  1 01:27:46 2026] [::1]:58188 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:27:46 2026] [::1]:58188 Closing
+[Thu Oct  1 01:31:36 2026] [::1]:52636 Accepted
+[Thu Oct  1 01:31:36 2026] [::1]:52636 [200]: GET /frontend/register.html
+[Thu Oct  1 01:31:36 2026] [::1]:52636 Closing
+[Thu Oct  1 01:31:36 2026] [::1]:54559 Accepted
+[Thu Oct  1 01:31:36 2026] [::1]:54559 [200]: GET /frontend/api.js
+[Thu Oct  1 01:31:36 2026] [::1]:54559 Closing
+[Thu Oct  1 01:31:36 2026] [::1]:50927 Accepted
+[Thu Oct  1 01:31:36 2026] [::1]:50927 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:31:36 2026] [::1]:50927 Closing
+[Thu Oct  1 01:31:57 2026] [::1]:50474 Accepted
+[Thu Oct  1 01:31:57 2026] [::1]:50474 [200]: GET /frontend/register.html
+[Thu Oct  1 01:31:57 2026] [::1]:50474 Closing
+[Thu Oct  1 01:31:57 2026] [::1]:52821 Accepted
+[Thu Oct  1 01:31:57 2026] [::1]:52821 [200]: GET /frontend/api.js
+[Thu Oct  1 01:31:57 2026] [::1]:52821 Closing
+[Thu Oct  1 01:31:59 2026] [::1]:52575 Accepted
+[Thu Oct  1 01:31:59 2026] [::1]:52575 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:31:59 2026] [::1]:52575 Closing
+[Thu Oct  1 01:32:13 2026] [::1]:54703 Accepted
+[Thu Oct  1 01:32:13 2026] [::1]:54703 [200]: POST /backend/register.php
+[Thu Oct  1 01:32:13 2026] [::1]:54703 Closing
+[Thu Oct  1 01:32:13 2026] [::1]:65375 Accepted
+[Thu Oct  1 01:32:13 2026] [::1]:65375 [200]: GET /frontend/login.html?registered=1
+[Thu Oct  1 01:32:13 2026] [::1]:65375 Closing
+[Thu Oct  1 01:32:13 2026] [::1]:57091 Accepted
+[Thu Oct  1 01:32:13 2026] [::1]:57091 [200]: GET /frontend/api.js
+[Thu Oct  1 01:32:13 2026] [::1]:57091 Closing
+[Thu Oct  1 01:32:14 2026] [::1]:51764 Accepted
+[Thu Oct  1 01:32:14 2026] [::1]:51764 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:32:14 2026] [::1]:51764 Closing
+[Thu Oct  1 01:32:20 2026] [::1]:55595 Accepted
+[Thu Oct  1 01:32:20 2026] [::1]:55595 [200]: POST /backend/login.php
+[Thu Oct  1 01:32:20 2026] [::1]:55595 Closing
+[Thu Oct  1 01:32:20 2026] [::1]:63591 Accepted
+[Thu Oct  1 01:32:20 2026] [::1]:63591 [200]: GET /frontend/index.html?welcome=1
+[Thu Oct  1 01:32:20 2026] [::1]:63591 Closing
+[Thu Oct  1 01:32:20 2026] [::1]:61151 Accepted
+[Thu Oct  1 01:32:20 2026] [::1]:61151 [200]: GET /frontend/api.js
+[Thu Oct  1 01:32:20 2026] [::1]:61151 Closing
+[Thu Oct  1 01:32:20 2026] [::1]:53048 Accepted
+[Thu Oct  1 01:32:20 2026] [::1]:53048 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:32:20 2026] [::1]:53048 Closing
+[Thu Oct  1 01:32:20 2026] [::1]:55889 Accepted
+[Thu Oct  1 01:32:20 2026] [::1]:55889 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:32:20 2026] [::1]:55889 Closing
+[Thu Oct  1 01:32:21 2026] [::1]:55378 Accepted
+[Thu Oct  1 01:32:21 2026] [::1]:55378 [200]: GET /frontend/courses.html
+[Thu Oct  1 01:32:21 2026] [::1]:55378 Closing
+[Thu Oct  1 01:32:21 2026] [::1]:59429 Accepted
+[Thu Oct  1 01:32:21 2026] [::1]:59429 [200]: GET /frontend/api.js
+[Thu Oct  1 01:32:21 2026] [::1]:59429 Closing
+[Thu Oct  1 01:32:21 2026] [::1]:55709 Accepted
+[Thu Oct  1 01:32:21 2026] [::1]:55709 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:32:21 2026] [::1]:55709 Closing
+[Thu Oct  1 01:32:21 2026] [::1]:56038 Accepted
+[Thu Oct  1 01:32:22 2026] [::1]:56038 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:32:22 2026] [::1]:56038 Closing
+[Thu Oct  1 01:32:22 2026] [::1]:56376 Accepted
+[Thu Oct  1 01:32:22 2026] [::1]:56376 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:32:22 2026] [::1]:56376 Closing
+[Thu Oct  1 01:32:37 2026] [::1]:52101 Accepted
+[Thu Oct  1 01:32:37 2026] [::1]:52101 [200]: GET /backend/get_courses.php?q=CSCI%203350
+[Thu Oct  1 01:32:37 2026] [::1]:52101 Closing
+[Thu Oct  1 01:34:18 2026] [::1]:59469 Accepted
+[Thu Oct  1 01:34:18 2026] [::1]:59469 [200]: GET /frontend/courses.html
+[Thu Oct  1 01:34:18 2026] [::1]:59469 Closing
+[Thu Oct  1 01:34:18 2026] [::1]:63466 Accepted
+[Thu Oct  1 01:34:18 2026] [::1]:63466 [200]: GET /frontend/api.js
+[Thu Oct  1 01:34:18 2026] [::1]:63466 Closing
+[Thu Oct  1 01:34:18 2026] [::1]:63074 Accepted
+[Thu Oct  1 01:34:18 2026] [::1]:63074 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:34:18 2026] [::1]:63074 Closing
+[Thu Oct  1 01:34:18 2026] [::1]:49783 Accepted
+[Thu Oct  1 01:34:18 2026] [::1]:49783 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:34:18 2026] [::1]:49783 Closing
+[Thu Oct  1 01:34:18 2026] [::1]:57704 Accepted
+[Thu Oct  1 01:34:18 2026] [::1]:57704 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:34:18 2026] [::1]:57704 Closing
+[Thu Oct  1 01:34:39 2026] [::1]:50031 Accepted
+[Thu Oct  1 01:34:39 2026] [::1]:50031 [200]: GET /frontend/courses.html
+[Thu Oct  1 01:34:39 2026] [::1]:50031 Closing
+[Thu Oct  1 01:34:39 2026] [::1]:54761 Accepted
+[Thu Oct  1 01:34:39 2026] [::1]:54761 [200]: GET /frontend/api.js
+[Thu Oct  1 01:34:39 2026] [::1]:54761 Closing
+[Thu Oct  1 01:34:41 2026] [::1]:52823 Accepted
+[Thu Oct  1 01:34:41 2026] [::1]:52823 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:34:41 2026] [::1]:52823 Closing
+[Thu Oct  1 01:34:41 2026] [::1]:56627 Accepted
+[Thu Oct  1 01:34:41 2026] [::1]:56627 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:34:41 2026] [::1]:56627 Closing
+[Thu Oct  1 01:34:41 2026] [::1]:54407 Accepted
+[Thu Oct  1 01:34:41 2026] [::1]:54407 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:34:41 2026] [::1]:54407 Closing
+[Thu Oct  1 01:34:53 2026] [::1]:61145 Accepted
+[Thu Oct  1 01:34:53 2026] [::1]:61145 [200]: GET /backend/get_courses.php?q=CSCI%203350
+[Thu Oct  1 01:34:53 2026] [::1]:61145 Closing
+[Thu Oct  1 01:35:15 2026] [::1]:49295 Accepted
+[Thu Oct  1 01:35:15 2026] [::1]:49295 [200]: GET /frontend/courses.html
+[Thu Oct  1 01:35:15 2026] [::1]:49295 Closing
+[Thu Oct  1 01:35:15 2026] [::1]:63359 Accepted
+[Thu Oct  1 01:35:15 2026] [::1]:63359 [200]: GET /frontend/api.js
+[Thu Oct  1 01:35:15 2026] [::1]:63359 Closing
+[Thu Oct  1 01:35:15 2026] [::1]:59093 Accepted
+[Thu Oct  1 01:35:15 2026] [::1]:59093 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:35:15 2026] [::1]:59093 Closing
+[Thu Oct  1 01:35:15 2026] [::1]:61729 Accepted
+[Thu Oct  1 01:35:15 2026] [::1]:61729 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:35:15 2026] [::1]:61729 Closing
+[Thu Oct  1 01:35:15 2026] [::1]:54612 Accepted
+[Thu Oct  1 01:35:15 2026] [::1]:54612 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:35:15 2026] [::1]:54612 Closing
+[Thu Oct  1 01:35:36 2026] [::1]:50219 Accepted
+[Thu Oct  1 01:35:36 2026] [::1]:50219 [200]: GET /frontend/courses.html
+[Thu Oct  1 01:35:36 2026] [::1]:50219 Closing
+[Thu Oct  1 01:35:36 2026] [::1]:64507 Accepted
+[Thu Oct  1 01:35:36 2026] [::1]:64507 [200]: GET /frontend/api.js
+[Thu Oct  1 01:35:36 2026] [::1]:64507 Closing
+[Thu Oct  1 01:35:36 2026] [::1]:56181 Accepted
+[Thu Oct  1 01:35:36 2026] [::1]:56181 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:35:36 2026] [::1]:56181 Closing
+[Thu Oct  1 01:35:37 2026] [::1]:52335 Accepted
+[Thu Oct  1 01:35:37 2026] [::1]:50830 Accepted
+[Thu Oct  1 01:35:37 2026] [::1]:52335 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:35:37 2026] [::1]:50830 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:35:37 2026] [::1]:50830 Closing
+[Thu Oct  1 01:35:37 2026] [::1]:52335 Closing
+[Thu Oct  1 01:35:49 2026] [::1]:57791 Accepted
+[Thu Oct  1 01:35:49 2026] [::1]:57791 [200]: GET /backend/get_courses.php?q=CSCI%203350
+[Thu Oct  1 01:35:49 2026] [::1]:57791 Closing
+[Thu Oct  1 01:36:17 2026] [::1]:61172 Accepted
+[Thu Oct  1 01:36:17 2026] [::1]:61172 [200]: POST /backend/save_courses.php
+[Thu Oct  1 01:36:17 2026] [::1]:61172 Closing
+[Thu Oct  1 01:36:17 2026] [::1]:53312 Accepted
+[Thu Oct  1 01:36:17 2026] [::1]:53312 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:36:17 2026] [::1]:53312 Closing
+[Thu Oct  1 01:37:43 2026] [::1]:63379 Accepted
+[Thu Oct  1 01:37:43 2026] [::1]:63379 [200]: GET /frontend/courses.html
+[Thu Oct  1 01:37:43 2026] [::1]:63379 Closing
+[Thu Oct  1 01:37:43 2026] [::1]:50680 Accepted
+[Thu Oct  1 01:37:43 2026] [::1]:50680 [200]: GET /frontend/api.js
+[Thu Oct  1 01:37:43 2026] [::1]:50680 Closing
+[Thu Oct  1 01:37:43 2026] [::1]:56416 Accepted
+[Thu Oct  1 01:37:43 2026] [::1]:56416 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:37:43 2026] [::1]:56416 Closing
+[Thu Oct  1 01:37:43 2026] [::1]:64321 Accepted
+[Thu Oct  1 01:37:43 2026] [::1]:64321 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:37:43 2026] [::1]:64321 Closing
+[Thu Oct  1 01:37:43 2026] [::1]:64795 Accepted
+[Thu Oct  1 01:37:43 2026] [::1]:64795 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:37:43 2026] [::1]:64795 Closing
+[Thu Oct  1 01:38:36 2026] [::1]:54760 Accepted
+[Thu Oct  1 01:38:36 2026] [::1]:54760 [200]: POST /backend/save_courses.php
+[Thu Oct  1 01:38:36 2026] [::1]:54760 Closing
+[Thu Oct  1 01:39:00 2026] [::1]:57773 Accepted
+[Thu Oct  1 01:39:00 2026] [::1]:57773 [200]: POST /backend/save_courses.php
+[Thu Oct  1 01:39:00 2026] [::1]:57773 Closing
+[Thu Oct  1 01:42:10 2026] [::1]:61952 Accepted
+[Thu Oct  1 01:42:10 2026] [::1]:61952 [200]: GET /frontend/index.html
+[Thu Oct  1 01:42:10 2026] [::1]:61952 Closing
+[Thu Oct  1 01:42:27 2026] [::1]:60003 Accepted
+[Thu Oct  1 01:42:27 2026] [::1]:60003 [200]: GET /frontend/index.html
+[Thu Oct  1 01:42:27 2026] [::1]:60003 Closing
+[Thu Oct  1 01:42:27 2026] [::1]:60006 Accepted
+[Thu Oct  1 01:42:27 2026] [::1]:60006 [200]: GET /frontend/api.js
+[Thu Oct  1 01:42:27 2026] [::1]:60006 Closing
+[Thu Oct  1 01:42:27 2026] [::1]:60010 Accepted
+[Thu Oct  1 01:42:27 2026] [::1]:60010 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:42:27 2026] [::1]:60010 Closing
+[Thu Oct  1 01:42:28 2026] [::1]:60012 Accepted
+[Thu Oct  1 01:42:29 2026] [::1]:60012 [200]: GET /frontend/login.html
+[Thu Oct  1 01:42:29 2026] [::1]:60012 Closing
+[Thu Oct  1 01:42:29 2026] [::1]:60014 Accepted
+[Thu Oct  1 01:42:29 2026] [::1]:60014 [200]: GET /frontend/api.js
+[Thu Oct  1 01:42:29 2026] [::1]:60014 Closing
+[Thu Oct  1 01:43:05 2026] [::1]:49943 Accepted
+[Thu Oct  1 01:43:05 2026] [::1]:49943 [200]: POST /backend/login.php
+[Thu Oct  1 01:43:05 2026] [::1]:49943 Closing
+[Thu Oct  1 01:43:05 2026] [::1]:49945 Accepted
+[Thu Oct  1 01:43:05 2026] [::1]:49945 [200]: GET /frontend/index.html?welcome=1
+[Thu Oct  1 01:43:05 2026] [::1]:49945 Closing
+[Thu Oct  1 01:43:05 2026] [::1]:49947 Accepted
+[Thu Oct  1 01:43:05 2026] [::1]:49947 [200]: GET /frontend/api.js
+[Thu Oct  1 01:43:05 2026] [::1]:49947 Closing
+[Thu Oct  1 01:43:05 2026] [::1]:49948 Accepted
+[Thu Oct  1 01:43:05 2026] [::1]:49948 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:43:05 2026] [::1]:49948 Closing
+[Thu Oct  1 01:43:07 2026] [::1]:49952 Accepted
+[Thu Oct  1 01:43:07 2026] [::1]:49952 [200]: GET /frontend/courses.html
+[Thu Oct  1 01:43:07 2026] [::1]:49952 Closing
+[Thu Oct  1 01:43:07 2026] [::1]:49953 Accepted
+[Thu Oct  1 01:43:07 2026] [::1]:49953 [200]: GET /frontend/api.js
+[Thu Oct  1 01:43:07 2026] [::1]:49953 Closing
+[Thu Oct  1 01:43:07 2026] [::1]:49954 Accepted
+[Thu Oct  1 01:43:07 2026] [::1]:49954 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:43:07 2026] [::1]:49954 Closing
+[Thu Oct  1 01:43:07 2026] [::1]:49956 Accepted
+[Thu Oct  1 01:43:07 2026] [::1]:49956 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:43:07 2026] [::1]:49956 Closing
+[Thu Oct  1 01:43:13 2026] [::1]:49968 Accepted
+[Thu Oct  1 01:43:13 2026] [::1]:49968 [200]: POST /backend/save_courses.php
+[Thu Oct  1 01:43:13 2026] [::1]:49968 Closing
+[Thu Oct  1 01:43:13 2026] [::1]:49970 Accepted
+[Thu Oct  1 01:43:13 2026] [::1]:49970 [200]: POST /backend/save_courses.php
+[Thu Oct  1 01:43:13 2026] [::1]:49970 Closing
+[Thu Oct  1 01:43:42 2026] [::1]:50020 Accepted
+[Thu Oct  1 01:43:42 2026] [::1]:50020 [200]: GET /frontend/courses.html
+[Thu Oct  1 01:43:42 2026] [::1]:50020 Closing
+[Thu Oct  1 01:43:42 2026] [::1]:50021 Accepted
+[Thu Oct  1 01:43:42 2026] [::1]:50021 [200]: GET /frontend/api.js
+[Thu Oct  1 01:43:42 2026] [::1]:50021 Closing
+[Thu Oct  1 01:43:42 2026] [::1]:50022 Accepted
+[Thu Oct  1 01:43:42 2026] [::1]:50022 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 01:43:42 2026] [::1]:50022 Closing
+[Thu Oct  1 01:43:42 2026] [::1]:50024 Accepted
+[Thu Oct  1 01:43:42 2026] [::1]:50024 [200]: GET /backend/get_courses.php
+[Thu Oct  1 01:43:42 2026] [::1]:50024 Closing
+[Thu Oct  1 01:43:42 2026] [::1]:50027 Accepted
+[Thu Oct  1 01:43:42 2026] [::1]:50028 Accepted
+[Thu Oct  1 01:43:43 2026] [::1]:50029 Accepted
+[Thu Oct  1 01:43:44 2026] [::1]:50030 Accepted
+[Thu Oct  1 01:43:44 2026] [::1]:50032 Accepted
+[Thu Oct  1 01:43:48 2026] [::1]:50028 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:43:48 2026] [::1]:50028 Closing
+[Thu Oct  1 01:43:48 2026] [::1]:50027 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:43:48 2026] [::1]:50027 Closing
+[Thu Oct  1 01:43:49 2026] [::1]:50029 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:43:49 2026] [::1]:50029 Closing
+[Thu Oct  1 01:43:49 2026] [::1]:50030 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:43:49 2026] [::1]:50030 Closing
+[Thu Oct  1 01:43:50 2026] [::1]:50032 Closed without sending a request; it was probably just an unused speculative preconnection
+[Thu Oct  1 01:43:50 2026] [::1]:50032 Closing
+[Thu Oct  1 02:27:12 2026] [::1]:54972 Accepted
+[Thu Oct  1 02:27:12 2026] [::1]:54972 [200]: GET /frontend/index.html
+[Thu Oct  1 02:27:12 2026] [::1]:54972 Closing
+[Thu Oct  1 02:27:13 2026] [::1]:50950 Accepted
+[Thu Oct  1 02:27:13 2026] [::1]:50950 [404]: GET /frontend/backend/get_user_info.php - No such file or directory
+[Thu Oct  1 02:27:13 2026] [::1]:50950 Closing
+[Thu Oct  1 02:27:13 2026] [::1]:55271 Accepted
+[Thu Oct  1 02:27:13 2026] [::1]:55271 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 02:27:13 2026] [::1]:55271 Closing
+[Thu Oct  1 02:27:40 2026] [::1]:61227 Accepted
+[Thu Oct  1 02:27:40 2026] [::1]:61227 [404]: POST /frontend/backend/register.php - No such file or directory
+[Thu Oct  1 02:27:40 2026] [::1]:61227 Closing
+[Thu Oct  1 02:28:08 2026] [::1]:53188 Accepted
+[Thu Oct  1 02:28:08 2026] [::1]:53188 [200]: GET /frontend/index.html
+[Thu Oct  1 02:28:08 2026] [::1]:53188 Closing
+[Thu Oct  1 02:28:08 2026] [::1]:55926 Accepted
+[Thu Oct  1 02:28:08 2026] [::1]:55926 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 02:28:08 2026] [::1]:55926 Closing
+[Thu Oct  1 02:28:08 2026] [::1]:50972 Accepted
+[Thu Oct  1 02:28:08 2026] [::1]:50972 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 02:28:08 2026] [::1]:50972 Closing
+[Thu Oct  1 02:28:39 2026] [::1]:52140 Accepted
+[Thu Oct  1 02:28:39 2026] [::1]:52140 [200]: GET /frontend/index.html
+[Thu Oct  1 02:28:39 2026] [::1]:52140 Closing
+[Thu Oct  1 02:28:39 2026] [::1]:53561 Accepted
+[Thu Oct  1 02:28:39 2026] [::1]:53561 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 02:28:39 2026] [::1]:53561 Closing
+[Thu Oct  1 02:28:39 2026] [::1]:50605 Accepted
+[Thu Oct  1 02:28:39 2026] [::1]:50605 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 02:28:39 2026] [::1]:50605 Closing
+[Thu Oct  1 02:29:06 2026] [::1]:64810 Accepted
+[Thu Oct  1 02:29:08 2026] [::1]:64810 [200]: POST /backend/register.php
+[Thu Oct  1 02:29:08 2026] [::1]:64810 Closing
+[Thu Oct  1 02:29:33 2026] [::1]:50191 Accepted
+[Thu Oct  1 02:29:33 2026] [::1]:50191 [200]: POST /backend/login.php
+[Thu Oct  1 02:29:33 2026] [::1]:50191 Closing
+[Thu Oct  1 02:29:33 2026] [::1]:53907 Accepted
+[Thu Oct  1 02:29:33 2026] [::1]:53907 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 02:29:33 2026] [::1]:53907 Closing
+[Thu Oct  1 02:29:33 2026] [::1]:65451 Accepted
+[Thu Oct  1 02:29:33 2026] [::1]:65451 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 02:29:33 2026] [::1]:65451 Closing
+[Thu Oct  1 02:29:46 2026] [::1]:50500 Accepted
+[Thu Oct  1 02:29:47 2026] [::1]:50500 [200]: GET /backend/get_courses.php
+[Thu Oct  1 02:29:47 2026] [::1]:50500 Closing
+[Thu Oct  1 02:36:36 2026] [::1]:59640 Accepted
+[Thu Oct  1 02:36:36 2026] [::1]:59640 [200]: GET /frontend/index.html
+[Thu Oct  1 02:36:36 2026] [::1]:59640 Closing
+[Thu Oct  1 02:36:51 2026] [::1]:62264 Accepted
+[Thu Oct  1 02:36:51 2026] [::1]:62264 [200]: GET /frontend/index.html
+[Thu Oct  1 02:36:51 2026] [::1]:62264 Closing
+[Thu Oct  1 02:36:51 2026] [::1]:57564 Accepted
+[Thu Oct  1 02:36:51 2026] [::1]:57564 [200]: GET /backend/get_user_info.php
+[Thu Oct  1 02:36:51 2026] [::1]:57564 Closing
+[Thu Oct  1 02:36:51 2026] [::1]:54433 Accepted
+[Thu Oct  1 02:36:51 2026] [::1]:54433 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 02:36:51 2026] [::1]:54433 Closing
+[Thu Oct  1 09:29:46 2026] [::1]:63927 Accepted
+[Thu Oct  1 09:29:46 2026] [::1]:63927 [200]: GET /frontend/index.html
+[Thu Oct  1 09:29:46 2026] [::1]:63927 Closing
+[Thu Oct  1 09:29:56 2026] [::1]:63938 Accepted
+[Thu Oct  1 09:29:57 2026] [::1]:63938 [200]: POST /backend/register.php
+[Thu Oct  1 09:29:57 2026] [::1]:63938 Closing
+[Thu Oct  1 09:29:57 2026] [::1]:63940 Accepted
+[Thu Oct  1 09:29:57 2026] [::1]:63940 [200]: POST /backend/login.php
+[Thu Oct  1 09:29:57 2026] [::1]:63940 Closing
+[Thu Oct  1 09:29:57 2026] [::1]:63942 Accepted
+[Thu Oct  1 09:29:57 2026] [::1]:63942 [200]: POST /backend/save_courses.php
+[Thu Oct  1 09:29:57 2026] [::1]:63942 Closing
+[Thu Oct  1 09:29:57 2026] [::1]:63944 Accepted
+[Thu Oct  1 09:29:57 2026] [::1]:63944 [200]: POST /backend/save_courses.php
+[Thu Oct  1 09:29:57 2026] [::1]:63944 Closing
