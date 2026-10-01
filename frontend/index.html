@@ -1,6 +1,11 @@
-<title>Find a Buddy, SSU</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find a Buddy — SSU</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
   :root {
     --navy-900: #0a3a8c;
@@ -13,8 +18,13 @@
     --paper-100: #e8e0cf;
     --ink-900: #171310;
     --ink-600: #4a463f;
+    --ink-400: #7a7568;
     --line: #ddd4bf;
     --card: #ffffff;
+    --success: #2f8f5b;
+    --success-bg: #e3f3ea;
+    --danger: #c23b3b;
+    --danger-bg: #fbe6e6;
     --r-sm: 8px;
     --r-md: 12px;
     --r-lg: 16px;
@@ -31,26 +41,30 @@
     -webkit-font-smoothing: antialiased;
   }
   svg.icon { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; vertical-align: -0.15em; }
-  .display { font-family: 'Bebas Neue', 'IBM Plex Sans', sans-serif; letter-spacing: 0.02em; text-wrap: balance; }
+  .display { font-family: 'Bebas Neue', 'IBM Plex Sans', sans-serif; letter-spacing: 0.02em; }
+  [hidden] { display: none !important; }
 
-  /* ---- Nav ---- */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ---- Public nav (home) ---- */
   .public-nav {
     display: flex; align-items: center; justify-content: space-between;
     padding: 1rem 1.6rem; border-bottom: 1px solid var(--line);
   }
-  .public-nav .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--navy-900); letter-spacing: 0.03em; }
+  .public-nav .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--navy-900); letter-spacing: 0.03em; background: none; border: none; cursor: pointer; }
   .public-nav .wordmark span { color: var(--orange-500); }
   .public-nav .actions { display: flex; align-items: center; gap: 0.8rem; }
-  .public-nav .link-btn { font-size: 0.88rem; font-weight: 600; color: var(--ink-600); text-decoration: none; }
+  .link-btn { font-size: 0.88rem; font-weight: 600; color: var(--ink-600); text-decoration: none; background: none; border: none; cursor: pointer; padding: 0; }
 
-  /* ---- Buttons ---- */
   .btn {
     font-family: 'IBM Plex Sans', sans-serif; font-size: 0.86rem; font-weight: 600;
     padding: 0.6rem 1rem; border: none; cursor: pointer; white-space: nowrap;
     display: inline-flex; align-items: center; gap: 0.4rem; border-radius: var(--r-sm);
-    text-decoration: none;
+    text-decoration: none; background: var(--orange-500); color: white;
   }
-  .btn.primary { background: var(--orange-500); color: white; }
+  .btn:hover { background: var(--orange-600); }
+  .btn:disabled { opacity: 0.6; cursor: default; }
   .btn.outline-light { background: transparent; color: var(--paper-0); border: 1.5px solid rgba(250,247,240,0.4); }
 
   /* ---- Hero ---- */
@@ -67,7 +81,6 @@
   .hero-stats strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; color: var(--gold-400); }
   .hero-stats span { font-size: 0.75rem; color: var(--paper-100); }
 
-  /* ---- Sections ---- */
   .home-section { padding: 2.6rem 2rem; max-width: 860px; margin: 0 auto; }
   .home-section h2.display { font-size: 1.8rem; text-align: center; margin: 0 0 0.4rem; }
   .home-section p.section-lede { text-align: center; color: var(--ink-600); max-width: 46ch; margin: 0 auto 1.8rem; font-size: 0.92rem; }
@@ -89,136 +102,539 @@
   }
   .home-cta-band h2.display { font-size: 1.6rem; margin: 0 0 0.4rem; }
   .home-cta-band p { color: var(--ink-600); margin: 0 0 1.2rem; font-size: 0.92rem; }
+  .public-footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: var(--ink-400); border-top: 1px solid var(--line); }
 
-  .public-footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: #7a7568; border-top: 1px solid var(--line); }
+  @media (max-width: 720px) { .card-grid, .value-grid { grid-template-columns: 1fr 1fr; } }
 
-  @media (max-width: 720px) {
-    .card-grid, .value-grid { grid-template-columns: 1fr 1fr; }
+  /* ---- Auth views (login/register) ---- */
+  .auth-wrap { min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 2.5rem 1.5rem; }
+  .auth-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 2.2rem 2rem; width: 100%; max-width: 420px; box-shadow: 0 8px 24px -12px rgba(8,22,39,0.18);
   }
+  .auth-card .kicker-text { font-size: 0.8rem; font-weight: 600; color: var(--orange-600); margin-bottom: 0.3rem; }
+  .auth-card h1.display { font-size: 2rem; margin: 0 0 0.4rem; }
+  .auth-card p.sub { color: var(--ink-600); font-size: 0.9rem; margin: 0 0 1.6rem; }
+  .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .field { margin-bottom: 1.1rem; }
+  .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--ink-600); margin-bottom: 0.35rem; }
+  .field input {
+    width: 100%; padding: 0.7rem 0.8rem; border: 1px solid var(--line); border-radius: var(--r-sm);
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 0.94rem; background: var(--paper-0); color: var(--ink-900);
+  }
+  .field input:focus { outline: none; border-color: var(--orange-500); }
+  .field .hint { font-size: 0.78rem; color: var(--ink-600); margin-top: 0.3rem; }
+  .auth-card .btn { width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.92rem; margin-top: 0.4rem; }
+  .form-error { background: var(--danger-bg); color: var(--danger); font-size: 0.85rem; padding: 0.7rem 0.9rem; border-radius: var(--r-sm); margin-bottom: 1rem; }
+  .form-success { background: var(--success-bg); color: var(--success); font-size: 0.85rem; padding: 0.7rem 0.9rem; border-radius: var(--r-sm); margin-bottom: 1rem; }
+  .auth-card .fine { text-align: center; font-size: 0.85rem; color: var(--ink-600); margin-top: 1.3rem; }
+  .auth-card .fine button.link-btn { color: var(--orange-600); font-weight: 600; display: inline; }
+
+  /* ---- App nav (courses) ---- */
+  .app-nav { display: flex; align-items: center; gap: 0.15rem; background: var(--navy-900); padding: 0.85rem 1.25rem; flex-wrap: wrap; }
+  .app-nav .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; color: var(--paper-0); letter-spacing: 0.03em; margin-right: auto; background: none; border: none; cursor: pointer; }
+  .app-nav .wordmark span { color: var(--orange-500); }
+  .app-nav a, .app-nav button.nav-link {
+    font-size: 0.86rem; font-weight: 600; color: var(--paper-100); text-decoration: none;
+    padding: 0.55rem 0.9rem; border: none; background: none; cursor: pointer; border-radius: var(--r-sm);
+  }
+  .app-nav .current { color: var(--navy-900); background: var(--orange-500); }
+  .app-nav .logout { color: var(--paper-100); border: 1px solid rgba(250,247,240,0.3); }
+
+  main.app-main { max-width: 760px; margin: 0 auto; padding: 1.75rem 1.5rem 3rem; }
+  main.app-main h1.display { font-size: 2rem; margin: 0 0 0.2rem; display: flex; align-items: center; gap: 0.5rem; }
+  main.app-main p.subhead { color: var(--ink-600); margin: 0 0 1.8rem; font-size: 0.92rem; }
+
+  section.block { margin-bottom: 2rem; }
+  section.block h2 { font-size: 1rem; margin: 0 0 0.8rem; }
+
+  .search-box { position: relative; margin-bottom: 0.5rem; }
+  .search-box svg { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--ink-400); }
+  .search-box input { width: 100%; padding: 0.75rem 0.9rem 0.75rem 2.4rem; border: 1px solid var(--line); background: var(--card); color: var(--ink-900); font-size: 0.94rem; border-radius: var(--r-sm); }
+  .search-box input:focus { outline: none; border-color: var(--orange-500); }
+
+  .suggestions { list-style: none; margin: 0 0 1rem; padding: 0; border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; background: var(--card); }
+  .suggestions li { padding: 0.7rem 0.9rem; cursor: pointer; font-size: 0.9rem; border-bottom: 1px solid var(--line); }
+  .suggestions li:last-child { border-bottom: none; }
+  .suggestions li:hover { background: var(--paper-100); }
+
+  .new-course-form { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+  .new-course-form input { flex: 1; padding: 0.65rem 0.8rem; border: 1px solid var(--line); border-radius: var(--r-sm); font-size: 0.9rem; }
+  .new-course-form .btn { padding: 0.65rem 1rem; }
+
+  .course-row { display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 1rem; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm); margin-bottom: 0.55rem; }
+  .course-code { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 0.85rem; }
+  .course-name { color: var(--ink-600); font-size: 0.82rem; }
+  .btn-icon { background: transparent; border: 1px solid var(--danger); color: var(--danger); border-radius: var(--r-sm); width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .btn-icon:hover { background: var(--danger-bg); }
+  .empty-note { color: var(--ink-600); font-size: 0.88rem; padding: 0.8rem 0; }
+
+  .loc-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .loc-pill { font-size: 0.88rem; font-weight: 500; padding: 0.5rem 1rem; border: 1px solid var(--line); border-radius: 999px; background: var(--card); cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .loc-pill input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .loc-pill.on { background: var(--navy-900); border-color: var(--navy-900); color: var(--paper-0); }
+
+  table.avail-grid { border-collapse: separate; border-spacing: 3px; width: 100%; }
+  .avail-grid th, .avail-grid td { border: 1px solid var(--line); text-align: center; padding: 0.55rem; font-size: 0.82rem; border-radius: 6px; }
+  .avail-grid th { background: var(--paper-100); font-weight: 600; border: none; }
+  .avail-grid td { cursor: pointer; background: var(--card); }
+  .avail-grid td.on { background: var(--orange-500); color: white; border-color: var(--orange-500); }
+
+  .save-status { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.8rem; color: var(--success); font-size: 0.9rem; font-weight: 600; }
 </style>
+</head>
+<body>
 
-<nav class="public-nav">
-  <div class="wordmark">FIND A <span>BUDDY</span></div>
-  <div class="actions" id="nav-actions">
-    <a class="link-btn" href="login.html">Log in</a>
-    <a class="btn primary" href="register.html">Get started</a>
-  </div>
-</nav>
+<!-- ===================== HOME VIEW ===================== -->
+<section id="view-home" class="view active">
+  <nav class="public-nav">
+    <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+    <div class="actions" id="home-nav-actions">
+      <button class="link-btn" data-nav="login">Log in</button>
+      <button class="btn" data-nav="register">Get started</button>
+    </div>
+  </nav>
 
-<div class="hero">
-  <div class="hero-inner">
-    <span class="kicker" id="hero-kicker">🐯 Built for Savannah State students</span>
-    <h1 class="display" id="hero-heading">Never study alone<span>Find your pack.</span></h1>
-    <p class="lede" id="hero-lede">Match with classmates in your exact courses, agree on a time and place, and get study tips from Rowdy whenever you're stuck.</p>
-    <div class="hero-ctas" id="hero-ctas">
-      <a class="btn primary" href="register.html">Get started free</a>
-      <a class="btn outline-light" href="login.html">I already have an account</a>
-    </div>
-    <div class="hero-stats">
-      <div><strong>@savannahstate.edu</strong><span>only, verified at signup</span></div>
-      <div><strong>100%</strong><span>private until a request is accepted</span></div>
-      <div><strong>Free</strong><span>for every Tiger</span></div>
-    </div>
-  </div>
-</div>
-
-<div class="home-section">
-  <h2 class="display">How it works</h2>
-  <p class="section-lede">From account to study session in four quick steps.</p>
-  <div class="card-grid">
-    <div class="info-card">
-      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg></div>
-      <h3>Add your courses</h3>
-      <p>Course codes, sections, and when you like to study.</p>
-    </div>
-    <div class="info-card">
-      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="9" r="2.3"/><path d="M16 14c2.8.3 5 2.4 5 5"/></svg></div>
-      <h3>Get matched</h3>
-      <p>See classmates who share a course and free time.</p>
-    </div>
-    <div class="info-card">
-      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M20 4L4 12l6.5 2.5L13 21l7-17z"/></svg></div>
-      <h3>Send a request</h3>
-      <p>They accept, and contact info unlocks for both of you.</p>
-    </div>
-    <div class="info-card">
-      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M21 4v5h-5"/><circle cx="9" cy="12" r="1"/></svg></div>
-      <h3>Study together</h3>
-      <p>Meet up, and lean on Rowdy for tips in between.</p>
+  <div class="hero">
+    <div class="hero-inner">
+      <span class="kicker" id="hero-kicker">🐯 Built for Savannah State students</span>
+      <h1 class="display" id="hero-heading">Never study alone<span>Find your pack.</span></h1>
+      <p class="lede" id="hero-lede">Match with classmates in your exact courses, agree on a time and place, and get study tips from Rowdy whenever you're stuck.</p>
+      <div class="hero-ctas" id="hero-ctas">
+        <button class="btn" data-nav="register">Get started free</button>
+        <button class="btn outline-light" data-nav="login">I already have an account</button>
+      </div>
+      <div class="hero-stats">
+        <div><strong>@savannahstate.edu</strong><span>only, verified at signup</span></div>
+        <div><strong>100%</strong><span>private until a request is accepted</span></div>
+        <div><strong>Free</strong><span>for every Tiger</span></div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="home-section" style="padding-top:0;">
-  <h2 class="display">Why students use it</h2>
-  <p class="section-lede">Not a social network. Just a faster way to find who's in your class.</p>
-  <div class="value-grid">
-    <div class="info-card">
-      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
-      <h3>Private by default</h3>
-      <p>No email or contact info shows until a request is mutually accepted.</p>
-    </div>
-    <div class="info-card">
-      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg></div>
-      <h3>Built for SSU courses</h3>
-      <p>Matches are based on your real course codes and sections, not general interests.</p>
-    </div>
-    <div class="info-card">
-      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M21 4v5h-5"/><circle cx="9" cy="12" r="1"/></svg></div>
-      <h3>A mascot in your corner</h3>
-      <p>Rowdy gives quick study tips and motivation, day or night.</p>
+  <div class="home-section">
+    <h2 class="display">How it works</h2>
+    <p class="section-lede">From account to study session in four quick steps.</p>
+    <div class="card-grid">
+      <div class="info-card">
+        <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg></div>
+        <h3>Add your courses</h3>
+        <p>Course codes, sections, and when you like to study.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="9" r="2.3"/><path d="M16 14c2.8.3 5 2.4 5 5"/></svg></div>
+        <h3>Get matched</h3>
+        <p>See classmates who share a course and free time.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M20 4L4 12l6.5 2.5L13 21l7-17z"/></svg></div>
+        <h3>Send a request</h3>
+        <p>They accept, and contact info unlocks for both of you.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M21 4v5h-5"/><circle cx="9" cy="12" r="1"/></svg></div>
+        <h3>Study together</h3>
+        <p>Meet up, and lean on Rowdy for tips in between.</p>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="home-cta-band">
-  <h2 class="display">Ready to find your study pack?</h2>
-  <p>Sign up with your SSU email — it takes about two minutes.</p>
-  <a class="btn primary" href="register.html">Create your account</a>
-</div>
+  <div class="home-section" style="padding-top:0;">
+    <h2 class="display">Why students use it</h2>
+    <p class="section-lede">Not a social network. Just a faster way to find who's in your class.</p>
+    <div class="value-grid">
+      <div class="info-card">
+        <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+        <h3>Private by default</h3>
+        <p>No email or contact info shows until a request is mutually accepted.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg></div>
+        <h3>Built for SSU courses</h3>
+        <p>Matches are based on your real course codes and sections, not general interests.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M21 4v5h-5"/><circle cx="9" cy="12" r="1"/></svg></div>
+        <h3>A mascot in your corner</h3>
+        <p>Rowdy gives quick study tips and motivation, day or night.</p>
+      </div>
+    </div>
+  </div>
 
-<footer class="public-footer">Find a Buddy &middot; a student project for Savannah State University</footer>
+  <div class="home-cta-band">
+    <h2 class="display">Ready to find your study pack?</h2>
+    <p>Sign up with your SSU email — it takes about two minutes.</p>
+    <button class="btn" data-nav="register">Create your account</button>
+  </div>
 
-<script src="api.js"></script>
+  <footer class="public-footer">Find a Buddy &middot; a student project for Savannah State University</footer>
+</section>
+
+<!-- ===================== LOGIN VIEW ===================== -->
+<section id="view-login" class="view">
+  <nav class="public-nav">
+    <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+    <button class="link-btn" data-nav="register">Need an account?</button>
+  </nav>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="kicker-text">Savannah State University</div>
+      <h1 class="display">Log in</h1>
+      <p class="sub">Enter your SSU email and password to continue.</p>
+      <p id="login-success" class="form-success" hidden>Account created! Log in below.</p>
+      <p id="login-error" class="form-error" hidden></p>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">SSU Email</label>
+          <input id="login-email" name="email" type="email" placeholder="you@savannahstate.edu" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" placeholder="Enter your password" required>
+        </div>
+        <button class="btn" type="submit" id="login-submit">Log in</button>
+      </form>
+      <p class="fine">Don't have an account? <button class="link-btn" data-nav="register">Register</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REGISTER VIEW ===================== -->
+<section id="view-register" class="view">
+  <nav class="public-nav">
+    <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+    <button class="link-btn" data-nav="login">Already have an account?</button>
+  </nav>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="kicker-text">Savannah State University</div>
+      <h1 class="display">Create your account</h1>
+      <p class="sub">Registration is open to @savannahstate.edu students only.</p>
+      <p id="register-error" class="form-error" hidden></p>
+      <form id="register-form" novalidate>
+        <div class="name-row">
+          <div class="field">
+            <label for="reg-first">First name</label>
+            <input id="reg-first" name="first_name" type="text" placeholder="Jordan" required>
+          </div>
+          <div class="field">
+            <label for="reg-last">Last name</label>
+            <input id="reg-last" name="last_name" type="text" placeholder="Carter" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="reg-email">SSU Email</label>
+          <input id="reg-email" name="email" type="email" placeholder="you@savannahstate.edu" required>
+          <div class="hint">Must end in @savannahstate.edu</div>
+        </div>
+        <div class="field">
+          <label for="reg-password">Password</label>
+          <input id="reg-password" name="password" type="password" placeholder="At least 8 characters" minlength="8" required>
+        </div>
+        <button class="btn" type="submit" id="register-submit">Register</button>
+      </form>
+      <p class="fine">Already have an account? <button class="link-btn" data-nav="login">Log in</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COURSES VIEW ===================== -->
+<section id="view-courses" class="view">
+  <nav class="app-nav">
+    <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+    <button class="nav-link current">My Courses</button>
+    <button class="nav-link logout" id="logout-btn">Log out</button>
+  </nav>
+  <main class="app-main">
+    <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg> My Courses</h1>
+    <p class="subhead">Add your current courses, then set where and when you like to study.</p>
+
+    <section class="block">
+      <h2>Add a course</h2>
+      <div class="search-box">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="course-search" placeholder="Search course code or name (e.g. CSCI 3350)" autocomplete="off">
+      </div>
+      <ul id="course-suggestions" class="suggestions" hidden></ul>
+      <form id="new-course-form" class="new-course-form" hidden>
+        <input type="text" id="new-course-name" placeholder="Course name (optional)">
+        <button type="submit" class="btn">Add</button>
+      </form>
+    </section>
+
+    <section class="block">
+      <h2>Current courses</h2>
+      <ul id="course-list" style="list-style:none; margin:0; padding:0;"></ul>
+    </section>
+
+    <section class="block">
+      <h2>Preferred study locations</h2>
+      <div class="loc-pills">
+        <label class="loc-pill"><input type="checkbox" name="location" value="Library"><span>Library</span></label>
+        <label class="loc-pill"><input type="checkbox" name="location" value="Student Union"><span>Student Union</span></label>
+        <label class="loc-pill"><input type="checkbox" name="location" value="Dorm Lounge"><span>Dorm Lounge</span></label>
+        <label class="loc-pill"><input type="checkbox" name="location" value="Online"><span>Online</span></label>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Availability — tap a cell</h2>
+      <table class="avail-grid" id="availability-grid">
+        <thead><tr><th></th><th>Morning</th><th>Afternoon</th><th>Evening</th></tr></thead>
+        <tbody>
+          <tr><th>Mon</th><td data-slot="Mon-Morning"></td><td data-slot="Mon-Afternoon"></td><td data-slot="Mon-Evening"></td></tr>
+          <tr><th>Tue</th><td data-slot="Tue-Morning"></td><td data-slot="Tue-Afternoon"></td><td data-slot="Tue-Evening"></td></tr>
+          <tr><th>Wed</th><td data-slot="Wed-Morning"></td><td data-slot="Wed-Afternoon"></td><td data-slot="Wed-Evening"></td></tr>
+          <tr><th>Thu</th><td data-slot="Thu-Morning"></td><td data-slot="Thu-Afternoon"></td><td data-slot="Thu-Evening"></td></tr>
+          <tr><th>Fri</th><td data-slot="Fri-Morning"></td><td data-slot="Fri-Afternoon"></td><td data-slot="Fri-Evening"></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <button class="btn" id="save-preferences-btn" style="width:auto;">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+      Save preferences
+    </button>
+    <span id="save-status" class="save-status" hidden>
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>
+      Saved!
+    </span>
+  </main>
+</section>
+
 <script>
-  api.getUserInfo().then(({ user }) => {
-    const navActions = document.getElementById('nav-actions');
-    navActions.innerHTML = '';
+  // ===================== Shared API helper (inlined, formerly api.js) =====================
+  const API_BASE = '../backend';
 
-    const greeting = document.createElement('span');
-    greeting.className = 'link-btn';
-    greeting.textContent = `Hi, ${user.first_name}`;
-
-    const coursesLink = document.createElement('a');
-    coursesLink.className = 'link-btn';
-    coursesLink.href = 'courses.html';
-    coursesLink.textContent = 'My Courses';
-
-    const logoutBtn = document.createElement('button');
-    logoutBtn.className = 'btn primary';
-    logoutBtn.type = 'button';
-    logoutBtn.textContent = 'Log out';
-    logoutBtn.addEventListener('click', async () => {
-      await api.logout();
-      window.location.reload();
+  async function apiRequest(path, options = {}) {
+    const response = await fetch(`${API_BASE}/${path}`, {
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      ...options,
     });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || 'Request failed');
+      error.data = data;
+      throw error;
+    }
+    return data;
+  }
 
-    navActions.append(greeting, coursesLink, logoutBtn);
+  const api = {
+    register: (payload) => apiRequest('register.php', { method: 'POST', body: JSON.stringify(payload) }),
+    login: (payload) => apiRequest('login.php', { method: 'POST', body: JSON.stringify(payload) }),
+    logout: () => apiRequest('logout.php', { method: 'POST' }),
+    getUserInfo: () => apiRequest('get_user_info.php'),
+    getCourses: (q) => apiRequest(`get_courses.php${q ? `?q=${encodeURIComponent(q)}` : ''}`),
+    saveCourses: (payload) => apiRequest('save_courses.php', { method: 'POST', body: JSON.stringify(payload) }),
+  };
 
-    if (new URLSearchParams(window.location.search).get('welcome') === '1') {
-      document.getElementById('hero-kicker').textContent = '🐯 You\'re logged in';
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+  }
+
+  // ===================== View navigation =====================
+  const views = document.querySelectorAll('.view');
+  function showView(name) {
+    views.forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    if (name === 'courses') loadCourses();
+  }
+  document.querySelectorAll('[data-nav]').forEach(el => {
+    el.addEventListener('click', () => showView(el.dataset.nav));
+  });
+
+  // ===================== Home: reflect logged-in state =====================
+  function refreshHomeForSession() {
+    api.getUserInfo().then(({ user }) => {
+      const navActions = document.getElementById('home-nav-actions');
+      navActions.innerHTML = '';
+
+      const greeting = document.createElement('span');
+      greeting.className = 'link-btn';
+      greeting.textContent = `Hi, ${user.first_name}`;
+
+      const coursesLink = document.createElement('button');
+      coursesLink.className = 'link-btn';
+      coursesLink.textContent = 'My Courses';
+      coursesLink.addEventListener('click', () => showView('courses'));
+
+      const logoutBtn = document.createElement('button');
+      logoutBtn.className = 'btn';
+      logoutBtn.type = 'button';
+      logoutBtn.textContent = 'Log out';
+      logoutBtn.addEventListener('click', async () => {
+        await api.logout();
+        window.location.reload();
+      });
+
+      navActions.append(greeting, coursesLink, logoutBtn);
+    }).catch(() => {
+      // Not logged in -- leave the public homepage nav as-is.
+    });
+  }
+  refreshHomeForSession();
+
+  // ===================== Login =====================
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+  const loginSubmit = document.getElementById('login-submit');
+
+  loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    loginError.hidden = true;
+    loginSubmit.disabled = true;
+    loginSubmit.textContent = 'Logging in…';
+
+    const data = Object.fromEntries(new FormData(loginForm).entries());
+    try {
+      await api.login(data);
+      loginSubmit.disabled = false;
+      loginSubmit.textContent = 'Log in';
+      loginForm.reset();
+      refreshHomeForSession();
+
+      document.getElementById('hero-kicker').textContent = "🐯 You're logged in";
       document.getElementById('hero-heading').innerHTML = '';
+      const user = await api.getUserInfo().then(r => r.user);
       document.getElementById('hero-heading').textContent = `Welcome back, ${user.first_name}!`;
       document.getElementById('hero-lede').textContent = 'Add your courses next so we can start matching you with classmates.';
-      document.getElementById('hero-ctas').style.display = 'none';
+      document.getElementById('hero-ctas').innerHTML = '';
+      const addCoursesBtn = document.createElement('button');
+      addCoursesBtn.className = 'btn';
+      addCoursesBtn.textContent = 'Add my courses';
+      addCoursesBtn.addEventListener('click', () => showView('courses'));
+      document.getElementById('hero-ctas').append(addCoursesBtn);
 
-      const coursesCta = document.createElement('a');
-      coursesCta.className = 'btn primary';
-      coursesCta.href = 'courses.html';
-      coursesCta.textContent = 'Add my courses';
-      document.getElementById('hero-ctas').insertAdjacentElement('afterend', coursesCta);
+      showView('home');
+    } catch (err) {
+      loginError.textContent = err.message;
+      loginError.hidden = false;
+      loginSubmit.disabled = false;
+      loginSubmit.textContent = 'Log in';
     }
-  }).catch(() => {
-    // Not logged in -- leave the public homepage as-is.
+  });
+
+  // ===================== Register =====================
+  const registerForm = document.getElementById('register-form');
+  const registerError = document.getElementById('register-error');
+  const registerSubmit = document.getElementById('register-submit');
+
+  registerForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    registerError.hidden = true;
+    registerSubmit.disabled = true;
+    registerSubmit.textContent = 'Creating account…';
+
+    const data = Object.fromEntries(new FormData(registerForm).entries());
+    try {
+      await api.register(data);
+      registerSubmit.disabled = false;
+      registerSubmit.textContent = 'Register';
+      registerForm.reset();
+      document.getElementById('login-success').hidden = false;
+      showView('login');
+    } catch (err) {
+      const messages = err.data && err.data.errors ? Object.values(err.data.errors) : [err.message];
+      registerError.textContent = messages.join(' ');
+      registerError.hidden = false;
+      registerSubmit.disabled = false;
+      registerSubmit.textContent = 'Register';
+    }
+  });
+
+  // ===================== Courses =====================
+  const searchInput = document.getElementById('course-search');
+  const suggestionsEl = document.getElementById('course-suggestions');
+  const courseListEl = document.getElementById('course-list');
+  const newCourseForm = document.getElementById('new-course-form');
+  const newCourseNameInput = document.getElementById('new-course-name');
+  let pendingNewCourseCode = '';
+
+  async function loadCourses() {
+    const { courses } = await api.getCourses();
+    courseListEl.innerHTML = courses.map(c => `
+      <li class="course-row">
+        <div><span class="course-code">${escapeHtml(c.course_code)}</span>${c.section ? ' — ' + escapeHtml(c.section) : ''} <span class="course-name">${escapeHtml(c.course_name) || ''}</span></div>
+        <button class="btn-icon" data-remove="${escapeHtml(String(c.id))}" title="Remove">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        </button>
+      </li>
+    `).join('') || '<li class="empty-note">No courses yet — search above to add your first one.</li>';
+
+    courseListEl.querySelectorAll('[data-remove]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await api.saveCourses({ remove_course_id: Number(btn.dataset.remove) });
+        loadCourses();
+      });
+    });
+  }
+
+  searchInput.addEventListener('input', async () => {
+    const q = searchInput.value.trim();
+    if (q.length < 2) {
+      suggestionsEl.hidden = true;
+      return;
+    }
+    const { courses } = await api.getCourses(q);
+    suggestionsEl.innerHTML = courses.map(c =>
+      `<li data-code="${escapeHtml(c.course_code)}" data-section="${escapeHtml(c.section || '')}" data-name="${escapeHtml(c.course_name || '')}">${escapeHtml(c.course_code)}${c.section ? ' — ' + escapeHtml(c.section) : ''} ${escapeHtml(c.course_name) || ''}</li>`
+    ).join('') + `<li data-new="${escapeHtml(q)}">+ Add "${escapeHtml(q)}" as a new course</li>`;
+    suggestionsEl.hidden = false;
+  });
+
+  suggestionsEl.addEventListener('click', async (event) => {
+    const li = event.target.closest('li');
+    if (!li) return;
+
+    if (li.dataset.new !== undefined) {
+      pendingNewCourseCode = li.dataset.new;
+      suggestionsEl.hidden = true;
+      newCourseForm.hidden = false;
+      newCourseNameInput.value = '';
+      newCourseNameInput.focus();
+      return;
+    }
+
+    suggestionsEl.hidden = true;
+    searchInput.value = '';
+    await api.saveCourses({ courses: [{ course_code: li.dataset.code, section: li.dataset.section, course_name: li.dataset.name }] });
+    loadCourses();
+  });
+
+  newCourseForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    await api.saveCourses({ courses: [{ course_code: pendingNewCourseCode, course_name: newCourseNameInput.value.trim() }] });
+    newCourseForm.hidden = true;
+    searchInput.value = '';
+    loadCourses();
+  });
+
+  document.querySelectorAll('.loc-pill').forEach(pill => {
+    const checkbox = pill.querySelector('input');
+    checkbox.addEventListener('change', () => pill.classList.toggle('on', checkbox.checked));
+  });
+
+  document.querySelectorAll('#availability-grid td').forEach(cell => {
+    cell.addEventListener('click', () => cell.classList.toggle('on'));
+  });
+
+  document.getElementById('save-preferences-btn').addEventListener('click', async () => {
+    const locations = Array.from(document.querySelectorAll('input[name="location"]:checked')).map(el => el.value).join(', ');
+    const availability = Array.from(document.querySelectorAll('#availability-grid td.on')).map(el => el.dataset.slot);
+    await api.saveCourses({ preferred_locations: locations, availability });
+    const status = document.getElementById('save-status');
+    status.hidden = false;
+    setTimeout(() => { status.hidden = true; }, 2500);
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await api.logout();
+    window.location.reload();
   });
 </script>
+</body>
+</html>

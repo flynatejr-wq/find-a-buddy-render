@@ -1,0 +1,40 @@
+[Thu Oct  1 01:10:11 2026] PHP 8.3.33 Development Server (http://localhost:8000) started
+[Thu Oct  1 01:10:12 2026] [::1]:57445 Accepted
+[Thu Oct  1 01:10:12 2026] [::1]:57445 [200]: GET /frontend/index.html
+[Thu Oct  1 01:10:12 2026] [::1]:57445 Closing
+[Thu Oct  1 01:13:37 2026] [::1]:57749 Accepted
+[Thu Oct  1 01:13:37 2026] [::1]:57749 [200]: GET /frontend/index.html
+[Thu Oct  1 01:13:37 2026] [::1]:57749 Closing
+[Thu Oct  1 01:13:39 2026] [::1]:57762 Accepted
+[Thu Oct  1 01:13:39 2026] [::1]:57762 [404]: GET /favicon.ico - No such file or directory
+[Thu Oct  1 01:13:39 2026] [::1]:57762 Closing
+[Thu Oct  1 01:13:40 2026] [::1]:57764 Accepted
+[Thu Oct  1 01:13:41 2026] [::1]:57764 [200]: GET /frontend/register.html
+[Thu Oct  1 01:13:41 2026] [::1]:57764 Closing
+[Thu Oct  1 01:13:41 2026] [::1]:57497 Accepted
+[Thu Oct  1 01:13:41 2026] [::1]:57497 [200]: GET /frontend/api.js
+[Thu Oct  1 01:13:41 2026] [::1]:57497 Closing
+[Thu Oct  1 01:14:13 2026] [::1]:57542 Accepted
+[Thu Oct  1 01:14:13 2026] [::1]:57542 [422]: POST /backend/register.php
+[Thu Oct  1 01:14:13 2026] [::1]:57542 Closing
+[Thu Oct  1 01:14:41 2026] [::1]:57597 Accepted
+[Thu Oct  1 01:14:41 2026] [::1]:57597 [422]: POST /backend/register.php
+[Thu Oct  1 01:14:41 2026] [::1]:57597 Closing
+[Thu Oct  1 01:14:53 2026] [::1]:57613 Accepted
+[Thu Oct  1 01:14:53 2026] [::1]:57613 [200]: POST /backend/register.php
+[Thu Oct  1 01:14:53 2026] [::1]:57613 Closing
+[Thu Oct  1 01:14:53 2026] [::1]:57615 Accepted
+[Thu Oct  1 01:14:53 2026] [::1]:57615 [200]: GET /frontend/login.html?registered=1
+[Thu Oct  1 01:14:53 2026] [::1]:57615 Closing
+[Thu Oct  1 01:14:53 2026] [::1]:57616 Accepted
+[Thu Oct  1 01:14:53 2026] [::1]:57616 [200]: GET /frontend/api.js
+[Thu Oct  1 01:14:53 2026] [::1]:57616 Closing
+[Thu Oct  1 01:15:20 2026] [::1]:57650 Accepted
+[Thu Oct  1 01:15:20 2026] [::1]:57650 [401]: POST /backend/login.php
+[Thu Oct  1 01:15:20 2026] [::1]:57650 Closing
+[Thu Oct  1 01:15:31 2026] [::1]:50888 Accepted
+[Thu Oct  1 01:15:31 2026] [::1]:50888 [200]: POST /backend/login.php
+[Thu Oct  1 01:15:31 2026] [::1]:50888 Closing
+[Thu Oct  1 01:16:44 2026] [::1]:58999 Accepted
+[Thu Oct  1 01:16:44 2026] [::1]:58999 [200]: GET /frontend/index.html
+[Thu Oct  1 01:16:44 2026] [::1]:58999 Closing
