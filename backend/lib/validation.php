@@ -1,5 +1,10 @@
 <?php
 
+function normalize_email(string $email): string
+{
+    return mb_strtolower(trim($email));
+}
+
 function is_valid_ssu_email(string $email): bool
 {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

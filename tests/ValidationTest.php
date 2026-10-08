@@ -21,6 +21,11 @@ class ValidationTest extends TestCase
         $this->assertFalse(is_valid_ssu_email('jdoe@savannahstate.edu'));
     }
 
+    public function test_normalize_email_lowercases_and_trims(): void
+    {
+        $this->assertSame('jdoe@student.savannahstate.edu', normalize_email('  JDoe@Student.SavannahState.EDU '));
+    }
+
     public function test_rejects_malformed_email(): void
     {
         $this->assertFalse(is_valid_ssu_email('not-an-email'));

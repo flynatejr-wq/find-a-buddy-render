@@ -14,7 +14,7 @@ if (!empty($errors)) {
 }
 
 $pdo = get_db();
-$email = trim($input['email']);
+$email = normalize_email($input['email']);
 
 $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
 $stmt->execute([$email]);
