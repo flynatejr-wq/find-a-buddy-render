@@ -15,4 +15,39 @@ class MatchingTest extends TestCase
     {
         $this->assertSame([], shared_course_ids([1, 2], [3, 4]));
     }
+
+    public function test_score_is_zero_with_no_shared_courses(): void
+    {
+        $this->assertSame(0, match_score(0, 5, true, true));
+    }
+
+    public function test_one_shared_course_alone_scores_forty(): void
+    {
+        $this->assertSame(40, match_score(1, 0, false, false));
+    }
+
+    public function test_extra_shared_courses_add_ten_each_up_to_sixty(): void
+    {
+        $this->assertSame(50, match_score(2, 0, false, false));
+        $this->assertSame(60, match_score(3, 0, false, false));
+        $this->assertSame(60, match_score(9, 0, false, false));
+    }
+
+    public function test_availability_adds_five_per_slot_capped_at_twenty_five(): void
+    {
+        $this->assertSame(55, match_score(2, 1, false, false));
+        $this->assertSame(65, match_score(1, 5, false, false));
+        $this->assertSame(65, match_score(1, 12, false, false));
+    }
+
+    public function test_same_style_and_place_add_ten_and_five(): void
+    {
+        $this->assertSame(50, match_score(1, 0, true, false));
+        $this->assertSame(45, match_score(1, 0, false, true));
+    }
+
+    public function test_perfect_match_is_one_hundred(): void
+    {
+        $this->assertSame(100, match_score(3, 5, true, true));
+    }
 }

@@ -194,6 +194,20 @@
   .profile-form .loc-pills { margin-bottom: 0; }
   @media (max-width: 560px) { .profile-form .row { grid-template-columns: 1fr; } }
 
+  /* ---- Matches ---- */
+  .match-card { display: flex; gap: 1rem; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1rem 1.1rem; margin-bottom: 0.8rem; }
+  .match-avatar { width: 46px; height: 46px; border-radius: 999px; background: linear-gradient(155deg, var(--navy-800), var(--navy-900)); color: var(--orange-500); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; flex-shrink: 0; }
+  .match-info { flex: 1; min-width: 0; }
+  .match-top { display: flex; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; }
+  .match-score { font-size: 0.82rem; font-weight: 700; color: var(--orange-600); }
+  .match-meta { font-size: 0.86rem; color: var(--ink-600); margin-bottom: 0.4rem; }
+  .match-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .match-tag { font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--paper-100); color: var(--ink-600); }
+  .match-tag.course { background: #ffe9d6; color: var(--orange-600); }
+  .match-card .btn { width: auto; white-space: nowrap; }
+  .match-card .btn[disabled] { opacity: 0.6; cursor: default; }
+  @media (max-width: 560px) { .match-card { flex-wrap: wrap; } .match-card .btn { width: 100%; } }
+
   .save-status { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.8rem; color: var(--success); font-size: 0.9rem; font-weight: 600; }
 </style>
 </head>
@@ -358,6 +372,7 @@
     <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
     <button class="nav-link" data-nav="profile">My Profile</button>
     <button class="nav-link current">My Courses</button>
+    <button class="nav-link" data-nav="matches">Find Buddies</button>
     <button class="nav-link logout" id="logout-btn">Log out</button>
   </nav>
   <main class="app-main">
@@ -423,6 +438,7 @@
     <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
     <button class="nav-link current">My Profile</button>
     <button class="nav-link" data-nav="courses">My Courses</button>
+    <button class="nav-link" data-nav="matches">Find Buddies</button>
     <button class="nav-link logout" id="profile-logout-btn">Log out</button>
   </nav>
   <main class="app-main">
@@ -477,6 +493,23 @@
   </main>
 </section>
 
+<!-- ===================== MATCHES VIEW ===================== -->
+<section id="view-matches" class="view">
+  <nav class="app-nav">
+    <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+    <button class="nav-link" data-nav="profile">My Profile</button>
+    <button class="nav-link" data-nav="courses">My Courses</button>
+    <button class="nav-link current">Find Buddies</button>
+    <button class="nav-link logout" id="matches-logout-btn">Log out</button>
+  </nav>
+  <main class="app-main">
+    <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="9" r="2.3"/><path d="M16 14c2.8.3 5 2.4 5 5"/></svg> Find Buddies</h1>
+    <p class="subhead">Classmates who share a course with you. Only first names are shown.</p>
+    <p id="matches-error" class="form-error" hidden></p>
+    <div id="matches-list"></div>
+  </main>
+</section>
+
 <script>
   // ===================== Shared API helper (inlined, formerly api.js) =====================
   const API_BASE = '../backend';
@@ -504,6 +537,8 @@
     getCourses: (q) => apiRequest(`get_courses.php${q ? `?q=${encodeURIComponent(q)}` : ''}`),
     saveCourses: (payload) => apiRequest('save_courses.php', { method: 'POST', body: JSON.stringify(payload) }),
     getProfile: () => apiRequest('get_profile.php'),
+    getMatches: () => apiRequest('get_matches.php'),
+    sendRequest: (receiverId) => apiRequest('send_request.php', { method: 'POST', body: JSON.stringify({ receiver_id: receiverId }) }),
     saveProfile: (payload) => apiRequest('save_profile.php', { method: 'POST', body: JSON.stringify(payload) }),
   };
 
@@ -520,6 +555,7 @@
     document.getElementById('view-' + name).classList.add('active');
     if (name === 'courses') loadCourses();
     if (name === 'profile') loadProfile();
+    if (name === 'matches') loadMatches();
   }
   document.querySelectorAll('[data-nav]').forEach(el => {
     el.addEventListener('click', () => showView(el.dataset.nav));
@@ -554,7 +590,12 @@
       profileLink.textContent = 'My Profile';
       profileLink.addEventListener('click', () => showView('profile'));
 
-      navActions.append(greeting, profileLink, coursesLink, logoutBtn);
+      const matchesLink = document.createElement('button');
+      matchesLink.className = 'link-btn';
+      matchesLink.textContent = 'Find Buddies';
+      matchesLink.addEventListener('click', () => showView('matches'));
+
+      navActions.append(greeting, profileLink, coursesLink, matchesLink, logoutBtn);
 
       // Already have an account -- swap the marketing hero/CTAs for a
       // logged-in state, every time this runs (fresh login or just
@@ -784,6 +825,73 @@
   });
 
   document.getElementById('profile-logout-btn').addEventListener('click', async () => {
+    await api.logout();
+    window.location.reload();
+  });
+
+  // ===================== Matches =====================
+  const matchesList = document.getElementById('matches-list');
+  const matchesError = document.getElementById('matches-error');
+
+  function requestButtonLabel(m) {
+    if (m.request_status === 'accepted') return 'Buddies';
+    if (m.request_status === 'declined') return 'Declined';
+    if (m.request_status === 'pending') return m.request_sent_by_me ? 'Request sent' : 'Wants to connect';
+    return 'Send request';
+  }
+
+  async function loadMatches() {
+    matchesError.hidden = true;
+    matchesList.innerHTML = '<p class="empty-note">Looking for classmates…</p>';
+    try {
+      const data = await api.getMatches();
+      if (!data.has_courses) {
+        matchesList.innerHTML = '<p class="empty-note">Add your courses first, then we can find classmates who share them.</p>';
+        return;
+      }
+      if (!data.matches.length) {
+        matchesList.innerHTML = '<p class="empty-note">No classmates share your courses yet. Check back as more students join.</p>';
+        return;
+      }
+      matchesList.innerHTML = data.matches.map(m => {
+        const courses = m.shared_courses.map(c => `<span class="match-tag course">${escapeHtml(c.course_code)}</span>`).join('');
+        const slots = m.shared_slots.length ? `<span class="match-tag">${m.shared_slots.length} shared time slot${m.shared_slots.length === 1 ? '' : 's'}</span>` : '';
+        const meta = [m.major, m.year].filter(Boolean).map(escapeHtml).join(', ');
+        const available = !m.request_status;
+        return `
+          <div class="match-card">
+            <div class="match-avatar" aria-hidden="true">${escapeHtml(m.first_name.charAt(0).toUpperCase())}</div>
+            <div class="match-info">
+              <div class="match-top"><strong>${escapeHtml(m.first_name)}</strong><span class="match-score">${m.score}% match</span></div>
+              <div class="match-meta">${meta || 'Profile not filled in yet'}</div>
+              <div class="match-tags">${courses}${slots}</div>
+            </div>
+            <button class="btn" data-request="${m.user_id}" ${available ? '' : 'disabled'}>${requestButtonLabel(m)}</button>
+          </div>`;
+      }).join('');
+    } catch (err) {
+      matchesList.innerHTML = '';
+      matchesError.textContent = err.message;
+      matchesError.hidden = false;
+    }
+  }
+
+  matchesList.addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-request]');
+    if (!btn || btn.disabled) return;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      await api.sendRequest(Number(btn.dataset.request));
+      btn.textContent = 'Request sent';
+    } catch (err) {
+      matchesError.textContent = err.message;
+      matchesError.hidden = false;
+      loadMatches();
+    }
+  });
+
+  document.getElementById('matches-logout-btn').addEventListener('click', async () => {
     await api.logout();
     window.location.reload();
   });
