@@ -180,6 +180,20 @@
   .avail-grid td { cursor: pointer; background: var(--card); }
   .avail-grid td.on { background: var(--orange-500); color: white; border-color: var(--orange-500); }
 
+  /* ---- Profile ---- */
+  .profile-form .field select, .profile-form .field textarea {
+    width: 100%; padding: 0.7rem 0.8rem; border: 1px solid var(--line); border-radius: var(--r-sm);
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 0.94rem; background: var(--paper-0); color: var(--ink-900);
+  }
+  .profile-form .field select:focus, .profile-form .field textarea:focus { outline: none; border-color: var(--orange-500); }
+  .profile-form .field textarea { min-height: 90px; resize: vertical; }
+  .profile-form .field input[type="text"] { background: var(--card); }
+  .profile-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .profile-form .field { margin-bottom: 1.1rem; }
+  .profile-form .field > .group-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--ink-600); margin-bottom: 0.35rem; }
+  .profile-form .loc-pills { margin-bottom: 0; }
+  @media (max-width: 560px) { .profile-form .row { grid-template-columns: 1fr; } }
+
   .save-status { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.8rem; color: var(--success); font-size: 0.9rem; font-weight: 600; }
 </style>
 </head>
@@ -342,6 +356,7 @@
 <section id="view-courses" class="view">
   <nav class="app-nav">
     <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+    <button class="nav-link" data-nav="profile">My Profile</button>
     <button class="nav-link current">My Courses</button>
     <button class="nav-link logout" id="logout-btn">Log out</button>
   </nav>
@@ -402,6 +417,66 @@
   </main>
 </section>
 
+<!-- ===================== PROFILE VIEW ===================== -->
+<section id="view-profile" class="view">
+  <nav class="app-nav">
+    <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+    <button class="nav-link current">My Profile</button>
+    <button class="nav-link" data-nav="courses">My Courses</button>
+    <button class="nav-link logout" id="profile-logout-btn">Log out</button>
+  </nav>
+  <main class="app-main">
+    <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg> My Profile</h1>
+    <p class="subhead">A few quick answers so we can match you with the right study buddy.</p>
+    <p id="profile-error" class="form-error" hidden></p>
+    <form id="profile-form" class="profile-form" novalidate>
+      <div class="row">
+        <div class="field">
+          <label for="pf-major">Major</label>
+          <input id="pf-major" type="text" placeholder="e.g. Computer Science" maxlength="100" required>
+        </div>
+        <div class="field">
+          <label for="pf-year">Year</label>
+          <select id="pf-year">
+            <option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <span class="group-label">When do you like to study?</span>
+        <div class="loc-pills" id="pf-times">
+          <label class="loc-pill"><input type="checkbox" name="pf-time" value="Mornings"><span>Mornings</span></label>
+          <label class="loc-pill"><input type="checkbox" name="pf-time" value="Afternoons"><span>Afternoons</span></label>
+          <label class="loc-pill"><input type="checkbox" name="pf-time" value="Evenings"><span>Evenings</span></label>
+          <label class="loc-pill"><input type="checkbox" name="pf-time" value="Weekends"><span>Weekends</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="pf-style">Study style</label>
+        <select id="pf-style">
+          <option>Small group</option><option>One-on-one</option><option>Quiet / silent</option><option>Talk it through</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="pf-place">Where do you usually study?</label>
+        <select id="pf-place">
+          <option>Library</option><option>Student center</option><option>Online / Zoom</option><option>Dorm / off campus</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="pf-help">What do you want help with?</label>
+        <textarea id="pf-help" maxlength="500" placeholder="e.g. Calculus exams, programming homework…"></textarea>
+        <div class="hint">Only your first name and this info are shown to matches.</div>
+      </div>
+      <button class="btn" type="submit" id="profile-submit" style="width:auto;">Save profile</button>
+      <span id="profile-status" class="save-status" hidden>
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>
+        Saved!
+      </span>
+    </form>
+  </main>
+</section>
+
 <script>
   // ===================== Shared API helper (inlined, formerly api.js) =====================
   const API_BASE = '../backend';
@@ -428,6 +503,8 @@
     getUserInfo: () => apiRequest('get_user_info.php'),
     getCourses: (q) => apiRequest(`get_courses.php${q ? `?q=${encodeURIComponent(q)}` : ''}`),
     saveCourses: (payload) => apiRequest('save_courses.php', { method: 'POST', body: JSON.stringify(payload) }),
+    getProfile: () => apiRequest('get_profile.php'),
+    saveProfile: (payload) => apiRequest('save_profile.php', { method: 'POST', body: JSON.stringify(payload) }),
   };
 
   function escapeHtml(str) {
@@ -442,6 +519,7 @@
     views.forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + name).classList.add('active');
     if (name === 'courses') loadCourses();
+    if (name === 'profile') loadProfile();
   }
   document.querySelectorAll('[data-nav]').forEach(el => {
     el.addEventListener('click', () => showView(el.dataset.nav));
@@ -449,7 +527,7 @@
 
   // ===================== Home: reflect logged-in state =====================
   function refreshHomeForSession() {
-    return api.getUserInfo().then(({ user }) => {
+    return Promise.all([api.getUserInfo(), api.getProfile().catch(() => ({ profile: null }))]).then(([{ user }, { profile }]) => {
       const navActions = document.getElementById('home-nav-actions');
       navActions.innerHTML = '';
 
@@ -471,7 +549,12 @@
         window.location.reload();
       });
 
-      navActions.append(greeting, coursesLink, logoutBtn);
+      const profileLink = document.createElement('button');
+      profileLink.className = 'link-btn';
+      profileLink.textContent = 'My Profile';
+      profileLink.addEventListener('click', () => showView('profile'));
+
+      navActions.append(greeting, profileLink, coursesLink, logoutBtn);
 
       // Already have an account -- swap the marketing hero/CTAs for a
       // logged-in state, every time this runs (fresh login or just
@@ -479,15 +562,17 @@
       document.getElementById('hero-kicker').textContent = "🐯 You're logged in";
       document.getElementById('hero-heading').innerHTML = '';
       document.getElementById('hero-heading').textContent = `Welcome back, ${user.first_name}!`;
-      document.getElementById('hero-lede').textContent = 'Add your courses next so we can start matching you with classmates.';
+      document.getElementById('hero-lede').textContent = profile
+        ? 'Your profile is set. Keep your courses up to date so we can match you with classmates.'
+        : 'Set up your profile and add your courses so we can start matching you with classmates.';
 
       const heroCtas = document.getElementById('hero-ctas');
       heroCtas.innerHTML = '';
-      const addCoursesBtn = document.createElement('button');
-      addCoursesBtn.className = 'btn';
-      addCoursesBtn.textContent = 'Add my courses';
-      addCoursesBtn.addEventListener('click', () => showView('courses'));
-      heroCtas.append(addCoursesBtn);
+      const primaryBtn = document.createElement('button');
+      primaryBtn.className = 'btn';
+      primaryBtn.textContent = profile ? 'Add my courses' : 'Set up my profile';
+      primaryBtn.addEventListener('click', () => showView(profile ? 'courses' : 'profile'));
+      heroCtas.append(primaryBtn);
 
       const ctaBand = document.getElementById('home-cta-band');
       if (ctaBand) ctaBand.style.display = 'none';
@@ -638,6 +723,67 @@
   });
 
   document.getElementById('logout-btn').addEventListener('click', async () => {
+    await api.logout();
+    window.location.reload();
+  });
+
+  // ===================== Profile =====================
+  const profileForm = document.getElementById('profile-form');
+  const profileError = document.getElementById('profile-error');
+
+  async function loadProfile() {
+    profileError.hidden = true;
+    try {
+      const { profile } = await api.getProfile();
+      if (!profile) return;
+      document.getElementById('pf-major').value = profile.major || '';
+      document.getElementById('pf-year').value = profile.year;
+      document.getElementById('pf-style').value = profile.study_style;
+      document.getElementById('pf-place').value = profile.study_place;
+      document.getElementById('pf-help').value = profile.help_text || '';
+      const times = (profile.study_times || '').split(', ');
+      document.querySelectorAll('input[name="pf-time"]').forEach(cb => {
+        cb.checked = times.includes(cb.value);
+        cb.closest('.loc-pill').classList.toggle('on', cb.checked);
+      });
+    } catch (err) {
+      profileError.textContent = err.message;
+      profileError.hidden = false;
+    }
+  }
+
+  document.querySelectorAll('#pf-times .loc-pill').forEach(pill => {
+    const cb = pill.querySelector('input');
+    cb.addEventListener('change', () => pill.classList.toggle('on', cb.checked));
+  });
+
+  profileForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    profileError.hidden = true;
+    const submit = document.getElementById('profile-submit');
+    submit.disabled = true;
+    try {
+      await api.saveProfile({
+        major: document.getElementById('pf-major').value,
+        year: document.getElementById('pf-year').value,
+        study_times: Array.from(document.querySelectorAll('input[name="pf-time"]:checked')).map(el => el.value),
+        study_style: document.getElementById('pf-style').value,
+        study_place: document.getElementById('pf-place').value,
+        help_text: document.getElementById('pf-help').value,
+      });
+      const status = document.getElementById('profile-status');
+      status.hidden = false;
+      setTimeout(() => { status.hidden = true; }, 2500);
+      refreshHomeForSession();
+    } catch (err) {
+      profileError.textContent = err.message;
+      profileError.hidden = false;
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  document.getElementById('profile-logout-btn').addEventListener('click', async () => {
     await api.logout();
     window.location.reload();
   });
