@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welcome | Find a Buddy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --navy-900: #0a3a8c;
+    --navy-800: #0d47ab;
+    --orange-600: #e8620c;
+    --orange-500: #ff7a1a;
+    --paper-0: #faf7f0;
+    --paper-50: #f2ede1;
+    --paper-100: #e8e0cf;
+    --ink-900: #171310;
+    --ink-600: #4a463f;
+    --ink-400: #7a7568;
+    --line: #ddd4bf;
+    --card: #ffffff;
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper-50);
+    color: var(--ink-900);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Bebas Neue', 'IBM Plex Sans', sans-serif; letter-spacing: 0.02em; line-height: 1.05; text-wrap: balance; }
+  svg.icon { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; vertical-align: -0.15em; }
+
+  .public-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.6rem; border-bottom: 1px solid var(--line);
+  }
+  .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--navy-900); letter-spacing: 0.03em; text-decoration: none; }
+  .wordmark span { color: var(--orange-500); }
+  .actions { display: flex; align-items: center; gap: 0.8rem; }
+  .link-btn { font-size: 0.88rem; font-weight: 600; color: var(--ink-600); text-decoration: none; }
+  .link-btn:hover { color: var(--ink-900); }
+
+  .btn {
+    font-family: inherit; font-size: 0.86rem; font-weight: 600;
+    padding: 0.6rem 1rem; border: none; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    border-radius: var(--r-sm); text-decoration: none;
+    background: var(--orange-500); color: #fff;
+  }
+  .btn:hover { background: var(--orange-600); }
+  .btn.outline-light { background: transparent; color: var(--paper-0); border: 1.5px solid rgba(250,247,240,0.4); }
+  .btn.outline-light:hover { background: rgba(250,247,240,0.1); }
+  .btn:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+
+  .onboard { max-width: 920px; margin: 0 auto; padding: 2.6rem 1.6rem 3rem; }
+  .progress-dots { display: flex; gap: 0.4rem; justify-content: center; margin-bottom: 1.6rem; }
+  .progress-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+  .progress-dots span.on { background: var(--orange-500); width: 20px; border-radius: 4px; }
+  .onboard-top { text-align: center; max-width: 46ch; margin: 0 auto 2rem; }
+  .kicker-text { font-size: 0.8rem; font-weight: 600; color: var(--orange-600); }
+  .onboard-top .kicker-text { margin-bottom: 0.4rem; }
+  .onboard-top h1 { font-size: 2.6rem; margin: 0 0 0.5rem; font-weight: 400; }
+  .onboard-top p { color: var(--ink-600); margin: 0; font-size: 0.95rem; }
+  .step-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; margin-bottom: 2rem; }
+  .step-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1.2rem 1rem; text-align: center; position: relative; }
+  .step-num { position: absolute; top: 0.6rem; left: 0.7rem; font: 600 0.68rem ui-monospace, Consolas, monospace; color: var(--ink-400); }
+  .step-icon {
+    width: 52px; height: 52px; border-radius: 999px; margin: 0.4rem auto 0.9rem;
+    background: linear-gradient(155deg, var(--navy-800), var(--navy-900)); color: var(--orange-500);
+    display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+  }
+  .step-card h3 { font-size: 0.98rem; margin: 0 0 0.35rem; }
+  .step-card p { font-size: 0.82rem; color: var(--ink-600); margin: 0; line-height: 1.45; }
+  .onboard-actions { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+  .onboard-actions .btn { padding: 0.8rem 1.8rem; font-size: 0.92rem; }
+  .skip { font-size: 0.85rem; color: var(--ink-600); text-decoration: underline; text-underline-offset: 3px; }
+
+  @media (max-width: 720px) { .step-grid { grid-template-columns: 1fr 1fr; } }
+
+</style>
+</head>
+<body>
+<nav class="public-nav">
+  <a class="wordmark" href="index.html">FIND A <span>BUDDY</span></a>
+</nav>
+
+<main class="onboard">
+  <div class="progress-dots" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+  <div class="onboard-top">
+    <div class="kicker-text">You're in! Account created</div>
+    <h1 class="display">Welcome to the pack, Tiger 🐯</h1>
+    <p>Find a Buddy takes about 2 minutes to set up. Here's how the whole thing works.</p>
+  </div>
+
+  <div class="step-grid">
+    <div class="step-card">
+      <span class="step-num">01</span>
+      <div class="step-icon"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg></div>
+      <h3>Add your courses</h3>
+      <p>Tell us what you're taking this term, plus where and when you like to study.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">02</span>
+      <div class="step-icon"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="9" r="2.3"/><path d="M16 14c2.8.3 5 2.4 5 5"/></svg></div>
+      <h3>See who shares your class</h3>
+      <p>We match you with classmates who overlap on courses and free time. Only your first name shows at first.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">03</span>
+      <div class="step-icon"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M20 4L4 12l6.5 2.5L13 21l7-17z"/></svg></div>
+      <h3>Send a buddy request</h3>
+      <p>Found someone good? Send a request. Contact info only unlocks once they accept.</p>
+    </div>
+    <div class="step-card">
+      <span class="step-num">04</span>
+      <div class="step-icon"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M21 4v5h-5"/><circle cx="9" cy="12" r="1"/></svg></div>
+      <h3>Study smarter</h3>
+      <p>Set up a time to meet, and ask Rowdy the mascot for tips whenever you need a boost.</p>
+    </div>
+  </div>
+
+  <div class="onboard-actions">
+    <a class="btn" href="index.html">Add my courses</a>
+    <a class="skip" href="index.html">Skip for now</a>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings | Find a Buddy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --navy-900: #0a3a8c;
+    --navy-800: #0d47ab;
+    --orange-600: #e8620c;
+    --orange-500: #ff7a1a;
+    --paper-0: #faf7f0;
+    --paper-50: #f2ede1;
+    --paper-100: #e8e0cf;
+    --ink-900: #171310;
+    --ink-600: #4a463f;
+    --ink-400: #7a7568;
+    --line: #ddd4bf;
+    --card: #ffffff;
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper-50);
+    color: var(--ink-900);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Bebas Neue', 'IBM Plex Sans', sans-serif; letter-spacing: 0.02em; line-height: 1.05; text-wrap: balance; }
+  svg.icon { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; vertical-align: -0.15em; }
+
+  .public-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.6rem; border-bottom: 1px solid var(--line);
+  }
+  .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--navy-900); letter-spacing: 0.03em; text-decoration: none; }
+  .wordmark span { color: var(--orange-500); }
+  .actions { display: flex; align-items: center; gap: 0.8rem; }
+  .link-btn { font-size: 0.88rem; font-weight: 600; color: var(--ink-600); text-decoration: none; }
+  .link-btn:hover { color: var(--ink-900); }
+
+  .btn {
+    font-family: inherit; font-size: 0.86rem; font-weight: 600;
+    padding: 0.6rem 1rem; border: none; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    border-radius: var(--r-sm); text-decoration: none;
+    background: var(--orange-500); color: #fff;
+  }
+  .btn:hover { background: var(--orange-600); }
+  .btn.outline-light { background: transparent; color: var(--paper-0); border: 1.5px solid rgba(250,247,240,0.4); }
+  .btn.outline-light:hover { background: rgba(250,247,240,0.1); }
+  .btn:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+
+
+  .page { max-width: 920px; margin: 0 auto; padding: 2.2rem 1.6rem 3rem; }
+  .page h1 { font-size: 2.4rem; margin: 0 0 0.3rem; font-weight: 400; }
+  .page .sub { color: var(--ink-600); margin: 0 0 1.6rem; font-size: 0.95rem; }
+  .progress-dots { display: flex; gap: 0.4rem; justify-content: center; margin-bottom: 1.2rem; }
+  .progress-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+  .progress-dots span.on { background: var(--orange-500); width: 20px; border-radius: 4px; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1.4rem; }
+  label { display: block; font-size: 0.82rem; font-weight: 600; margin: 0 0 0.3rem; }
+  input, select, textarea { width: 100%; font: inherit; font-size: 0.95rem; padding: 0.65rem 0.75rem; border: 1px solid var(--line); border-radius: var(--r-sm); background: #fff; color: var(--ink-900); }
+  textarea { resize: vertical; min-height: 90px; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+  .field { margin-bottom: 1rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .hint { font-size: 0.78rem; color: var(--ink-400); margin-top: 0.3rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chips input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .chips label { margin: 0; padding: 0.45rem 0.9rem; border: 1px solid var(--line); border-radius: 999px; font-weight: 500; cursor: pointer; background: #fff; }
+  .chips input:checked + label { background: var(--navy-800); border-color: var(--navy-800); color: #fff; }
+  .chips input:focus-visible + label { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+  .btn.ghost { background: transparent; color: var(--navy-800); border: 1.5px solid var(--navy-800); }
+  .btn.ghost:hover { background: rgba(13,71,171,0.08); }
+  .actions-row { display: flex; gap: 0.8rem; align-items: center; margin-top: 0.4rem; flex-wrap: wrap; }
+  .tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--paper-100); color: var(--ink-600); }
+  .tag.or { background: #ffe9d6; color: var(--orange-600); }
+  .avatar { width: 46px; height: 46px; border-radius: 999px; background: linear-gradient(155deg, var(--navy-800), var(--navy-900)); color: var(--orange-500); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; flex-shrink: 0; }
+  .ok { color: #1a7f37; font-size: 0.88rem; }
+  .public-nav { flex-wrap: wrap; gap: 0.6rem; }
+  .actions { flex-wrap: wrap; }
+  .link-btn.cur { color: var(--orange-600); }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } .page h1 { font-size: 2rem; } }
+
+</style>
+</head>
+<body>
+<nav class="public-nav">
+  <a class="wordmark" href="index.html">FIND A <span>BUDDY</span></a>
+  <div class="actions"><a class="link-btn" href="index.html">Home</a><a class="link-btn" href="profile.html">Profile</a><a class="link-btn" href="matches.html">Matches</a><a class="link-btn" href="messages.html">Messages</a><a class="link-btn cur" href="settings.html">Settings</a><a class="btn" href="login.html">Log out</a></div>
+</nav>
+<main class="page">
+  <h1 class="display">Settings</h1>
+  <p class="sub">Update your account details and password.</p>
+  <form class="panel" style="margin-bottom:1rem" onsubmit="event.preventDefault(); this.querySelector('.ok').hidden=false;">
+    <h2 style="margin-top:0;font-size:1.1rem">Account</h2>
+    <div class="row">
+      <div class="field"><label for="fn">First name</label><input id="fn" value="Nathaniel"></div>
+      <div class="field"><label for="ln">Last name</label><input id="ln" value="Peterson"></div>
+    </div>
+    <div class="field"><label for="em">SSU email</label><input id="em" value="you@student.savannahstate.edu" disabled><div class="hint">Your email can't be changed.</div></div>
+    <div class="actions-row"><button class="btn" type="submit">Save changes</button><span class="ok" hidden>Saved.</span></div>
+  </form>
+  <form class="panel" onsubmit="event.preventDefault(); this.querySelector('.ok').hidden=false;">
+    <h2 style="margin-top:0;font-size:1.1rem">Change password</h2>
+    <div class="field"><label for="cp">Current password</label><input id="cp" type="password" autocomplete="current-password"></div>
+    <div class="row">
+      <div class="field"><label for="np">New password</label><input id="np" type="password" minlength="8" autocomplete="new-password"><div class="hint">At least 8 characters.</div></div>
+      <div class="field"><label for="np2">Confirm new password</label><input id="np2" type="password" autocomplete="new-password"></div>
+    </div>
+    <div class="actions-row"><button class="btn" type="submit">Update password</button><span class="ok" hidden>Password updated.</span></div>
+  </form>
+  <p class="hint" style="margin-top:1.2rem">Forgot your password? <a href="reset-password.html">Reset it here</a>.</p>
+</main>
+</body>
+</html>

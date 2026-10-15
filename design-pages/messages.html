@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Messages | Find a Buddy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --navy-900: #0a3a8c;
+    --navy-800: #0d47ab;
+    --orange-600: #e8620c;
+    --orange-500: #ff7a1a;
+    --paper-0: #faf7f0;
+    --paper-50: #f2ede1;
+    --paper-100: #e8e0cf;
+    --ink-900: #171310;
+    --ink-600: #4a463f;
+    --ink-400: #7a7568;
+    --line: #ddd4bf;
+    --card: #ffffff;
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper-50);
+    color: var(--ink-900);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Bebas Neue', 'IBM Plex Sans', sans-serif; letter-spacing: 0.02em; line-height: 1.05; text-wrap: balance; }
+  svg.icon { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; vertical-align: -0.15em; }
+
+  .public-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.6rem; border-bottom: 1px solid var(--line);
+  }
+  .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--navy-900); letter-spacing: 0.03em; text-decoration: none; }
+  .wordmark span { color: var(--orange-500); }
+  .actions { display: flex; align-items: center; gap: 0.8rem; }
+  .link-btn { font-size: 0.88rem; font-weight: 600; color: var(--ink-600); text-decoration: none; }
+  .link-btn:hover { color: var(--ink-900); }
+
+  .btn {
+    font-family: inherit; font-size: 0.86rem; font-weight: 600;
+    padding: 0.6rem 1rem; border: none; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    border-radius: var(--r-sm); text-decoration: none;
+    background: var(--orange-500); color: #fff;
+  }
+  .btn:hover { background: var(--orange-600); }
+  .btn.outline-light { background: transparent; color: var(--paper-0); border: 1.5px solid rgba(250,247,240,0.4); }
+  .btn.outline-light:hover { background: rgba(250,247,240,0.1); }
+  .btn:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+
+
+  .page { max-width: 920px; margin: 0 auto; padding: 2.2rem 1.6rem 3rem; }
+  .page h1 { font-size: 2.4rem; margin: 0 0 0.3rem; font-weight: 400; }
+  .page .sub { color: var(--ink-600); margin: 0 0 1.6rem; font-size: 0.95rem; }
+  .progress-dots { display: flex; gap: 0.4rem; justify-content: center; margin-bottom: 1.2rem; }
+  .progress-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+  .progress-dots span.on { background: var(--orange-500); width: 20px; border-radius: 4px; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1.4rem; }
+  label { display: block; font-size: 0.82rem; font-weight: 600; margin: 0 0 0.3rem; }
+  input, select, textarea { width: 100%; font: inherit; font-size: 0.95rem; padding: 0.65rem 0.75rem; border: 1px solid var(--line); border-radius: var(--r-sm); background: #fff; color: var(--ink-900); }
+  textarea { resize: vertical; min-height: 90px; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+  .field { margin-bottom: 1rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .hint { font-size: 0.78rem; color: var(--ink-400); margin-top: 0.3rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chips input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .chips label { margin: 0; padding: 0.45rem 0.9rem; border: 1px solid var(--line); border-radius: 999px; font-weight: 500; cursor: pointer; background: #fff; }
+  .chips input:checked + label { background: var(--navy-800); border-color: var(--navy-800); color: #fff; }
+  .chips input:focus-visible + label { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+  .btn.ghost { background: transparent; color: var(--navy-800); border: 1.5px solid var(--navy-800); }
+  .btn.ghost:hover { background: rgba(13,71,171,0.08); }
+  .actions-row { display: flex; gap: 0.8rem; align-items: center; margin-top: 0.4rem; flex-wrap: wrap; }
+  .tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; background: var(--paper-100); color: var(--ink-600); }
+  .tag.or { background: #ffe9d6; color: var(--orange-600); }
+  .avatar { width: 46px; height: 46px; border-radius: 999px; background: linear-gradient(155deg, var(--navy-800), var(--navy-900)); color: var(--orange-500); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; flex-shrink: 0; }
+  .ok { color: #1a7f37; font-size: 0.88rem; }
+  .public-nav { flex-wrap: wrap; gap: 0.6rem; }
+  .actions { flex-wrap: wrap; }
+  .link-btn.cur { color: var(--orange-600); }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } .page h1 { font-size: 2rem; } }
+
+  .chat { display: grid; grid-template-columns: 260px 1fr; gap: 1rem; }
+  .convos { padding: 0.6rem; display: flex; flex-direction: column; gap: 0.3rem; }
+  .convo { display: flex; gap: 0.7rem; align-items: center; text-align: left; font: inherit; padding: 0.6rem; border: 0; border-radius: var(--r-sm); background: transparent; cursor: pointer; }
+  .convo.on, .convo:hover { background: var(--paper-50); }
+  .convo .snip { font-size: 0.78rem; color: var(--ink-400); }
+  .thread { display: flex; flex-direction: column; min-height: 420px; }
+  .thread .head { padding-bottom: 0.8rem; border-bottom: 1px solid var(--line); display: flex; gap: 0.6rem; align-items: center; }
+  .msgs { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem 0; overflow-y: auto; }
+  .bubble { max-width: 75%; padding: 0.55rem 0.85rem; border-radius: 14px; font-size: 0.92rem; }
+  .bubble.them { background: var(--paper-50); align-self: flex-start; }
+  .bubble.me { background: var(--navy-800); color: #fff; align-self: flex-end; }
+  .send { display: flex; gap: 0.6rem; }
+  @media (max-width: 720px) { .chat { grid-template-columns: 1fr; } }
+
+</style>
+</head>
+<body>
+<nav class="public-nav">
+  <a class="wordmark" href="index.html">FIND A <span>BUDDY</span></a>
+  <div class="actions"><a class="link-btn" href="index.html">Home</a><a class="link-btn" href="profile.html">Profile</a><a class="link-btn" href="matches.html">Matches</a><a class="link-btn cur" href="messages.html">Messages</a><a class="link-btn" href="settings.html">Settings</a><a class="btn" href="login.html">Log out</a></div>
+</nav>
+<main class="page">
+  <h1 class="display">Messages</h1>
+  <p class="sub">Chat with buddies who accepted your request.</p>
+  <div class="chat">
+    <aside class="panel convos">
+      <button class="convo on" type="button"><div class="avatar">J</div><div><strong>Jordan</strong><div class="snip">Library at 7 works!</div></div></button>
+      <button class="convo" type="button"><div class="avatar">M</div><div><strong>Maya</strong><div class="snip">Sounds good, see you then</div></div></button>
+    </aside>
+    <section class="panel thread">
+      <div class="head"><strong>Jordan</strong> <span class="tag or">CSCI 2231K</span></div>
+      <div class="msgs" id="msgs">
+        <div class="bubble them">Hey! Want to go over the Assignment 2 problems?</div>
+        <div class="bubble me">Yes please. When are you free?</div>
+        <div class="bubble them">Library at 7 works!</div>
+      </div>
+      <form class="send" onsubmit="event.preventDefault(); var i=document.getElementById('m'); if(!i.value.trim())return; var d=document.createElement('div'); d.className='bubble me'; d.textContent=i.value; document.getElementById('msgs').appendChild(d); i.value='';">
+        <input id="m" placeholder="Type a message..." aria-label="Message">
+        <button class="btn" type="submit">Send</button>
+      </form>
+    </section>
+  </div>
+</main>
+</body>
+</html>

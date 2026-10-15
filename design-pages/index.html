@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find a Buddy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --navy-900: #0a3a8c;
+    --navy-800: #0d47ab;
+    --orange-600: #e8620c;
+    --orange-500: #ff7a1a;
+    --paper-0: #faf7f0;
+    --paper-50: #f2ede1;
+    --paper-100: #e8e0cf;
+    --ink-900: #171310;
+    --ink-600: #4a463f;
+    --ink-400: #7a7568;
+    --line: #ddd4bf;
+    --card: #ffffff;
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper-50);
+    color: var(--ink-900);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Bebas Neue', 'IBM Plex Sans', sans-serif; letter-spacing: 0.02em; line-height: 1.05; text-wrap: balance; }
+  svg.icon { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; vertical-align: -0.15em; }
+
+  .public-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.6rem; border-bottom: 1px solid var(--line);
+  }
+  .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--navy-900); letter-spacing: 0.03em; text-decoration: none; }
+  .wordmark span { color: var(--orange-500); }
+  .actions { display: flex; align-items: center; gap: 0.8rem; }
+  .link-btn { font-size: 0.88rem; font-weight: 600; color: var(--ink-600); text-decoration: none; }
+  .link-btn:hover { color: var(--ink-900); }
+
+  .btn {
+    font-family: inherit; font-size: 0.86rem; font-weight: 600;
+    padding: 0.6rem 1rem; border: none; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    border-radius: var(--r-sm); text-decoration: none;
+    background: var(--orange-500); color: #fff;
+  }
+  .btn:hover { background: var(--orange-600); }
+  .btn.outline-light { background: transparent; color: var(--paper-0); border: 1.5px solid rgba(250,247,240,0.4); }
+  .btn.outline-light:hover { background: rgba(250,247,240,0.1); }
+  .btn:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+
+  .hero { background: var(--navy-900); color: var(--paper-0); padding: 3.2rem 2rem 3.6rem; text-align: center; }
+  .hero-inner { max-width: 46ch; margin: 0 auto; }
+  .kicker { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600; color: var(--orange-500); background: rgba(250,247,240,0.1); padding: 0.35rem 0.8rem; border-radius: 999px; margin-bottom: 1rem; }
+  .hero h1 { font-size: clamp(2.4rem, 6vw, 3.4rem); line-height: 0.98; margin: 0 0 0.8rem; }
+  .hero h1 span { color: var(--orange-500); display: block; }
+  .hero p.lede { color: var(--paper-100); font-size: 1rem; margin: 0 0 1.6rem; }
+  .hero-ctas { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
+  .hero-ctas .btn { padding: 0.8rem 1.6rem; font-size: 0.92rem; }
+  .hero-stats { display: flex; justify-content: center; gap: 2.2rem; margin-top: 2.2rem; flex-wrap: wrap; }
+  .hero-stats div { text-align: center; }
+  .hero-stats strong { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; color: var(--orange-500); font-weight: 400; }
+  .hero-stats span { font-size: 0.75rem; color: var(--paper-100); }
+
+  .home-section { padding: 2.6rem 2rem; max-width: 860px; margin: 0 auto; }
+  .home-section h2 { font-size: 1.8rem; text-align: center; margin: 0 0 0.4rem; font-weight: 400; }
+  .section-lede { text-align: center; color: var(--ink-600); max-width: 46ch; margin: 0 auto 1.8rem; font-size: 0.92rem; }
+  .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; }
+  .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .info-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1.2rem 1rem; text-align: center; }
+  .icon-badge {
+    width: 52px; height: 52px; border-radius: 999px; margin: 0 auto 0.9rem;
+    background: linear-gradient(155deg, var(--navy-800), var(--navy-900)); color: var(--orange-500);
+    display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+  }
+  .value-grid .icon-badge { background: linear-gradient(155deg, var(--orange-500), var(--orange-600)); color: var(--navy-900); }
+  .info-card h3 { font-size: 0.96rem; margin: 0 0 0.35rem; }
+  .info-card p { font-size: 0.85rem; color: var(--ink-600); margin: 0; line-height: 1.45; }
+
+  .cta-band { background: var(--paper-100); border-radius: var(--r-lg); padding: 2rem; text-align: center; max-width: 800px; margin: 0 auto 2.6rem; }
+  .cta-band h2 { font-size: 1.6rem; margin: 0 0 0.4rem; font-weight: 400; }
+  .cta-band p { color: var(--ink-600); margin: 0 0 1.2rem; font-size: 0.92rem; }
+  .public-footer { text-align: center; padding: 1.5rem; font-size: 0.8rem; color: var(--ink-400); border-top: 1px solid var(--line); }
+
+  @media (max-width: 720px) { .card-grid, .value-grid { grid-template-columns: 1fr 1fr; } }
+
+</style>
+</head>
+<body>
+<nav class="public-nav">
+  <a class="wordmark" href="index.html">FIND A <span>BUDDY</span></a>
+  <div class="actions">
+    <a class="link-btn" href="login.html">Log in</a>
+    <a class="btn" href="register.html">Get started</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="kicker">🐯 Built for Savannah State students</span>
+    <h1 class="display">Never study alone<span>Find your pack.</span></h1>
+    <p class="lede">Match with classmates in your exact courses, agree on a time and place, and get study tips from Rowdy whenever you're stuck.</p>
+    <div class="hero-ctas">
+      <a class="btn" href="register.html">Get started free</a>
+      <a class="btn outline-light" href="login.html">I already have an account</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>@student.savannahstate.edu</strong><span>only, verified at signup</span></div>
+      <div><strong>100%</strong><span>private until a request is accepted</span></div>
+      <div><strong>Free</strong><span>for every Tiger</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="home-section">
+  <h2 class="display">How it works</h2>
+  <p class="section-lede">From account to study session in four quick steps.</p>
+  <div class="card-grid">
+    <div class="info-card">
+      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg></div>
+      <h3>Add your courses</h3>
+      <p>Course codes, sections, and when you like to study.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="9" r="2.3"/><path d="M16 14c2.8.3 5 2.4 5 5"/></svg></div>
+      <h3>Get matched</h3>
+      <p>See classmates who share a course and free time.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M20 4L4 12l6.5 2.5L13 21l7-17z"/></svg></div>
+      <h3>Send a request</h3>
+      <p>They accept, and contact info unlocks for both of you.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M21 4v5h-5"/><circle cx="9" cy="12" r="1"/></svg></div>
+      <h3>Study together</h3>
+      <p>Meet up, and lean on Rowdy for tips in between.</p>
+    </div>
+  </div>
+</div>
+
+<div class="home-section" style="padding-top: 0;">
+  <h2 class="display">Why students use it</h2>
+  <p class="section-lede">Not a social network. Just a faster way to find who's in your class.</p>
+  <div class="value-grid">
+    <div class="info-card">
+      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+      <h3>Private by default</h3>
+      <p>No email or contact info shows until a request is mutually accepted.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg></div>
+      <h3>Built for SSU courses</h3>
+      <p>Matches are based on your real course codes and sections, not general interests.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon-badge"><svg class="icon" viewBox="0 0 24 24" style="width:1.3em;height:1.3em;"><path d="M21 12a8 8 0 1 1-3.2-6.4"/><path d="M21 4v5h-5"/><circle cx="9" cy="12" r="1"/></svg></div>
+      <h3>A mascot in your corner</h3>
+      <p>Rowdy gives quick study tips and motivation, day or night.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cta-band">
+  <h2 class="display">Ready to find your study pack?</h2>
+  <p>Sign up with your SSU email. It takes about two minutes.</p>
+  <a class="btn" href="register.html">Create your account</a>
+</div>
+
+<footer class="public-footer">Find a Buddy &middot; a student project for Savannah State University</footer>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log in | Find a Buddy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --navy-900: #0a3a8c;
+    --navy-800: #0d47ab;
+    --orange-600: #e8620c;
+    --orange-500: #ff7a1a;
+    --paper-0: #faf7f0;
+    --paper-50: #f2ede1;
+    --paper-100: #e8e0cf;
+    --ink-900: #171310;
+    --ink-600: #4a463f;
+    --ink-400: #7a7568;
+    --line: #ddd4bf;
+    --card: #ffffff;
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper-50);
+    color: var(--ink-900);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .display { font-family: 'Bebas Neue', 'IBM Plex Sans', sans-serif; letter-spacing: 0.02em; line-height: 1.05; text-wrap: balance; }
+  svg.icon { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; vertical-align: -0.15em; }
+
+  .public-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.6rem; border-bottom: 1px solid var(--line);
+  }
+  .wordmark { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--navy-900); letter-spacing: 0.03em; text-decoration: none; }
+  .wordmark span { color: var(--orange-500); }
+  .actions { display: flex; align-items: center; gap: 0.8rem; }
+  .link-btn { font-size: 0.88rem; font-weight: 600; color: var(--ink-600); text-decoration: none; }
+  .link-btn:hover { color: var(--ink-900); }
+
+  .btn {
+    font-family: inherit; font-size: 0.86rem; font-weight: 600;
+    padding: 0.6rem 1rem; border: none; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    border-radius: var(--r-sm); text-decoration: none;
+    background: var(--orange-500); color: #fff;
+  }
+  .btn:hover { background: var(--orange-600); }
+  .btn.outline-light { background: transparent; color: var(--paper-0); border: 1.5px solid rgba(250,247,240,0.4); }
+  .btn.outline-light:hover { background: rgba(250,247,240,0.1); }
+  .btn:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--orange-500); outline-offset: 2px; }
+
+  .auth-wrap { min-height: calc(100vh - 65px); display: flex; align-items: center; justify-content: center; padding: 2.5rem 1.5rem; }
+  .auth-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg);
+    padding: 2.2rem 2rem; width: 100%; max-width: 420px; box-shadow: 0 8px 24px -12px rgba(8,22,39,0.18);
+  }
+  .kicker-text { font-size: 0.8rem; font-weight: 600; color: var(--orange-600); margin-bottom: 0.3rem; }
+  .auth-card h1 { font-size: 2rem; margin: 0 0 0.4rem; font-weight: 400; }
+  .auth-card p.sub { color: var(--ink-600); font-size: 0.9rem; margin: 0 0 1.6rem; }
+  .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .field { margin-bottom: 1.1rem; }
+  .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--ink-600); margin-bottom: 0.35rem; }
+  .field input {
+    width: 100%; padding: 0.7rem 0.8rem; border: 1px solid var(--line); border-radius: var(--r-sm);
+    font-family: inherit; font-size: 0.94rem; background: var(--paper-0); color: var(--ink-900);
+  }
+  .field input:focus { outline: none; border-color: var(--orange-500); }
+  .field .hint { font-size: 0.78rem; color: var(--ink-600); margin-top: 0.3rem; }
+  .auth-card .btn { width: 100%; padding: 0.75rem; font-size: 0.92rem; margin-top: 0.4rem; }
+  .fine { text-align: center; font-size: 0.85rem; color: var(--ink-600); margin: 1.3rem 0 0; }
+  .fine a { color: var(--orange-600); font-weight: 600; text-decoration: none; }
+
+</style>
+</head>
+<body>
+<nav class="public-nav">
+  <a class="wordmark" href="index.html">FIND A <span>BUDDY</span></a>
+  <a class="link-btn" href="register.html">Need an account?</a>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="kicker-text">Savannah State University</div>
+    <h1 class="display">Log in</h1>
+    <p class="sub">Enter your SSU email and password to continue.</p>
+
+    <form id="login-form">
+      <div class="field">
+        <label for="email">SSU Email</label>
+        <input id="email" name="email" type="email" placeholder="you@student.savannahstate.edu" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Enter your password" required>
+      </div>
+      <button class="btn" type="submit">Log in</button>
+    </form>
+
+    <p class="fine">Don't have an account? <a href="register.html">Register</a></p>
+  </div>
+</div>
+
+<script>
+  // Static design page: nothing is sent anywhere. Submitting just moves on to the home page.
+  document.getElementById('login-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+    window.location.href = 'index.html';
+  });
+</script>
+</body>
+</html>
