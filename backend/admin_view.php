@@ -1,106 +1,275 @@
 <?php
 
-require_once __DIR__ . '/db.php';
+// Read-only admin dashboard. Protected by an ADMIN_KEY that lives in the
+// server's environment (Render dashboard) or backend/config.php, never in
+// the code, so it can't be read from the public repo. If no key is set the
+// page is disabled.
 
-// Simple shared-secret protection -- this is a read-only demo view, not a
-// real admin panel with proper authentication.
-$key = $_GET['key'] ?? '';
-if ($key !== 'findabuddy-admin-2026') {
+require_once __DIR__ . '/session_bootstrap.php';
+require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/lib/profile.php';
+
+session_start();
+
+function admin_key(): string
+{
+    $key = getenv('ADMIN_KEY');
+    if ($key) {
+        return $key;
+    }
+    $configFile = __DIR__ . '/config.php';
+    if (is_file($configFile)) {
+        $config = require $configFile;
+        return (string) ($config['admin_key'] ?? '');
+    }
+    return '';
+}
+
+function e($value): string
+{
+    return htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
+}
+
+$key = admin_key();
+$loginError = false;
+
+if ($key === '') {
     http_response_code(403);
-    echo 'Forbidden';
+    echo 'Admin view is disabled: no ADMIN_KEY is configured on the server.';
     exit;
 }
 
-$pdo = get_db();
+if (isset($_GET['logout'])) {
+    unset($_SESSION['is_admin']);
+    header('Location: admin_view.php');
+    exit;
+}
 
-$users = $pdo->query('SELECT id, email, first_name, last_name, preferred_locations, availability, created_at FROM users ORDER BY id')->fetchAll();
-$courses = $pdo->query('SELECT id, course_code, section, course_name FROM courses ORDER BY id')->fetchAll();
-$userCourses = $pdo->query('
-    SELECT uc.id, u.email, u.first_name, u.last_name, c.course_code, c.course_name
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (hash_equals($key, (string) ($_POST['key'] ?? ''))) {
+        session_regenerate_id(true);
+        $_SESSION['is_admin'] = true;
+        header('Location: admin_view.php');
+        exit;
+    }
+    sleep(1); // slow down guessing
+    $loginError = true;
+}
+
+if (empty($_SESSION['is_admin'])) {
+    http_response_code($loginError ? 401 : 200);
+    ?>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin sign in | Find a Buddy</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f2ede1; color: #171310; display: grid; place-items: center; min-height: 100vh; margin: 0; }
+  form { background: #fff; border: 1px solid #ddd4bf; border-radius: 12px; padding: 2rem; width: min(360px, 90vw); }
+  h1 { font-size: 1.2rem; color: #0a3a8c; margin: 0 0 1rem; }
+  input { width: 100%; box-sizing: border-box; padding: 0.7rem; border: 1px solid #ddd4bf; border-radius: 8px; font-size: 1rem; }
+  button { margin-top: 0.8rem; width: 100%; padding: 0.7rem; border: 0; border-radius: 8px; background: #ff7a1a; color: #fff; font-weight: 600; font-size: 1rem; cursor: pointer; }
+  .err { color: #b3261e; font-size: 0.88rem; margin: 0 0 0.8rem; }
+</style></head>
+<body>
+  <form method="post">
+    <h1>Find a Buddy admin</h1>
+    <?php if ($loginError): ?><p class="err">Wrong key.</p><?php endif; ?>
+    <input type="password" name="key" placeholder="Admin key" autocomplete="current-password" autofocus required>
+    <button type="submit">View database</button>
+  </form>
+</body></html>
+    <?php
+    exit;
+}
+
+// ---------- Authenticated: read-only queries ----------
+$pdo = get_db();
+ensure_profiles_table($pdo);
+
+$users = $pdo->query('
+    SELECT u.id, u.email, u.first_name, u.last_name, u.created_at,
+           (SELECT COUNT(*) FROM user_courses uc WHERE uc.user_id = u.id) AS course_count,
+           (SELECT COUNT(*) FROM profiles p WHERE p.user_id = u.id) AS has_profile
+    FROM users u ORDER BY u.id
+')->fetchAll();
+
+$profiles = $pdo->query('
+    SELECT p.user_id, u.first_name, u.last_name, p.major, p.year, p.study_times, p.study_style, p.study_place, p.help_text, p.updated_at
+    FROM profiles p JOIN users u ON u.id = p.user_id ORDER BY p.user_id
+')->fetchAll();
+
+$courses = $pdo->query('
+    SELECT c.id, c.course_code, c.section, c.course_name,
+           (SELECT COUNT(*) FROM user_courses uc WHERE uc.course_id = c.id) AS students
+    FROM courses c ORDER BY c.course_code
+')->fetchAll();
+
+$enrollments = $pdo->query('
+    SELECT uc.id, u.first_name, u.last_name, u.email, c.course_code, c.course_name
     FROM user_courses uc
     JOIN users u ON u.id = uc.user_id
     JOIN courses c ON c.id = uc.course_id
     ORDER BY uc.id
 ')->fetchAll();
 
-function e($value) {
-    return htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
+$requests = $pdo->query('
+    SELECT r.id, s.first_name AS sender_first, s.last_name AS sender_last,
+           t.first_name AS receiver_first, t.last_name AS receiver_last,
+           c.course_code, r.status, r.created_at
+    FROM buddy_requests r
+    JOIN users s ON s.id = r.sender_id
+    JOIN users t ON t.id = r.receiver_id
+    LEFT JOIN courses c ON c.id = r.course_id
+    ORDER BY r.id
+')->fetchAll();
+
+$weekAgo = time() - 7 * 86400;
+$newThisWeek = count(array_filter($users, fn($u) => strtotime((string) $u['created_at']) >= $weekAgo));
+$withProfile = count(array_filter($users, fn($u) => (int) $u['has_profile'] > 0));
+$withCourses = count(array_filter($users, fn($u) => (int) $u['course_count'] > 0));
+$byStatus = ['pending' => 0, 'accepted' => 0, 'declined' => 0];
+foreach ($requests as $r) {
+    $byStatus[$r['status']] = ($byStatus[$r['status']] ?? 0) + 1;
 }
+$driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql' ? 'PostgreSQL' : 'MySQL';
+
+function render_table(string $id, string $title, array $columns, array $rows, string $emptyText): void
+{
+    echo '<section class="block" id="' . e($id) . '"><div class="block-head"><h2>' . e($title)
+        . ' <span class="count">' . count($rows) . ' row' . (count($rows) === 1 ? '' : 's') . '</span></h2>'
+        . '<input type="search" class="filter" placeholder="Filter…" data-table="' . e($id) . '-table" aria-label="Filter ' . e($title) . '"></div>';
+    if (!$rows) {
+        echo '<p class="empty">' . e($emptyText) . '</p></section>';
+        return;
+    }
+    echo '<div class="scroll"><table id="' . e($id) . '-table"><thead><tr>';
+    foreach ($columns as $label) {
+        echo '<th>' . e($label) . '</th>';
+    }
+    echo '</tr></thead><tbody>';
+    foreach ($rows as $row) {
+        echo '<tr>';
+        foreach (array_keys($columns) as $field) {
+            echo '<td>' . e($row[$field] ?? '') . '</td>';
+        }
+        echo '</tr>';
+    }
+    echo '</tbody></table></div></section>';
+}
+
+foreach ($users as &$u) {
+    $u['name'] = trim($u['first_name'] . ' ' . $u['last_name']);
+    $u['profile'] = (int) $u['has_profile'] ? 'yes' : 'no';
+}
+unset($u);
+foreach ($profiles as &$p) {
+    $p['name'] = trim($p['first_name'] . ' ' . $p['last_name']);
+}
+unset($p);
+foreach ($enrollments as &$en) {
+    $en['name'] = trim($en['first_name'] . ' ' . $en['last_name']);
+}
+unset($en);
+foreach ($requests as &$rq) {
+    $rq['from'] = trim($rq['sender_first'] . ' ' . $rq['sender_last']);
+    $rq['to'] = trim($rq['receiver_first'] . ' ' . $rq['receiver_last']);
+}
+unset($rq);
 ?>
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Database View — Find a Buddy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin | Find a Buddy</title>
 <style>
-  body { font-family: system-ui, sans-serif; background: #f2ede1; color: #171310; margin: 0; padding: 2rem; }
-  h1 { color: #0a3a8c; }
-  h2 { color: #0a3a8c; border-bottom: 2px solid #ff7a1a; padding-bottom: 0.3rem; margin-top: 2.5rem; }
-  table { border-collapse: collapse; width: 100%; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  th, td { border: 1px solid #ddd4bf; padding: 0.6rem 0.9rem; text-align: left; font-size: 0.9rem; }
-  th { background: #0a3a8c; color: white; }
-  tr:nth-child(even) { background: #faf7f0; }
-  .empty { color: #7a7568; font-style: italic; padding: 1rem; }
-  .count { color: #7a7568; font-size: 0.85rem; font-weight: normal; }
+  :root { --navy: #0a3a8c; --orange: #ff7a1a; --paper: #f2ede1; --card: #fff; --line: #ddd4bf; --ink: #171310; --muted: #7a7568; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--paper); color: var(--ink); }
+  header { background: var(--navy); color: #fff; padding: 0.9rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.6rem; }
+  header h1 { margin: 0; font-size: 1.15rem; letter-spacing: 0.02em; }
+  header h1 span { color: var(--orange); }
+  header nav a { color: #fff; text-decoration: none; font-size: 0.85rem; margin-left: 1rem; opacity: 0.85; }
+  header nav a:hover { opacity: 1; text-decoration: underline; }
+  main { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+  .note { color: var(--muted); font-size: 0.88rem; margin: 0 0 1.2rem; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.8rem; margin-bottom: 2rem; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 0.9rem 1rem; }
+  .stat b { display: block; font-size: 1.7rem; color: var(--navy); line-height: 1.1; }
+  .stat span { font-size: 0.8rem; color: var(--muted); }
+  .block { margin-bottom: 2.2rem; }
+  .block-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; border-bottom: 2px solid var(--orange); margin-bottom: 0.7rem; padding-bottom: 0.3rem; }
+  h2 { font-size: 1.05rem; color: var(--navy); margin: 0; }
+  .count { font-size: 0.78rem; font-weight: 400; color: var(--muted); margin-left: 0.4rem; }
+  .filter { padding: 0.4rem 0.7rem; border: 1px solid var(--line); border-radius: 8px; font-size: 0.85rem; min-width: 180px; }
+  .scroll { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
+  th, td { text-align: left; padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td:last-child, th:last-child { white-space: normal; }
+  th { background: #f7f3ea; color: var(--navy); font-weight: 600; position: sticky; top: 0; }
+  tbody tr:hover { background: #fffaf2; }
+  .empty { color: var(--muted); font-style: italic; margin: 0.6rem 0; }
+  @media (max-width: 600px) { main { padding: 1rem; } }
 </style>
 </head>
 <body>
-  <h1>Find a Buddy — Live Database View</h1>
-  <p>Read-only view of the real tables in the production database. No passwords are shown.</p>
+<header>
+  <h1>FIND A <span>BUDDY</span> · Admin</h1>
+  <nav>
+    <a href="#users">Users</a><a href="#profiles">Profiles</a><a href="#courses">Courses</a>
+    <a href="#enrollments">Enrollments</a><a href="#requests">Requests</a>
+    <a href="?logout=1">Sign out</a>
+  </nav>
+</header>
+<main>
+  <p class="note">Read-only view of the live <?= e($driver) ?> database. Passwords are never shown or even queried.</p>
 
-  <h2>users <span class="count">(<?= count($users) ?> rows)</span></h2>
-  <?php if ($users): ?>
-  <table>
-    <tr><th>id</th><th>email</th><th>first_name</th><th>last_name</th><th>preferred_locations</th><th>availability</th><th>created_at</th></tr>
-    <?php foreach ($users as $u): ?>
-    <tr>
-      <td><?= e($u['id']) ?></td>
-      <td><?= e($u['email']) ?></td>
-      <td><?= e($u['first_name']) ?></td>
-      <td><?= e($u['last_name']) ?></td>
-      <td><?= e($u['preferred_locations']) ?></td>
-      <td><?= e($u['availability']) ?></td>
-      <td><?= e($u['created_at']) ?></td>
-    </tr>
-    <?php endforeach; ?>
-  </table>
-  <?php else: ?>
-  <p class="empty">No users yet.</p>
-  <?php endif; ?>
+  <div class="stats">
+    <div class="stat"><b><?= count($users) ?></b><span>Total users</span></div>
+    <div class="stat"><b><?= $newThisWeek ?></b><span>New in last 7 days</span></div>
+    <div class="stat"><b><?= $withProfile ?></b><span>Profiles completed</span></div>
+    <div class="stat"><b><?= $withCourses ?></b><span>Users with courses</span></div>
+    <div class="stat"><b><?= count($courses) ?></b><span>Courses</span></div>
+    <div class="stat"><b><?= count($requests) ?></b><span>Buddy requests</span></div>
+    <div class="stat"><b><?= $byStatus['pending'] ?>/<?= $byStatus['accepted'] ?>/<?= $byStatus['declined'] ?></b><span>Pending / accepted / declined</span></div>
+  </div>
 
-  <h2>courses <span class="count">(<?= count($courses) ?> rows)</span></h2>
-  <?php if ($courses): ?>
-  <table>
-    <tr><th>id</th><th>course_code</th><th>section</th><th>course_name</th></tr>
-    <?php foreach ($courses as $c): ?>
-    <tr>
-      <td><?= e($c['id']) ?></td>
-      <td><?= e($c['course_code']) ?></td>
-      <td><?= e($c['section']) ?></td>
-      <td><?= e($c['course_name']) ?></td>
-    </tr>
-    <?php endforeach; ?>
-  </table>
-  <?php else: ?>
-  <p class="empty">No courses yet.</p>
-  <?php endif; ?>
+  <?php
+  render_table('users', 'Users', [
+      'id' => 'id', 'name' => 'Name', 'email' => 'Email', 'course_count' => 'Courses',
+      'profile' => 'Profile', 'created_at' => 'Joined',
+  ], $users, 'No users yet.');
 
-  <h2>user_courses (joined) <span class="count">(<?= count($userCourses) ?> rows)</span></h2>
-  <?php if ($userCourses): ?>
-  <table>
-    <tr><th>id</th><th>student</th><th>email</th><th>course_code</th><th>course_name</th></tr>
-    <?php foreach ($userCourses as $uc): ?>
-    <tr>
-      <td><?= e($uc['id']) ?></td>
-      <td><?= e($uc['first_name']) ?> <?= e($uc['last_name']) ?></td>
-      <td><?= e($uc['email']) ?></td>
-      <td><?= e($uc['course_code']) ?></td>
-      <td><?= e($uc['course_name']) ?></td>
-    </tr>
-    <?php endforeach; ?>
-  </table>
-  <?php else: ?>
-  <p class="empty">No course enrollments yet.</p>
-  <?php endif; ?>
+  render_table('profiles', 'Profiles', [
+      'user_id' => 'user id', 'name' => 'Name', 'major' => 'Major', 'year' => 'Year',
+      'study_times' => 'Study times', 'study_style' => 'Style', 'study_place' => 'Place',
+      'updated_at' => 'Updated', 'help_text' => 'Wants help with',
+  ], $profiles, 'No profiles yet.');
+
+  render_table('courses', 'Courses', [
+      'id' => 'id', 'course_code' => 'Code', 'section' => 'Section', 'students' => 'Students', 'course_name' => 'Name',
+  ], $courses, 'No courses yet.');
+
+  render_table('enrollments', 'Enrollments (who is in which course)', [
+      'id' => 'id', 'name' => 'Student', 'email' => 'Email', 'course_code' => 'Course', 'course_name' => 'Course name',
+  ], $enrollments, 'No course enrollments yet.');
+
+  render_table('requests', 'Buddy requests', [
+      'id' => 'id', 'from' => 'From', 'to' => 'To', 'course_code' => 'Course', 'status' => 'Status', 'created_at' => 'Sent',
+  ], $requests, 'No buddy requests yet.');
+  ?>
+</main>
+<script>
+  document.querySelectorAll('.filter').forEach(function (input) {
+    input.addEventListener('input', function () {
+      var table = document.getElementById(input.dataset.table);
+      if (!table) return;
+      var q = input.value.toLowerCase();
+      table.querySelectorAll('tbody tr').forEach(function (tr) {
+        tr.style.display = tr.textContent.toLowerCase().indexOf(q) === -1 ? 'none' : '';
+      });
+    });
+  });
+</script>
 </body>
 </html>

@@ -7,6 +7,8 @@ return [
         'user' => 'root',
         'pass' => '',
     ],
+    // Key for backend/admin_view.php (or set the ADMIN_KEY environment variable).
+    'admin_key' => 'CHANGE_ME',
     'anthropic_api_key' => 'YOUR_ANTHROPIC_API_KEY_HERE',
     'anthropic_model' => 'claude-haiku-4-5-20251001',
 ];
