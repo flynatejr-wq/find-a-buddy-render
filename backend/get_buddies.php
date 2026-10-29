@@ -5,6 +5,7 @@ require_once __DIR__ . '/check_session.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/lib/profile.php';
 require_once __DIR__ . '/lib/messages.php';
+require_once __DIR__ . '/lib/sessions.php';
 
 $userId = require_login();
 $pdo = get_db();
@@ -69,9 +70,15 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $sent = $stmt->fetchAll();
 
+// Study sessions a buddy proposed that I have not answered yet.
+ensure_sessions_table($pdo);
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM study_sessions WHERE buddy_id = ? AND status = 'proposed' AND session_date >= ?");
+$stmt->execute([$userId, campus_today()]);
+
 echo json_encode([
     'buddies' => $buddies,
     'incoming' => $incoming,
     'sent' => $sent,
     'unread_messages' => $totalUnread,
+    'pending_sessions' => (int) $stmt->fetchColumn(),
 ]);

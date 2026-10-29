@@ -21,9 +21,12 @@ A study-buddy matching web app for Savannah State University students. Students 
 4. **Buddy matching.** Finds classmates who share a course and scores them out of 100 (shared courses, overlapping availability, same study style and place). You can send a buddy request to a classmate. Emails are never shown to other students.
 5. **Accept or decline requests.** The student who receives a request answers it from **My Buddies**. Accepted buddies see each other's email; before that only first names are shown.
 6. **Messaging.** Accepted buddies can chat. Messages are limited to buddies, capped at 1,000 characters, shown as plain text, and the page checks for new ones every few seconds. A badge in the menu shows unanswered requests and unread messages.
-7. **Admin view.** A read-only, key-protected dashboard of the database (see below).
+7. **Study sessions.** Buddies can propose a time, place and topic, and the other person accepts or declines. Either can cancel. Dates are Eastern time and cannot be in the past.
+8. **Account settings.** Edit your name, change your password (needs the current one), or delete your account and everything tied to it.
+9. **Password reset.** "Forgot your password?" sends a one-time link that expires in 1 hour (see below). Only a hash of the link's token is stored.
+10. **Admin view.** A key-protected dashboard of the database (see below).
 
-Planned next: account settings (edit name, change password, delete account), password reset, study session scheduling.
+Planned next: the AI study mascot, notifications, a report/block option.
 
 ## Project structure
 
@@ -40,6 +43,9 @@ find-a-buddy/
 │   ├── get_profile.php  save_profile.php
 │   ├── get_matches.php  send_request.php  respond_request.php  get_buddies.php
 │   ├── get_messages.php  send_message.php
+│   ├── get_sessions.php  propose_session.php  respond_session.php
+│   ├── update_account.php  change_password.php  delete_account.php
+│   ├── request_reset.php  reset_password.php
 │   ├── admin_view.php        # Read-only admin dashboard (needs ADMIN_KEY)
 │   ├── db.php                # PDO connection (MySQL locally, Postgres on Render)
 │   ├── config.example.php    # Template for local settings (real config.php is not committed)
@@ -53,7 +59,7 @@ find-a-buddy/
 
 ## Database tables
 
-`users`, `courses`, `user_courses` (who is in which course), `profiles`, `buddy_requests` (pending, accepted or declined), `messages` (buddy chat), and `mascot_messages` (reserved for a future feature). The `profiles` and `messages` tables are created automatically the first time they are used.
+`users`, `courses`, `user_courses` (who is in which course), `profiles`, `buddy_requests` (pending, accepted or declined), `messages` (buddy chat), `study_sessions`, `password_resets`, and `mascot_messages` (reserved for a future feature). The `profiles`, `messages`, `study_sessions` and `password_resets` tables are created automatically the first time they are used.
 
 ## Running it locally (MySQL via Laragon)
 
@@ -68,9 +74,21 @@ The `design-pages/*.html` files need no setup. Just open them in a browser.
 
 ## Admin view
 
-Open `backend/admin_view.php` on the running site and enter the admin key. It shows user counts, profiles, courses, enrollments and buddy requests, with a filter box on each table. It is read-only and never queries password hashes.
+Open `backend/admin_view.php` on the running site and enter the admin key. It shows user counts, profiles, courses, enrollments and buddy requests, with a filter box on each table. It only reads data, except for one action: **Create a password reset link** for a student. The link is shown once and only its hash is stored. It never queries password hashes.
 
 The key is **not** in the code. Set it as the `ADMIN_KEY` environment variable (on Render: your service → Environment), or as `admin_key` in `backend/config.php` locally. If no key is set, the page is disabled.
+
+## Password reset email
+
+Reset links can be emailed with [Resend](https://resend.com). Set these environment variables on the server (on Render: Environment):
+
+| Variable | Meaning |
+|---|---|
+| `RESEND_API_KEY` | Your Resend API key |
+| `MAIL_FROM` | A sender address you have verified in Resend |
+| `APP_URL` | The site's public address, for example `https://find-a-buddy-yu1y.onrender.com` |
+
+`APP_URL` is used to build the link, so the link can never be pointed at another site through a forged request. If any of the three is missing, the Forgot password page says emails are not set up yet, and an admin can create a one-time link for a student from the admin page instead.
 
 ## Running the tests
 

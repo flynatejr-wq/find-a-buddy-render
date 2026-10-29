@@ -8,6 +8,7 @@
 require_once __DIR__ . '/session_bootstrap.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/lib/profile.php';
+require_once __DIR__ . '/lib/reset.php';
 
 session_start();
 
@@ -82,9 +83,32 @@ if (empty($_SESSION['is_admin'])) {
     exit;
 }
 
-// ---------- Authenticated: read-only queries ----------
+// ---------- Authenticated ----------
 $pdo = get_db();
 ensure_profiles_table($pdo);
+ensure_resets_table($pdo);
+
+if (empty($_SESSION['csrf'])) {
+    $_SESSION['csrf'] = bin2hex(random_bytes(16));
+}
+
+// The one write this page can do: create a one-time password reset link for a student
+// who cannot receive reset emails. The link is shown once and only its hash is stored.
+$resetLink = null;
+$resetFor = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reset_link') {
+    if (hash_equals($_SESSION['csrf'], (string) ($_POST['csrf'] ?? ''))) {
+        $stmt = $pdo->prepare('SELECT id, email FROM users WHERE id = ?');
+        $stmt->execute([(int) ($_POST['user_id'] ?? 0)]);
+        if ($target = $stmt->fetch()) {
+            $base = app_base_url() !== ''
+                ? app_base_url()
+                : ((($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? (!empty($_SERVER['HTTPS']) ? 'https' : 'http'))) . '://' . $_SERVER['HTTP_HOST']);
+            $resetLink = reset_link($base, create_reset_token($pdo, (int) $target['id']));
+            $resetFor = $target['email'];
+        }
+    }
+}
 
 $users = $pdo->query('
     SELECT u.id, u.email, u.first_name, u.last_name, u.created_at,
@@ -209,6 +233,11 @@ unset($rq);
   th { background: #f7f3ea; color: var(--navy); font-weight: 600; position: sticky; top: 0; }
   tbody tr:hover { background: #fffaf2; }
   .empty { color: var(--muted); font-style: italic; margin: 0.6rem 0; }
+  .banner { background: #fff4e5; border: 1px solid var(--orange); border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; }
+  .banner input { display: block; width: 100%; margin-top: 0.5rem; padding: 0.55rem; border: 1px solid var(--line); border-radius: 8px; font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; }
+  .reset-form { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .reset-form select { flex: 1; min-width: 220px; padding: 0.55rem; border: 1px solid var(--line); border-radius: 8px; font-size: 0.9rem; }
+  .reset-form button { padding: 0.55rem 1rem; border: 0; border-radius: 8px; background: var(--orange); color: #fff; font-weight: 600; cursor: pointer; }
   @media (max-width: 600px) { main { padding: 1rem; } }
 </style>
 </head>
@@ -222,7 +251,14 @@ unset($rq);
   </nav>
 </header>
 <main>
-  <p class="note">Read-only view of the live <?= e($driver) ?> database. Passwords are never shown or even queried.</p>
+  <p class="note">View of the live <?= e($driver) ?> database. Passwords are never shown or even queried. The only action here is creating a password reset link.</p>
+
+  <?php if ($resetLink): ?>
+  <div class="banner">
+    <strong>Reset link for <?= e($resetFor) ?></strong> (works once, expires in 1 hour). Send it to the student yourself:
+    <input type="text" readonly value="<?= e($resetLink) ?>" onclick="this.select()" aria-label="Reset link">
+  </div>
+  <?php endif; ?>
 
   <div class="stats">
     <div class="stat"><b><?= count($users) ?></b><span>Total users</span></div>
@@ -240,6 +276,21 @@ unset($rq);
       'profile' => 'Profile', 'created_at' => 'Joined',
   ], $users, 'No users yet.');
 
+  ?>
+  <section class="block" id="reset">
+    <div class="block-head"><h2>Create a password reset link</h2></div>
+    <form method="post" class="reset-form">
+      <input type="hidden" name="action" value="reset_link">
+      <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
+      <select name="user_id" aria-label="Student" required>
+        <?php foreach ($users as $u): ?>
+        <option value="<?= e($u['id']) ?>"><?= e($u['name']) ?> (<?= e($u['email']) ?>)</option>
+        <?php endforeach; ?>
+      </select>
+      <button type="submit">Create link</button>
+    </form>
+  </section>
+  <?php
   render_table('profiles', 'Profiles', [
       'user_id' => 'user id', 'name' => 'Name', 'major' => 'Major', 'year' => 'Year',
       'study_times' => 'Study times', 'study_style' => 'Style', 'study_place' => 'Place',

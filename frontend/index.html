@@ -230,6 +230,20 @@
   .chat-form input:focus { outline: none; border-color: var(--orange-500); }
   @media (max-width: 560px) { .person-card { flex-wrap: wrap; } .person-actions { width: 100%; } .person-actions .btn { flex: 1; } }
 
+  /* ---- Settings, sessions ---- */
+  .panel-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1.3rem; margin-bottom: 1.2rem; }
+  .panel-card h2 { margin-top: 0; }
+  .danger-zone { border-color: var(--danger); }
+  .danger-zone h2 { color: var(--danger); }
+  .btn.danger { background: var(--danger); }
+  .btn.danger:hover { filter: brightness(0.92); }
+  .session-card { display: flex; gap: 1rem; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1rem 1.1rem; margin-bottom: 0.8rem; }
+  .session-when { text-align: center; min-width: 64px; }
+  .session-when .day { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; line-height: 1; color: var(--navy-900); }
+  .session-when .mon { font-size: 0.72rem; font-weight: 700; color: var(--orange-600); text-transform: uppercase; }
+  .session-card .match-info { flex: 1; min-width: 0; }
+  @media (max-width: 560px) { .session-card { flex-wrap: wrap; } }
+
   .save-status { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.8rem; color: var(--success); font-size: 0.9rem; font-weight: 600; }
 </style>
 </head>
@@ -344,6 +358,7 @@
         </div>
         <button class="btn" type="submit" id="login-submit">Log in</button>
       </form>
+      <p class="fine"><button class="link-btn" data-nav="forgot">Forgot your password?</button></p>
       <p class="fine">Don't have an account? <button class="link-btn" data-nav="register">Register</button></p>
     </div>
   </div>
@@ -542,6 +557,126 @@
   </main>
 </section>
 
+<!-- ===================== FORGOT PASSWORD VIEW ===================== -->
+<section id="view-forgot" class="view">
+  <nav class="public-nav">
+    <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+    <button class="link-btn" data-nav="login">Back to log in</button>
+  </nav>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="kicker-text">Savannah State University</div>
+      <h1 class="display">Reset your password</h1>
+      <p class="sub">Enter your SSU email and we will help you choose a new password.</p>
+      <p id="forgot-error" class="form-error" hidden></p>
+      <p id="forgot-message" class="form-success" hidden></p>
+      <form id="forgot-form" novalidate>
+        <div class="field">
+          <label for="forgot-email">SSU Email</label>
+          <input id="forgot-email" type="email" placeholder="you@student.savannahstate.edu" required>
+        </div>
+        <button class="btn" type="submit" id="forgot-submit">Send reset link</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RESET PASSWORD VIEW ===================== -->
+<section id="view-reset" class="view">
+  <nav class="public-nav">
+    <button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>
+  </nav>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="kicker-text">Savannah State University</div>
+      <h1 class="display">Choose a new password</h1>
+      <p class="sub">Pick a password with at least 8 characters.</p>
+      <p id="reset-error" class="form-error" hidden></p>
+      <form id="reset-form" novalidate>
+        <div class="field">
+          <label for="reset-password">New password</label>
+          <input id="reset-password" type="password" minlength="8" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+          <label for="reset-password2">Confirm new password</label>
+          <input id="reset-password2" type="password" minlength="8" autocomplete="new-password" required>
+        </div>
+        <button class="btn" type="submit" id="reset-submit">Save new password</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SETTINGS VIEW ===================== -->
+<section id="view-settings" class="view">
+  <nav class="app-nav" data-current="settings"></nav>
+  <main class="app-main">
+    <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg> Settings</h1>
+    <p class="subhead">Manage your account.</p>
+
+    <form id="account-form" class="panel-card profile-form" novalidate>
+      <h2>Account</h2>
+      <p id="account-error" class="form-error" hidden></p>
+      <p id="account-ok" class="form-success" hidden>Saved.</p>
+      <div class="row">
+        <div class="field"><label for="acct-first">First name</label><input id="acct-first" type="text" maxlength="100" required></div>
+        <div class="field"><label for="acct-last">Last name</label><input id="acct-last" type="text" maxlength="100" required></div>
+      </div>
+      <div class="field"><label for="acct-email">SSU email</label><input id="acct-email" type="text" disabled><div class="hint">Your email cannot be changed.</div></div>
+      <button class="btn" type="submit" style="width:auto;">Save changes</button>
+    </form>
+
+    <form id="password-form" class="panel-card profile-form" novalidate>
+      <h2>Change password</h2>
+      <p id="password-error" class="form-error" hidden></p>
+      <p id="password-ok" class="form-success" hidden>Password updated.</p>
+      <div class="field"><label for="pw-current">Current password</label><input id="pw-current" type="password" autocomplete="current-password" required></div>
+      <div class="row">
+        <div class="field"><label for="pw-new">New password</label><input id="pw-new" type="password" minlength="8" autocomplete="new-password" required><div class="hint">At least 8 characters.</div></div>
+        <div class="field"><label for="pw-new2">Confirm new password</label><input id="pw-new2" type="password" minlength="8" autocomplete="new-password" required></div>
+      </div>
+      <button class="btn" type="submit" style="width:auto;">Update password</button>
+    </form>
+
+    <form id="delete-form" class="panel-card danger-zone profile-form" novalidate>
+      <h2>Delete account</h2>
+      <p class="subhead" style="margin-bottom:1rem;">This permanently removes your profile, courses, buddy requests, messages and study sessions. It cannot be undone.</p>
+      <p id="delete-error" class="form-error" hidden></p>
+      <div class="field"><label for="del-password">Type your password to confirm</label><input id="del-password" type="password" autocomplete="current-password" required></div>
+      <button class="btn danger" type="submit" style="width:auto;">Delete my account</button>
+    </form>
+  </main>
+</section>
+
+<!-- ===================== SESSIONS VIEW ===================== -->
+<section id="view-sessions" class="view">
+  <nav class="app-nav" data-current="sessions"></nav>
+  <main class="app-main">
+    <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg> Study Sessions</h1>
+    <p class="subhead">Plan a time and place to study with a buddy.</p>
+    <p id="sessions-error" class="form-error" hidden></p>
+
+    <section class="block"><h2>Needs your answer</h2><div id="sessions-incoming"></div></section>
+    <section class="block"><h2>Upcoming</h2><div id="sessions-upcoming"></div></section>
+    <section class="block"><h2>Waiting for a reply</h2><div id="sessions-waiting"></div></section>
+
+    <form id="session-form" class="panel-card profile-form" novalidate>
+      <h2>Plan a session</h2>
+      <p id="session-form-error" class="form-error" hidden></p>
+      <p id="session-form-ok" class="form-success" hidden>Sent! They will see it under Study Sessions.</p>
+      <div class="field"><label for="ss-buddy">With</label><select id="ss-buddy" required></select></div>
+      <div class="field"><label for="ss-topic">What will you study?</label><input id="ss-topic" type="text" maxlength="100" placeholder="e.g. Calculus exam review" required></div>
+      <div class="row">
+        <div class="field"><label for="ss-date">Date</label><input id="ss-date" type="date" required></div>
+        <div class="field"><label for="ss-time">Time</label><input id="ss-time" type="time" required></div>
+      </div>
+      <div class="field"><label for="ss-place">Where</label><select id="ss-place"></select></div>
+      <div class="field"><label for="ss-note">Note (optional)</label><input id="ss-note" type="text" maxlength="200" placeholder="e.g. Bring your notes"></div>
+      <button class="btn" type="submit" id="ss-submit" style="width:auto;">Send proposal</button>
+    </form>
+  </main>
+</section>
+
 <script>
   // ===================== Shared API helper (inlined, formerly api.js) =====================
   const API_BASE = '../backend';
@@ -556,6 +691,7 @@
     if (!response.ok) {
       const error = new Error(data.error || 'Request failed');
       error.data = data;
+      error.status = response.status;
       throw error;
     }
     return data;
@@ -571,6 +707,14 @@
     getProfile: () => apiRequest('get_profile.php'),
     getMatches: () => apiRequest('get_matches.php'),
     getBuddies: () => apiRequest('get_buddies.php'),
+    updateAccount: (payload) => apiRequest('update_account.php', { method: 'POST', body: JSON.stringify(payload) }),
+    changePassword: (payload) => apiRequest('change_password.php', { method: 'POST', body: JSON.stringify(payload) }),
+    deleteAccount: (password) => apiRequest('delete_account.php', { method: 'POST', body: JSON.stringify({ password }) }),
+    requestReset: (email) => apiRequest('request_reset.php', { method: 'POST', body: JSON.stringify({ email }) }),
+    resetPassword: (token, password) => apiRequest('reset_password.php', { method: 'POST', body: JSON.stringify({ token, password }) }),
+    getSessions: () => apiRequest('get_sessions.php'),
+    proposeSession: (payload) => apiRequest('propose_session.php', { method: 'POST', body: JSON.stringify(payload) }),
+    respondSession: (sessionId, action) => apiRequest('respond_session.php', { method: 'POST', body: JSON.stringify({ session_id: sessionId, action }) }),
     respondRequest: (requestId, action) => apiRequest('respond_request.php', { method: 'POST', body: JSON.stringify({ request_id: requestId, action }) }),
     getMessages: (withId) => apiRequest(`get_messages.php?with=${encodeURIComponent(withId)}`),
     sendMessage: (to, body) => apiRequest('send_message.php', { method: 'POST', body: JSON.stringify({ to, body }) }),
@@ -590,13 +734,15 @@
     ['courses', 'My Courses'],
     ['matches', 'Find Buddies'],
     ['buddies', 'My Buddies'],
+    ['sessions', 'Sessions'],
+    ['settings', 'Settings'],
   ];
   function renderAppNavs() {
     document.querySelectorAll('nav.app-nav[data-current]').forEach(nav => {
       const current = nav.dataset.current;
       nav.innerHTML = '<button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>' +
         APP_NAV_ITEMS.map(([name, label]) => {
-          const badge = name === 'buddies' ? '<span class="nav-badge" hidden></span>' : '';
+          const badge = (name === 'buddies' || name === 'sessions') ? `<span class="nav-badge" data-badge="${name}" hidden></span>` : '';
           return `<button class="nav-link${name === current ? ' current' : ''}" data-nav="${name}">${label}${badge}</button>`;
         }).join('') +
         '<button class="nav-link logout" data-logout>Log out</button>';
@@ -604,15 +750,16 @@
   }
   renderAppNavs();
 
-  function setBuddyBadge(count) {
-    document.querySelectorAll('.nav-badge').forEach(b => {
-      b.textContent = count;
-      b.hidden = !count;
+  function setBadges({ buddies = 0, sessions = 0 }) {
+    document.querySelectorAll('nav.app-nav .nav-badge[data-badge]').forEach(b => {
+      const n = b.dataset.badge === 'sessions' ? sessions : buddies;
+      b.textContent = n;
+      b.hidden = !n;
     });
   }
   function updateBuddyBadge() {
     return api.getBuddies()
-      .then(d => setBuddyBadge(d.incoming.length + d.unread_messages))
+      .then(d => setBadges({ buddies: d.incoming.length + d.unread_messages, sessions: d.pending_sessions }))
       .catch(() => {});
   }
 
@@ -625,7 +772,7 @@
 
   // ===================== View navigation =====================
   const views = document.querySelectorAll('.view');
-  const APP_VIEWS = ['profile', 'courses', 'matches', 'buddies', 'chat'];
+  const APP_VIEWS = ['profile', 'courses', 'matches', 'buddies', 'chat', 'sessions', 'settings'];
   function showView(name) {
     views.forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + name).classList.add('active');
@@ -634,7 +781,9 @@
     if (name === 'profile') loadProfile();
     if (name === 'matches') loadMatches();
     if (name === 'buddies') loadBuddies();
-    if (APP_VIEWS.includes(name) && name !== 'buddies') updateBuddyBadge();
+    if (name === 'sessions') loadSessions();
+    if (name === 'settings') loadSettings();
+    if (APP_VIEWS.includes(name) && name !== 'buddies' && name !== 'sessions') updateBuddyBadge();
   }
   document.querySelectorAll('[data-nav]').forEach(el => {
     el.addEventListener('click', () => showView(el.dataset.nav));
@@ -992,7 +1141,7 @@
     buddiesError.hidden = true;
     try {
       const data = await api.getBuddies();
-      setBuddyBadge(data.incoming.length + data.unread_messages);
+      setBadges({ buddies: data.incoming.length + data.unread_messages, sessions: data.pending_sessions });
 
       incomingList.innerHTML = data.incoming.map(r => `
         <div class="person-card">
@@ -1020,6 +1169,7 @@
           </div>
           <div class="person-actions">
             <button class="btn" data-chat="${b.user_id}" data-chat-name="${escapeHtml(b.first_name)}">Message${b.unread ? ` <span class="nav-badge">${b.unread}</span>` : ''}</button>
+            <button class="btn secondary" data-plan="${b.user_id}">Plan a session</button>
           </div>
         </div>`).join('') || '<p class="empty-note">No buddies yet. Accept a request or send one from Find Buddies.</p>';
 
@@ -1049,7 +1199,9 @@
       return;
     }
     const chatBtn = event.target.closest('[data-chat]');
-    if (chatBtn) openChat(Number(chatBtn.dataset.chat), chatBtn.dataset.chatName);
+    if (chatBtn) { openChat(Number(chatBtn.dataset.chat), chatBtn.dataset.chatName); return; }
+    const planBtn = event.target.closest('[data-plan]');
+    if (planBtn) { sessionPreselect = Number(planBtn.dataset.plan); showView('sessions'); }
   });
 
   // ===================== Chat =====================
@@ -1078,6 +1230,8 @@
       ).join('') || `<p class="empty-note">Say hi to ${escapeHtml(chatWith.name)}!</p>`;
       if (forceScroll || nearBottom) chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
     } catch (err) {
+      // Logged out (session expired or account deleted): stop asking every few seconds.
+      if (err.status === 401) stopChatPolling();
       chatError.textContent = err.message;
       chatError.hidden = false;
     }
@@ -1110,6 +1264,230 @@
       return;
     }
     refreshChat(true);
+  });
+
+  // ===================== Forgot / reset password =====================
+  const forgotForm = document.getElementById('forgot-form');
+  forgotForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorEl = document.getElementById('forgot-error');
+    const messageEl = document.getElementById('forgot-message');
+    errorEl.hidden = true;
+    messageEl.hidden = true;
+    try {
+      const data = await api.requestReset(document.getElementById('forgot-email').value);
+      messageEl.textContent = data.message;
+      messageEl.hidden = false;
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    }
+  });
+
+  let resetToken = '';
+  (function openResetFromLink() {
+    const token = new URLSearchParams(window.location.search).get('reset');
+    if (!token) return;
+    resetToken = token;
+    // Take the token out of the address bar so it is not kept in history or sent anywhere.
+    history.replaceState(null, '', window.location.pathname);
+    showView('reset');
+  })();
+
+  document.getElementById('reset-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorEl = document.getElementById('reset-error');
+    errorEl.hidden = true;
+    const pw = document.getElementById('reset-password').value;
+    if (pw !== document.getElementById('reset-password2').value) {
+      errorEl.textContent = 'The two passwords do not match.';
+      errorEl.hidden = false;
+      return;
+    }
+    try {
+      await api.resetPassword(resetToken, pw);
+      event.target.reset();
+      resetToken = '';
+      const ok = document.getElementById('login-success');
+      ok.textContent = 'Password changed! Log in with your new password.';
+      ok.hidden = false;
+      showView('login');
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    }
+  });
+
+  // ===================== Settings =====================
+  function flash(el) {
+    el.hidden = false;
+    setTimeout(() => { el.hidden = true; }, 3000);
+  }
+
+  async function loadSettings() {
+    ['account-error', 'account-ok', 'password-error', 'password-ok', 'delete-error'].forEach(id => { document.getElementById(id).hidden = true; });
+    try {
+      const { user } = await api.getUserInfo();
+      document.getElementById('acct-first').value = user.first_name;
+      document.getElementById('acct-last').value = user.last_name;
+      document.getElementById('acct-email').value = user.email;
+    } catch (err) {
+      const e = document.getElementById('account-error');
+      e.textContent = err.message;
+      e.hidden = false;
+    }
+  }
+
+  document.getElementById('account-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorEl = document.getElementById('account-error');
+    errorEl.hidden = true;
+    try {
+      await api.updateAccount({
+        first_name: document.getElementById('acct-first').value,
+        last_name: document.getElementById('acct-last').value,
+      });
+      flash(document.getElementById('account-ok'));
+      refreshHomeForSession();
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    }
+  });
+
+  document.getElementById('password-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorEl = document.getElementById('password-error');
+    errorEl.hidden = true;
+    const next = document.getElementById('pw-new').value;
+    if (next !== document.getElementById('pw-new2').value) {
+      errorEl.textContent = 'The two new passwords do not match.';
+      errorEl.hidden = false;
+      return;
+    }
+    try {
+      await api.changePassword({ current_password: document.getElementById('pw-current').value, new_password: next });
+      event.target.reset();
+      flash(document.getElementById('password-ok'));
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    }
+  });
+
+  document.getElementById('delete-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorEl = document.getElementById('delete-error');
+    errorEl.hidden = true;
+    if (!window.confirm('Delete your account permanently? This cannot be undone.')) return;
+    try {
+      await api.deleteAccount(document.getElementById('del-password').value);
+      window.location.reload();
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    }
+  });
+
+  // ===================== Study sessions =====================
+  let sessionPreselect = null;
+  const sessionsError = document.getElementById('sessions-error');
+
+  function formatSessionTime(hhmm) {
+    const [h, m] = hhmm.split(':').map(Number);
+    return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+  }
+
+  function sessionCard(s, buttons) {
+    const d = new Date(s.session_date + 'T00:00:00');
+    const mon = d.toLocaleDateString(undefined, { month: 'short' });
+    const weekday = d.toLocaleDateString(undefined, { weekday: 'long' });
+    return `
+      <div class="session-card">
+        <div class="session-when"><div class="day">${d.getDate()}</div><div class="mon">${escapeHtml(mon)}</div></div>
+        <div class="match-info">
+          <strong>${escapeHtml(s.topic)}</strong>
+          <div class="match-meta">with ${escapeHtml(s.other_first_name)} &middot; ${escapeHtml(weekday)} at ${formatSessionTime(s.session_time)} &middot; ${escapeHtml(s.place)}</div>
+          ${s.note ? `<div class="contact-line">${escapeHtml(s.note)}</div>` : ''}
+        </div>
+        <div class="person-actions">${buttons}</div>
+      </div>`;
+  }
+
+  async function loadSessions() {
+    sessionsError.hidden = true;
+    try {
+      const [data, buddyData] = await Promise.all([api.getSessions(), api.getBuddies()]);
+      setBadges({ buddies: buddyData.incoming.length + buddyData.unread_messages, sessions: buddyData.pending_sessions });
+
+      const answer = id => `
+        <button class="btn" data-session-action="accept" data-session-id="${id}">Accept</button>
+        <button class="btn secondary" data-session-action="decline" data-session-id="${id}">Decline</button>`;
+      const cancel = id => `<button class="btn secondary" data-session-action="cancel" data-session-id="${id}">Cancel</button>`;
+
+      const incoming = data.sessions.filter(s => s.status === 'proposed' && !s.mine);
+      const upcoming = data.sessions.filter(s => s.status === 'accepted');
+      const waiting = data.sessions.filter(s => s.status === 'proposed' && s.mine);
+
+      document.getElementById('sessions-incoming').innerHTML = incoming.map(s => sessionCard(s, answer(s.id))).join('') || '<p class="empty-note">Nothing to answer.</p>';
+      document.getElementById('sessions-upcoming').innerHTML = upcoming.map(s => sessionCard(s, cancel(s.id))).join('') || '<p class="empty-note">No upcoming sessions yet.</p>';
+      document.getElementById('sessions-waiting').innerHTML = waiting.map(s => sessionCard(s, cancel(s.id))).join('') || '<p class="empty-note">Nothing waiting.</p>';
+
+      document.getElementById('ss-place').innerHTML = data.places.map(p => `<option>${escapeHtml(p)}</option>`).join('');
+      const dateInput = document.getElementById('ss-date');
+      dateInput.min = data.today;
+
+      const select = document.getElementById('ss-buddy');
+      select.innerHTML = buddyData.buddies.map(b => `<option value="${b.user_id}">${escapeHtml(b.first_name)} ${escapeHtml(b.last_name)}</option>`).join('');
+      const form = document.getElementById('session-form');
+      if (!buddyData.buddies.length) {
+        select.innerHTML = '<option value="">You need a buddy first</option>';
+        form.querySelector('button[type="submit"]').disabled = true;
+      } else {
+        form.querySelector('button[type="submit"]').disabled = false;
+        if (sessionPreselect) select.value = String(sessionPreselect);
+      }
+      sessionPreselect = null;
+    } catch (err) {
+      sessionsError.textContent = err.message;
+      sessionsError.hidden = false;
+    }
+  }
+
+  document.getElementById('view-sessions').addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-session-action]');
+    if (!btn) return;
+    btn.disabled = true;
+    try {
+      await api.respondSession(Number(btn.dataset.sessionId), btn.dataset.sessionAction);
+    } catch (err) {
+      sessionsError.textContent = err.message;
+      sessionsError.hidden = false;
+    }
+    loadSessions();
+  });
+
+  document.getElementById('session-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorEl = document.getElementById('session-form-error');
+    errorEl.hidden = true;
+    try {
+      await api.proposeSession({
+        buddy_id: Number(document.getElementById('ss-buddy').value),
+        topic: document.getElementById('ss-topic').value,
+        session_date: document.getElementById('ss-date').value,
+        session_time: document.getElementById('ss-time').value,
+        place: document.getElementById('ss-place').value,
+        note: document.getElementById('ss-note').value,
+      });
+      document.getElementById('ss-topic').value = '';
+      document.getElementById('ss-note').value = '';
+      flash(document.getElementById('session-form-ok'));
+      loadSessions();
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    }
   });
 </script>
 </body>
