@@ -19,9 +19,11 @@ A study-buddy matching web app for Savannah State University students. Students 
 2. **Courses.** Search the course catalog or add a new course, pick preferred study locations, and set a weekly availability grid.
 3. **Profile.** Major, year, study times, study style, study place and what you want help with, stored in the `profiles` table.
 4. **Buddy matching.** Finds classmates who share a course and scores them out of 100 (shared courses, overlapping availability, same study style and place). You can send a buddy request to a classmate. Emails are never shown to other students.
-5. **Admin view.** A read-only, key-protected dashboard of the database (see below).
+5. **Accept or decline requests.** The student who receives a request answers it from **My Buddies**. Accepted buddies see each other's email; before that only first names are shown.
+6. **Messaging.** Accepted buddies can chat. Messages are limited to buddies, capped at 1,000 characters, shown as plain text, and the page checks for new ones every few seconds. A badge in the menu shows unanswered requests and unread messages.
+7. **Admin view.** A read-only, key-protected dashboard of the database (see below).
 
-Planned next: accepting or declining requests, messaging between buddies, password reset.
+Planned next: account settings (edit name, change password, delete account), password reset, study session scheduling.
 
 ## Project structure
 
@@ -36,7 +38,8 @@ find-a-buddy/
 │   ├── get_user_info.php
 │   ├── get_courses.php  save_courses.php
 │   ├── get_profile.php  save_profile.php
-│   ├── get_matches.php  send_request.php
+│   ├── get_matches.php  send_request.php  respond_request.php  get_buddies.php
+│   ├── get_messages.php  send_message.php
 │   ├── admin_view.php        # Read-only admin dashboard (needs ADMIN_KEY)
 │   ├── db.php                # PDO connection (MySQL locally, Postgres on Render)
 │   ├── config.example.php    # Template for local settings (real config.php is not committed)
@@ -50,7 +53,7 @@ find-a-buddy/
 
 ## Database tables
 
-`users`, `courses`, `user_courses` (who is in which course), `profiles`, `buddy_requests`, and `mascot_messages` (reserved for a future feature). The `profiles` table is created automatically the first time it is used.
+`users`, `courses`, `user_courses` (who is in which course), `profiles`, `buddy_requests` (pending, accepted or declined), `messages` (buddy chat), and `mascot_messages` (reserved for a future feature). The `profiles` and `messages` tables are created automatically the first time they are used.
 
 ## Running it locally (MySQL via Laragon)
 
