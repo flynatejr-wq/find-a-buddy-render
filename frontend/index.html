@@ -260,6 +260,25 @@
   .done-form select { padding: 0.65rem 0.8rem; border: 1px solid var(--line); border-radius: var(--r-sm); font-size: 0.9rem; background: var(--card); color: var(--ink-900); font-family: inherit; }
   .done-form .btn { width: auto; padding: 0.65rem 1rem; }
 
+  /* ---- Planner ---- */
+  .plan-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+  .plan-chip { font-size: 0.82rem; font-weight: 600; padding: 0.35rem 0.8rem; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+  .plan-chip.priority { border-color: var(--danger); color: var(--danger); }
+  .plan-warning { background: #fff4e5; border: 1px solid var(--orange-500); border-radius: var(--r-sm); padding: 0.7rem 0.9rem; font-size: 0.86rem; margin-bottom: 1rem; }
+  .plan-day { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 0.8rem 1rem; margin-bottom: 0.6rem; }
+  .plan-day h3 { margin: 0 0 0.5rem; font-size: 0.95rem; color: var(--navy-900); }
+  .plan-item { display: flex; gap: 0.8rem; align-items: baseline; font-size: 0.88rem; padding: 0.35rem 0.7rem; border-radius: 6px; margin-bottom: 0.3rem; border-left: 4px solid var(--line); background: var(--paper-50); }
+  .plan-item .when { min-width: 8.2rem; color: var(--ink-600); font-variant-numeric: tabular-nums; }
+  .plan-item.study { border-left-color: var(--orange-500); background: #fff4e5; }
+  .plan-item.study.priority { border-left-color: var(--danger); }
+  .plan-item .tag { margin-left: auto; font-size: 0.7rem; font-weight: 700; color: var(--danger); }
+  .plan-free { font-size: 0.84rem; color: var(--ink-400); }
+  .block-row { display: flex; align-items: center; gap: 0.8rem; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 0.55rem 0.9rem; margin-bottom: 0.45rem; font-size: 0.88rem; }
+  .block-row .day { min-width: 5.5rem; font-weight: 600; }
+  .block-row .when { min-width: 8.2rem; color: var(--ink-600); font-variant-numeric: tabular-nums; }
+  .block-row .what { flex: 1; min-width: 0; }
+  @media (max-width: 560px) { .plan-item { flex-wrap: wrap; gap: 0.2rem 0.8rem; } .block-row { flex-wrap: wrap; } }
+
   .save-status { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.8rem; color: var(--success); font-size: 0.9rem; font-weight: 600; }
 </style>
 </head>
@@ -714,6 +733,55 @@
   </main>
 </section>
 
+<!-- ===================== PLANNER VIEW ===================== -->
+<section id="view-planner" class="view">
+  <nav class="app-nav" data-current="planner"></nav>
+  <main class="app-main">
+    <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg> Study Planner</h1>
+    <p class="subhead">Add your class times and we will fit study time around them. Courses you are struggling in get the most time.</p>
+    <p id="planner-error" class="form-error" hidden></p>
+
+    <section class="block">
+      <h2>Your weekly schedule</h2>
+      <p class="block-note">Add each class and anything else that takes up your time, like work. Study blocks are never placed on top of these.</p>
+      <div id="planner-blocks"></div>
+      <form id="block-form" class="panel-card profile-form" novalidate>
+        <p id="block-error" class="form-error" hidden></p>
+        <div class="row">
+          <div class="field"><label for="bl-what">What</label><select id="bl-what"></select></div>
+          <div class="field"><label for="bl-day">Day</label>
+            <select id="bl-day"><option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select></div>
+        </div>
+        <div class="field" id="bl-label-wrap" hidden><label for="bl-label">Name</label><input id="bl-label" type="text" maxlength="60" placeholder="e.g. Work"></div>
+        <div class="row">
+          <div class="field"><label for="bl-start">Starts</label><input id="bl-start" type="time" required></div>
+          <div class="field"><label for="bl-end">Ends</label><input id="bl-end" type="time" required></div>
+        </div>
+        <button class="btn" type="submit" style="width:auto;">Add to my schedule</button>
+      </form>
+    </section>
+
+    <section class="block">
+      <h2>Study goal</h2>
+      <form id="prefs-form" class="panel-card profile-form" novalidate>
+        <p id="prefs-error" class="form-error" hidden></p>
+        <div class="field"><label for="pf-hours">Hours of study per week</label><input id="pf-hours" type="number" min="1" max="40" required></div>
+        <div class="row">
+          <div class="field"><label for="pf-from">Earliest I will study</label><input id="pf-from" type="time" required></div>
+          <div class="field"><label for="pf-to">Latest I will study</label><input id="pf-to" type="time" required></div>
+        </div>
+        <button class="btn" type="submit" style="width:auto;">Make my plan</button>
+      </form>
+    </section>
+
+    <section class="block">
+      <h2>Your study plan</h2>
+      <div id="plan-summary"></div>
+      <div id="plan-week"></div>
+    </section>
+  </main>
+</section>
+
 <script>
   // ===================== Shared API helper (inlined, formerly api.js) =====================
   const API_BASE = '../backend';
@@ -744,6 +812,9 @@
     getProfile: () => apiRequest('get_profile.php'),
     getMatches: () => apiRequest('get_matches.php'),
     getBuddies: () => apiRequest('get_buddies.php'),
+    getPlanner: () => apiRequest('get_planner.php'),
+    saveBlock: (payload) => apiRequest('save_block.php', { method: 'POST', body: JSON.stringify(payload) }),
+    savePlannerPrefs: (payload) => apiRequest('save_planner_prefs.php', { method: 'POST', body: JSON.stringify(payload) }),
     setProgress: (courseId, status) => apiRequest('set_progress.php', { method: 'POST', body: JSON.stringify({ course_id: courseId, status }) }),
     saveGrade: (payload) => apiRequest('save_grade.php', { method: 'POST', body: JSON.stringify(payload) }),
     updateAccount: (payload) => apiRequest('update_account.php', { method: 'POST', body: JSON.stringify(payload) }),
@@ -774,6 +845,7 @@
     ['matches', 'Find Buddies'],
     ['buddies', 'My Buddies'],
     ['sessions', 'Sessions'],
+    ['planner', 'Planner'],
     ['settings', 'Settings'],
   ];
   function renderAppNavs() {
@@ -811,7 +883,7 @@
 
   // ===================== View navigation =====================
   const views = document.querySelectorAll('.view');
-  const APP_VIEWS = ['profile', 'courses', 'matches', 'buddies', 'chat', 'sessions', 'settings'];
+  const APP_VIEWS = ['profile', 'courses', 'matches', 'buddies', 'chat', 'sessions', 'planner', 'settings'];
   function showView(name) {
     views.forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + name).classList.add('active');
@@ -822,6 +894,7 @@
     if (name === 'buddies') loadBuddies();
     if (name === 'sessions') loadSessions();
     if (name === 'settings') loadSettings();
+    if (name === 'planner') loadPlanner();
     if (APP_VIEWS.includes(name) && name !== 'buddies' && name !== 'sessions') updateBuddyBadge();
   }
   document.querySelectorAll('[data-nav]').forEach(el => {
@@ -1606,6 +1679,137 @@
       document.getElementById('ss-note').value = '';
       flash(document.getElementById('session-form-ok'));
       loadSessions();
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    }
+  });
+
+  // ===================== Study planner =====================
+  const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const plannerError = document.getElementById('planner-error');
+  let plannerData = null;
+
+  function formatDuration(minutes) {
+    const h = Math.floor(minutes / 60), m = minutes % 60;
+    return h && m ? `${h}h ${m}m` : h ? `${h}h` : `${m}m`;
+  }
+
+  async function loadPlanner() {
+    plannerError.hidden = true;
+    try {
+      plannerData = await api.getPlanner();
+      renderPlanner();
+    } catch (err) {
+      plannerError.textContent = err.message;
+      plannerError.hidden = false;
+    }
+  }
+
+  function renderPlanner() {
+    const d = plannerData;
+
+    // The "what" choices: my current courses, or something else.
+    const what = document.getElementById('bl-what');
+    const previous = what.value;
+    what.innerHTML = d.courses.map(c => `<option value="${escapeHtml(String(c.id))}">${escapeHtml(c.course_code)} class</option>`).join('') +
+      '<option value="0">Work or something else</option>';
+    if ([...what.options].some(o => o.value === previous)) what.value = previous;
+    document.getElementById('bl-label-wrap').hidden = what.value !== '0';
+
+    document.getElementById('pf-hours').value = d.prefs.hours;
+    document.getElementById('pf-from').value = d.prefs.day_start;
+    document.getElementById('pf-to').value = d.prefs.day_end;
+
+    // My saved schedule.
+    document.getElementById('planner-blocks').innerHTML = d.blocks.map(b => `
+      <div class="block-row">
+        <span class="day">${DAY_NAMES[b.day]}</span>
+        <span class="when">${formatSessionTime(b.start)} – ${formatSessionTime(b.end)}</span>
+        <span class="what">${escapeHtml(b.label)}</span>
+        <button class="btn-icon" data-remove-block="${b.id}" title="Remove" aria-label="Remove ${escapeHtml(b.label)} on ${DAY_NAMES[b.day]}">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        </button>
+      </div>`).join('') || '<p class="empty-note">Nothing added yet. Add your classes below so the plan works around them.</p>';
+
+    // Plan summary.
+    const summary = document.getElementById('plan-summary');
+    if (!d.courses.length) {
+      summary.innerHTML = '<p class="empty-note">Add your current courses first, then we can build a plan.</p>';
+      document.getElementById('plan-week').innerHTML = '';
+      return;
+    }
+    const chips = d.plan.summary.map(s => `<span class="plan-chip${s.progress === 'failing' ? ' priority' : ''}">${escapeHtml(s.course_code)} · ${formatDuration(s.planned_minutes)}${s.progress === 'failing' ? ' · priority' : ''}</span>`).join('');
+    const warning = d.plan.unplaced_minutes > 0
+      ? `<div class="plan-warning">Only part of your goal fit: ${formatDuration(d.plan.unplaced_minutes)} could not be placed. Widen your earliest and latest times, lower your weekly hours, or remove something from your schedule.</div>`
+      : '';
+    summary.innerHTML = `<div class="plan-chips">${chips}</div>${warning}`;
+
+    // The week: classes and study blocks together, in time order.
+    document.getElementById('plan-week').innerHTML = DAY_NAMES.map((name, day) => {
+      const items = [
+        ...d.blocks.filter(b => b.day === day).map(b => ({ start: b.start, end: b.end, label: b.label, kind: 'class' })),
+        ...d.plan.blocks.filter(b => b.day === day).map(b => ({ start: b.start, end: b.end, label: 'Study ' + b.course_code, kind: 'study', priority: b.priority })),
+      ].sort((a, b) => a.start.localeCompare(b.start));
+      const rows = items.map(i => `
+        <div class="plan-item ${i.kind}${i.priority ? ' priority' : ''}">
+          <span class="when">${formatSessionTime(i.start)} – ${formatSessionTime(i.end)}</span>
+          <span>${escapeHtml(i.label)}</span>
+          ${i.priority ? '<span class="tag">PRIORITY</span>' : ''}
+        </div>`).join('') || '<div class="plan-free">Free day</div>';
+      return `<div class="plan-day"><h3>${name}</h3>${rows}</div>`;
+    }).join('');
+  }
+
+  document.getElementById('bl-what').addEventListener('change', (event) => {
+    document.getElementById('bl-label-wrap').hidden = event.target.value !== '0';
+  });
+
+  document.getElementById('block-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorEl = document.getElementById('block-error');
+    errorEl.hidden = true;
+    try {
+      await api.saveBlock({
+        course_id: Number(document.getElementById('bl-what').value),
+        label: document.getElementById('bl-label').value,
+        day: Number(document.getElementById('bl-day').value),
+        start: document.getElementById('bl-start').value,
+        end: document.getElementById('bl-end').value,
+      });
+      document.getElementById('bl-label').value = '';
+      loadPlanner();
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    }
+  });
+
+  document.getElementById('planner-blocks').addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-remove-block]');
+    if (!btn) return;
+    btn.disabled = true;
+    try {
+      await api.saveBlock({ remove_id: Number(btn.dataset.removeBlock) });
+    } catch (err) {
+      plannerError.textContent = err.message;
+      plannerError.hidden = false;
+    }
+    loadPlanner();
+  });
+
+  document.getElementById('prefs-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const errorEl = document.getElementById('prefs-error');
+    errorEl.hidden = true;
+    try {
+      await api.savePlannerPrefs({
+        hours: Number(document.getElementById('pf-hours').value),
+        day_start: document.getElementById('pf-from').value,
+        day_end: document.getElementById('pf-to').value,
+      });
+      await loadPlanner();
+      document.getElementById('plan-summary').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       errorEl.textContent = err.message;
       errorEl.hidden = false;

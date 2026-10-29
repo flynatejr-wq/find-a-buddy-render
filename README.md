@@ -27,7 +27,9 @@ A study-buddy matching web app for Savannah State University students. Students 
 10. **Admin view.** A key-protected dashboard of the database (see below).
 11. **Grades, progress and tutor matching.** For each current course you mark **Passing** or **Failing, I would like help**. For finished courses you enter a final grade (A to F), which moves the course out of your current list. A grade of C or better counts as passed. Students who are failing a course are matched with students who passed it ("Passed CSCI 2231K, can help you"), even if the helper is no longer in the class, and they can send a buddy request. Other students only ever see that you passed or could use help, never your grade.
 
-Planned next: a study schedule planner, an AI helper that answers questions about your courses, notifications, a report/block option.
+12. **Study planner.** Enter your class times (and work or other commitments), a weekly study goal and the hours you are willing to study. The planner builds a week of study blocks that stay clear of your classes (with a 15 minute buffer), split into 30 to 90 minute blocks and spread over the week. Courses you marked **Failing** get the most time, **Passing** the least. If the goal does not fit, it tells you how much was left out.
+
+Planned next: an AI helper that answers questions about your courses, notifications, a report/block option.
 
 ## Project structure
 
@@ -46,6 +48,7 @@ find-a-buddy/
 │   ├── get_messages.php  send_message.php
 │   ├── get_sessions.php  propose_session.php  respond_session.php
 │   ├── set_progress.php  save_grade.php
+│   ├── get_planner.php  save_block.php  save_planner_prefs.php
 │   ├── update_account.php  change_password.php  delete_account.php
 │   ├── request_reset.php  reset_password.php
 │   ├── admin_view.php        # Read-only admin dashboard (needs ADMIN_KEY)
@@ -61,7 +64,7 @@ find-a-buddy/
 
 ## Database tables
 
-`users`, `courses`, `user_courses` (who is in which course), `profiles`, `buddy_requests` (pending, accepted or declined), `messages` (buddy chat), `study_sessions`, `password_resets`, `course_progress` (passing or failing in a current course), `course_grades` (final grades for finished courses), and `mascot_messages` (reserved for a future feature). The `profiles`, `messages`, `study_sessions`, `password_resets`, `course_progress` and `course_grades` tables are created automatically the first time they are used.
+`users`, `courses`, `user_courses` (who is in which course), `profiles`, `buddy_requests` (pending, accepted or declined), `messages` (buddy chat), `study_sessions`, `password_resets`, `course_progress` (passing or failing in a current course), `course_grades` (final grades for finished courses), `schedule_blocks` and `planner_settings` (the study planner), and `mascot_messages` (reserved for a future feature). The `profiles`, `messages`, `study_sessions`, `password_resets`, `course_progress`, `course_grades`, `schedule_blocks` and `planner_settings` tables are created automatically the first time they are used.
 
 ## Running it locally (MySQL via Laragon)
 
