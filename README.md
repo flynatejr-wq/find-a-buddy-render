@@ -25,8 +25,9 @@ A study-buddy matching web app for Savannah State University students. Students 
 8. **Account settings.** Edit your name, change your password (needs the current one), or delete your account and everything tied to it.
 9. **Password reset.** "Forgot your password?" sends a one-time link that expires in 1 hour (see below). Only a hash of the link's token is stored.
 10. **Admin view.** A key-protected dashboard of the database (see below).
+11. **Grades, progress and tutor matching.** For each current course you mark **Passing** or **Failing, I would like help**. For finished courses you enter a final grade (A to F), which moves the course out of your current list. A grade of C or better counts as passed. Students who are failing a course are matched with students who passed it ("Passed CSCI 2231K, can help you"), even if the helper is no longer in the class, and they can send a buddy request. Other students only ever see that you passed or could use help, never your grade.
 
-Planned next: the AI study mascot, notifications, a report/block option.
+Planned next: a study schedule planner, an AI helper that answers questions about your courses, notifications, a report/block option.
 
 ## Project structure
 
@@ -44,6 +45,7 @@ find-a-buddy/
 │   ├── get_matches.php  send_request.php  respond_request.php  get_buddies.php
 │   ├── get_messages.php  send_message.php
 │   ├── get_sessions.php  propose_session.php  respond_session.php
+│   ├── set_progress.php  save_grade.php
 │   ├── update_account.php  change_password.php  delete_account.php
 │   ├── request_reset.php  reset_password.php
 │   ├── admin_view.php        # Read-only admin dashboard (needs ADMIN_KEY)
@@ -59,7 +61,7 @@ find-a-buddy/
 
 ## Database tables
 
-`users`, `courses`, `user_courses` (who is in which course), `profiles`, `buddy_requests` (pending, accepted or declined), `messages` (buddy chat), `study_sessions`, `password_resets`, and `mascot_messages` (reserved for a future feature). The `profiles`, `messages`, `study_sessions` and `password_resets` tables are created automatically the first time they are used.
+`users`, `courses`, `user_courses` (who is in which course), `profiles`, `buddy_requests` (pending, accepted or declined), `messages` (buddy chat), `study_sessions`, `password_resets`, `course_progress` (passing or failing in a current course), `course_grades` (final grades for finished courses), and `mascot_messages` (reserved for a future feature). The `profiles`, `messages`, `study_sessions`, `password_resets`, `course_progress` and `course_grades` tables are created automatically the first time they are used.
 
 ## Running it locally (MySQL via Laragon)
 

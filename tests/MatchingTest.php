@@ -50,4 +50,37 @@ class MatchingTest extends TestCase
     {
         $this->assertSame(100, match_score(3, 5, true, true));
     }
+
+    public function test_help_courses_is_the_overlap(): void
+    {
+        $this->assertSame([2, 5], help_courses([1, 2, 5], [2, 5, 9]));
+        $this->assertSame([], help_courses([1], [2]));
+        $this->assertSame([], help_courses([], [2]));
+    }
+
+    public function test_someone_who_can_help_me_adds_twenty_five(): void
+    {
+        $this->assertSame(65, match_score(1, 0, false, false, true, false));
+    }
+
+    public function test_someone_i_can_help_adds_ten(): void
+    {
+        $this->assertSame(50, match_score(1, 0, false, false, false, true));
+    }
+
+    public function test_tutor_only_match_without_shared_course_has_a_base_score(): void
+    {
+        $this->assertSame(55, match_score(0, 0, false, false, true, false));
+        $this->assertSame(40, match_score(0, 0, false, false, false, true));
+    }
+
+    public function test_no_shared_course_and_no_help_relation_is_still_zero(): void
+    {
+        $this->assertSame(0, match_score(0, 5, true, true, false, false));
+    }
+
+    public function test_score_never_exceeds_one_hundred(): void
+    {
+        $this->assertSame(100, match_score(5, 9, true, true, true, true));
+    }
 }

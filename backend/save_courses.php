@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/check_session.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/lib/availability.php';
+require_once __DIR__ . '/lib/courses.php';
 
 $userId = require_login();
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -12,6 +13,11 @@ $pdo = get_db();
 if (!empty($input['remove_course_id'])) {
     $stmt = $pdo->prepare('DELETE FROM user_courses WHERE user_id = ? AND course_id = ?');
     $stmt->execute([$userId, (int) $input['remove_course_id']]);
+
+    // Progress only applies to courses I am currently taking.
+    ensure_standing_tables($pdo);
+    $pdo->prepare('DELETE FROM course_progress WHERE user_id = ? AND course_id = ?')
+        ->execute([$userId, (int) $input['remove_course_id']]);
 }
 
 if (isset($input['courses']) && is_array($input['courses'])) {
@@ -23,16 +29,7 @@ if (isset($input['courses']) && is_array($input['courses'])) {
             continue;
         }
 
-        $nullSafeEquals = db_is_postgres() ? 'section IS NOT DISTINCT FROM ?' : 'section <=> ?';
-        $stmt = $pdo->prepare("SELECT id FROM courses WHERE course_code = ? AND $nullSafeEquals");
-        $stmt->execute([$code, $section !== '' ? $section : null]);
-        $courseId = $stmt->fetchColumn();
-
-        if (!$courseId) {
-            $stmt = $pdo->prepare('INSERT INTO courses (course_code, section, course_name) VALUES (?, ?, ?)');
-            $stmt->execute([$code, $section !== '' ? $section : null, $name]);
-            $courseId = $pdo->lastInsertId();
-        }
+        $courseId = find_or_create_course($pdo, $code, $section, $name);
 
         $insertUserCourse = db_is_postgres()
             ? 'INSERT INTO user_courses (user_id, course_id) VALUES (?, ?) ON CONFLICT (user_id, course_id) DO NOTHING'

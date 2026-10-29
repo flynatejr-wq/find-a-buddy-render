@@ -244,6 +244,22 @@
   .session-card .match-info { flex: 1; min-width: 0; }
   @media (max-width: 560px) { .session-card { flex-wrap: wrap; } }
 
+  /* ---- Progress + completed courses ---- */
+  .course-main { min-width: 0; }
+  .progress-pick { display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
+  .pill-btn { font-family: inherit; font-size: 0.78rem; font-weight: 600; padding: 0.28rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink-600); cursor: pointer; }
+  .pill-btn:hover { border-color: var(--ink-400); }
+  .pill-btn.on-pass { background: #1a7f37; border-color: #1a7f37; color: #fff; }
+  .pill-btn.on-fail { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .block-note { font-size: 0.84rem; color: var(--ink-600); margin: -0.3rem 0 0.9rem; }
+  .grade-badge { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; width: 2rem; text-align: center; color: var(--navy-900); }
+  .grade-badge.fail { color: var(--danger); }
+  .match-tag.help { background: #dff3e4; color: #1a7f37; }
+  .match-tag.assist { background: #e1ebfb; color: var(--navy-900); }
+  .done-form { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.6rem; flex-wrap: wrap; }
+  .done-form select { padding: 0.65rem 0.8rem; border: 1px solid var(--line); border-radius: var(--r-sm); font-size: 0.9rem; background: var(--card); color: var(--ink-900); font-family: inherit; }
+  .done-form .btn { width: auto; padding: 0.65rem 1rem; }
+
   .save-status { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.8rem; color: var(--success); font-size: 0.9rem; font-weight: 600; }
 </style>
 </head>
@@ -425,7 +441,28 @@
 
     <section class="block">
       <h2>Current courses</h2>
+      <p class="block-note">Tell us how you are doing in each one. If you mark <strong>Failing</strong>, students who already passed that course can offer to help. They only see that you could use help, never a grade.</p>
       <ul id="course-list" style="list-style:none; margin:0; padding:0;"></ul>
+    </section>
+
+    <section class="block">
+      <h2>Completed courses</h2>
+      <p class="block-note">Finished a course? Enter your final grade. It moves out of your current courses. If you got a C or better, students struggling in it can ask you for help. Nobody else ever sees your grade, only that you passed.</p>
+      <ul id="completed-list" style="list-style:none; margin:0 0 0.8rem; padding:0;"></ul>
+      <div class="search-box">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="done-search" placeholder="Find a completed course" autocomplete="off">
+      </div>
+      <ul id="done-suggestions" class="suggestions" hidden></ul>
+      <form id="done-form" class="done-form" hidden>
+        <strong id="done-picked"></strong>
+        <select id="done-grade" aria-label="Final grade" required>
+          <option value="">Final grade…</option>
+          <option>A</option><option>B</option><option>C</option><option>D</option><option>F</option>
+        </select>
+        <button type="submit" class="btn">Save grade</button>
+      </form>
+      <p id="done-error" class="form-error" hidden style="margin-top:0.6rem;"></p>
     </section>
 
     <section class="block">
@@ -523,7 +560,7 @@
   <nav class="app-nav" data-current="matches"></nav>
   <main class="app-main">
     <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><circle cx="17" cy="9" r="2.3"/><path d="M16 14c2.8.3 5 2.4 5 5"/></svg> Find Buddies</h1>
-    <p class="subhead">Classmates who share a course with you. Only first names are shown.</p>
+    <p class="subhead">Classmates who share a course with you, plus students who can help with a course you are struggling in. Only first names are shown.</p>
     <p id="matches-error" class="form-error" hidden></p>
     <div id="matches-list"></div>
   </main>
@@ -707,6 +744,8 @@
     getProfile: () => apiRequest('get_profile.php'),
     getMatches: () => apiRequest('get_matches.php'),
     getBuddies: () => apiRequest('get_buddies.php'),
+    setProgress: (courseId, status) => apiRequest('set_progress.php', { method: 'POST', body: JSON.stringify({ course_id: courseId, status }) }),
+    saveGrade: (payload) => apiRequest('save_grade.php', { method: 'POST', body: JSON.stringify(payload) }),
     updateAccount: (payload) => apiRequest('update_account.php', { method: 'POST', body: JSON.stringify(payload) }),
     changePassword: (payload) => apiRequest('change_password.php', { method: 'POST', body: JSON.stringify(payload) }),
     deleteAccount: (password) => apiRequest('delete_account.php', { method: 'POST', body: JSON.stringify({ password }) }),
@@ -920,16 +959,53 @@
   const newCourseNameInput = document.getElementById('new-course-name');
   let pendingNewCourseCode = '';
 
+  const completedListEl = document.getElementById('completed-list');
+
   async function loadCourses() {
-    const { courses } = await api.getCourses();
+    const { courses, completed } = await api.getCourses();
     courseListEl.innerHTML = courses.map(c => `
       <li class="course-row">
-        <div><span class="course-code">${escapeHtml(c.course_code)}</span>${c.section ? ' — ' + escapeHtml(c.section) : ''} <span class="course-name">${escapeHtml(c.course_name) || ''}</span></div>
+        <div class="course-main">
+          <div><span class="course-code">${escapeHtml(c.course_code)}</span>${c.section ? ' — ' + escapeHtml(c.section) : ''} <span class="course-name">${escapeHtml(c.course_name) || ''}</span></div>
+          <div class="progress-pick" role="group" aria-label="How are you doing in ${escapeHtml(c.course_code)}?">
+            <button type="button" class="pill-btn${c.progress === 'passing' ? ' on-pass' : ''}" data-progress="passing" data-course="${escapeHtml(String(c.id))}" aria-pressed="${c.progress === 'passing'}">Passing</button>
+            <button type="button" class="pill-btn${c.progress === 'failing' ? ' on-fail' : ''}" data-progress="failing" data-course="${escapeHtml(String(c.id))}" aria-pressed="${c.progress === 'failing'}">Failing, I would like help</button>
+          </div>
+        </div>
         <button class="btn-icon" data-remove="${escapeHtml(String(c.id))}" title="Remove">
           <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
         </button>
       </li>
     `).join('') || '<li class="empty-note">No courses yet — search above to add your first one.</li>';
+
+    completedListEl.innerHTML = completed.map(c => `
+      <li class="course-row">
+        <div class="course-main">
+          <span class="course-code">${escapeHtml(c.course_code)}</span>${c.section ? ' — ' + escapeHtml(c.section) : ''} <span class="course-name">${escapeHtml(c.course_name) || ''}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <span class="grade-badge${c.passed ? '' : ' fail'}" title="${c.passed ? 'Passed' : 'Not passed'}">${escapeHtml(c.grade)}</span>
+          <button class="btn-icon" data-remove-done="${escapeHtml(String(c.id))}" title="Remove">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          </button>
+        </div>
+      </li>
+    `).join('') || '<li class="empty-note">No completed courses yet.</li>';
+
+    courseListEl.querySelectorAll('[data-progress]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        // Clicking the selected choice clears it.
+        const next = btn.classList.contains('on-pass') || btn.classList.contains('on-fail') ? null : btn.dataset.progress;
+        await api.setProgress(Number(btn.dataset.course), next);
+        loadCourses();
+      });
+    });
+    completedListEl.querySelectorAll('[data-remove-done]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await api.saveGrade({ remove_course_id: Number(btn.dataset.removeDone) });
+        loadCourses();
+      });
+    });
 
     courseListEl.querySelectorAll('[data-remove]').forEach(btn => {
       btn.addEventListener('click', async () => {
@@ -977,6 +1053,50 @@
     newCourseForm.hidden = true;
     searchInput.value = '';
     loadCourses();
+  });
+
+  // ---- Completed courses ----
+  const doneSearch = document.getElementById('done-search');
+  const doneSuggestions = document.getElementById('done-suggestions');
+  const doneForm = document.getElementById('done-form');
+  const doneError = document.getElementById('done-error');
+  let donePick = null;
+
+  doneSearch.addEventListener('input', async () => {
+    const q = doneSearch.value.trim();
+    doneForm.hidden = true;
+    if (q.length < 2) { doneSuggestions.hidden = true; return; }
+    const { courses } = await api.getCourses(q);
+    doneSuggestions.innerHTML = courses.map(c =>
+      `<li data-code="${escapeHtml(c.course_code)}" data-section="${escapeHtml(c.section || '')}" data-name="${escapeHtml(c.course_name || '')}">${escapeHtml(c.course_code)}${c.section ? ' — ' + escapeHtml(c.section) : ''} ${escapeHtml(c.course_name) || ''}</li>`
+    ).join('') + `<li data-code="${escapeHtml(q)}" data-section="" data-name="">+ Use "${escapeHtml(q)}" as a new course</li>`;
+    doneSuggestions.hidden = false;
+  });
+
+  doneSuggestions.addEventListener('click', (event) => {
+    const li = event.target.closest('li');
+    if (!li) return;
+    donePick = { course_code: li.dataset.code, section: li.dataset.section, course_name: li.dataset.name };
+    doneSuggestions.hidden = true;
+    doneSearch.value = '';
+    document.getElementById('done-picked').textContent = donePick.course_code + (donePick.section ? ' — ' + donePick.section : '');
+    document.getElementById('done-grade').value = '';
+    doneForm.hidden = false;
+    document.getElementById('done-grade').focus();
+  });
+
+  doneForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    doneError.hidden = true;
+    try {
+      await api.saveGrade({ course: donePick, grade: document.getElementById('done-grade').value });
+      doneForm.hidden = true;
+      donePick = null;
+      loadCourses();
+    } catch (err) {
+      doneError.textContent = err.message;
+      doneError.hidden = false;
+    }
   });
 
   document.querySelectorAll('.loc-pill').forEach(pill => {
@@ -1081,6 +1201,8 @@
       }
       matchesList.innerHTML = data.matches.map(m => {
         const courses = m.shared_courses.map(c => `<span class="match-tag course">${escapeHtml(c.course_code)}</span>`).join('');
+        const helps = m.can_help_you.map(c => `<span class="match-tag help">Passed ${escapeHtml(c)}, can help you</span>`).join('');
+        const assists = m.you_can_help.map(c => `<span class="match-tag assist">Could use your help in ${escapeHtml(c)}</span>`).join('');
         const slots = m.shared_slots.length ? `<span class="match-tag">${m.shared_slots.length} shared time slot${m.shared_slots.length === 1 ? '' : 's'}</span>` : '';
         const meta = [m.major, m.year].filter(Boolean).map(escapeHtml).join(', ');
         const incoming = m.request_status === 'pending' && !m.request_sent_by_me;
@@ -1091,7 +1213,7 @@
             <div class="match-info">
               <div class="match-top"><strong>${escapeHtml(m.first_name)}</strong><span class="match-score">${m.score}% match</span></div>
               <div class="match-meta">${meta || 'Profile not filled in yet'}</div>
-              <div class="match-tags">${courses}${slots}</div>
+              <div class="match-tags">${helps}${assists}${courses}${slots}</div>
             </div>
             <button class="btn" ${incoming ? 'data-respond="1"' : `data-request="${m.user_id}"`} ${available ? '' : 'disabled'}>${requestButtonLabel(m)}</button>
           </div>`;

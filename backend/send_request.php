@@ -3,6 +3,7 @@
 header('Content-Type: application/json');
 require_once __DIR__ . '/check_session.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/lib/courses.php';
 
 function fail(int $code, string $message): void
 {
@@ -27,18 +28,11 @@ if (!$stmt->fetchColumn()) {
     fail(404, 'That student no longer exists.');
 }
 
-// Only classmates can be sent a request, which also keeps strangers from being spammed.
-$stmt = $pdo->prepare('
-    SELECT a.course_id
-    FROM user_courses a
-    JOIN user_courses b ON b.course_id = a.course_id
-    WHERE a.user_id = ? AND b.user_id = ?
-    ORDER BY a.course_id
-');
-$stmt->execute([$userId, $receiverId]);
-$courseId = $stmt->fetchColumn();
-if (!$courseId) {
-    fail(403, 'You can only send requests to students who share a course with you.');
+// Only classmates, or a student who passed a course you are failing (or the reverse), can be
+// sent a request. This also keeps strangers from being spammed.
+$courseId = connection_course_id($pdo, $userId, $receiverId);
+if ($courseId === null) {
+    fail(403, 'You can only send requests to students who share a course with you or can help with one.');
 }
 
 $stmt = $pdo->prepare('

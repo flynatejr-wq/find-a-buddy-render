@@ -85,3 +85,19 @@ CREATE TABLE IF NOT EXISTS password_resets (
   used SMALLINT NOT NULL DEFAULT 0,
   created_at BIGINT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS course_progress (
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  course_id INT NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+  status VARCHAR(10) NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, course_id)
+);
+
+CREATE TABLE IF NOT EXISTS course_grades (
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  course_id INT NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+  grade CHAR(1) NOT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, course_id)
+);
