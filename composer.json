@@ -2,5 +2,9 @@
     "name": "flynatejr/find-a-buddy",
     "require-dev": {
         "phpunit/phpunit": "^10"
+    },
+    "require": {
+        "anthropic-ai/sdk": "^1.3",
+        "guzzlehttp/guzzle": "^8.3"
     }
 }

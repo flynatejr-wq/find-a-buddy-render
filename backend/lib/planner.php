@@ -8,6 +8,7 @@ const PLAN_DEFAULT_HOURS = 10;
 const PLAN_DEFAULT_START = 480;   // 08:00
 const PLAN_DEFAULT_END = 1260;    // 21:00
 const PLAN_MAX_BLOCKS = 60;
+const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 /** 'HH:MM' (24 hour) to minutes after midnight, or null if it is not a valid time. */
 function parse_hhmm($value): ?int
@@ -21,6 +22,23 @@ function parse_hhmm($value): ?int
 function format_hhmm(int $minutes): string
 {
     return sprintf('%02d:%02d', intdiv($minutes, 60), $minutes % 60);
+}
+
+/** A weekday as 0 (Monday) to 6 (Sunday), from a number or a name like "Mon" or "wednesday". Null if unclear. */
+function parse_day($value): ?int
+{
+    if (is_int($value) || (is_string($value) && preg_match('/^[0-6]$/', trim($value)))) {
+        $n = (int) $value;
+        return $n >= 0 && $n <= 6 ? $n : null;
+    }
+    if (!is_string($value)) {
+        return null;
+    }
+    $names = ['mon' => 0, 'tue' => 1, 'wed' => 2, 'thu' => 3, 'fri' => 4, 'sat' => 5, 'sun' => 6];
+    $key = strtolower(substr(trim($value), 0, 3));
+    $full = strtolower(trim($value));
+    $isName = in_array($full, ['mon', 'monday', 'tue', 'tues', 'tuesday', 'wed', 'wednesday', 'thu', 'thur', 'thurs', 'thursday', 'fri', 'friday', 'sat', 'saturday', 'sun', 'sunday'], true);
+    return $isName ? $names[$key] : null;
 }
 
 /**

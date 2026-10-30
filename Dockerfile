@@ -1,3 +1,10 @@
+# Stage 1: install the PHP libraries (the Anthropic SDK for the AI assistant). Dev tools are left out.
+FROM composer:2 AS vendor
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
+
+# Stage 2: the web server.
 FROM php:8.3-apache
 
 RUN apt-get update && apt-get install -y libpq-dev \
@@ -5,6 +12,7 @@ RUN apt-get update && apt-get install -y libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /var/www/html/
+COPY --from=vendor /app/vendor /var/www/html/vendor
 
 RUN echo '<?php header("Location: frontend/index.html"); exit; ?>' > /var/www/html/index.php
 

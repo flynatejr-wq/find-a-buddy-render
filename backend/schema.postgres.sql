@@ -98,6 +98,7 @@ CREATE TABLE IF NOT EXISTS course_grades (
   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   course_id INT NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   grade CHAR(1) NOT NULL,
+  available_to_help SMALLINT NOT NULL DEFAULT 0,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, course_id)
 );

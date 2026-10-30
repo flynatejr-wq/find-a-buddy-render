@@ -32,7 +32,7 @@ $courses = $stmt->fetchAll();
 
 // Courses I have finished, with my grade (only ever shown to me).
 $stmt = $pdo->prepare('
-    SELECT c.id, c.course_code, c.section, c.course_name, g.grade
+    SELECT c.id, c.course_code, c.section, c.course_name, g.grade, g.available_to_help
     FROM course_grades g
     JOIN courses c ON c.id = g.course_id
     WHERE g.user_id = ?
@@ -41,6 +41,7 @@ $stmt = $pdo->prepare('
 $stmt->execute([$userId]);
 $completed = array_map(function ($row) {
     $row['passed'] = grade_is_passing($row['grade']);
+    $row['available_to_help'] = (bool) $row['available_to_help'];
     return $row;
 }, $stmt->fetchAll());
 

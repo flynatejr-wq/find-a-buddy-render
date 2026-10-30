@@ -3,6 +3,12 @@
 require_once __DIR__ . '/../db.php';
 require_once __DIR__ . '/grades.php';
 
+/** "csci   2231k" becomes "CSCI 2231K", so the same course typed differently is found as one. */
+function normalize_course_code(string $code): string
+{
+    return mb_strtoupper(trim(preg_replace('/\s+/', ' ', $code)));
+}
+
 /** Finds a course by code and section, creating it if it does not exist. Returns its id. */
 function find_or_create_course(PDO $pdo, string $code, string $section, string $name): int
 {
@@ -43,7 +49,7 @@ function connection_course_id(PDO $pdo, int $a, int $b): ?int
         SELECT p.course_id FROM course_progress p
         JOIN user_courses uc ON uc.user_id = p.user_id AND uc.course_id = p.course_id
         JOIN course_grades g ON g.course_id = p.course_id AND g.user_id = ?
-        WHERE p.user_id = ? AND p.status = 'failing' AND g.grade IN ($passed)
+        WHERE p.user_id = ? AND p.status = 'failing' AND g.grade IN ($passed) AND g.available_to_help = 1
         ORDER BY p.course_id LIMIT 1
     ");
     foreach ([[$b, $a], [$a, $b]] as [$helper, $learner]) {

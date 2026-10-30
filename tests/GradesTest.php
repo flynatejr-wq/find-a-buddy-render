@@ -43,6 +43,23 @@ class GradesTest extends TestCase
         $this->assertNull(clean_progress(null));
     }
 
+    public function test_availability_answer_accepts_clear_yes_and_no(): void
+    {
+        foreach ([true, 1, '1', 'yes', 'YES', 'true'] as $yes) {
+            $this->assertTrue(parse_available_flag($yes), var_export($yes, true));
+        }
+        foreach ([false, 0, '0', 'no', 'No', 'false'] as $no) {
+            $this->assertFalse(parse_available_flag($no), var_export($no, true));
+        }
+    }
+
+    public function test_availability_answer_must_be_given(): void
+    {
+        foreach ([null, '', 'maybe', [], 2, 'y'] as $bad) {
+            $this->assertNull(parse_available_flag($bad), var_export($bad, true));
+        }
+    }
+
     public function test_passing_grades_constant_matches_rule(): void
     {
         $this->assertSame(['A', 'B', 'C'], PASSING_GRADES);
