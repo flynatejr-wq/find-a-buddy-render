@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y libpq-dev \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql \
     && rm -rf /var/lib/apt/lists/*
 
+# Production PHP settings: errors are logged, never shown to visitors (no file paths or hosts leaked).
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
 COPY . /var/www/html/
 COPY --from=vendor /app/vendor /var/www/html/vendor
 
