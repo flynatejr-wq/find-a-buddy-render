@@ -301,18 +301,31 @@ function ai_usage_today(PDO $pdo, int $userId): array
     return ['user' => $mine, 'global' => $all];
 }
 
-function ai_store_message(PDO $pdo, int $userId, string $sender, string $text): void
+/** Adds the "meta" column (what the assistant did in a turn) to chat tables made before it existed. */
+function ai_ensure_meta_column(PDO $pdo): void
 {
+    static $done = false;
+    if (!$done) {
+        ensure_column($pdo, 'mascot_messages', 'meta', 'TEXT');
+        $done = true;
+    }
+}
+
+/** Saves one chat message. $meta is JSON describing what the assistant did, kept for its own memory. */
+function ai_store_message(PDO $pdo, int $userId, string $sender, string $text, ?string $meta = null): void
+{
+    ai_ensure_meta_column($pdo);
     $cast = db_is_postgres() ? 'CAST(? AS mascot_sender)' : '?';
-    $pdo->prepare("INSERT INTO mascot_messages (user_id, sender, message) VALUES (?, $cast, ?)")->execute([$userId, $sender, $text]);
+    $pdo->prepare("INSERT INTO mascot_messages (user_id, sender, message, meta) VALUES (?, $cast, ?, ?)")->execute([$userId, $sender, $text, $meta]);
 }
 
 /** The student's saved chat, oldest first. */
 function ai_recent_messages(PDO $pdo, int $userId, int $limit): array
 {
+    ai_ensure_meta_column($pdo);
     $stmt = $pdo->prepare("
-        SELECT sender, message, created_at FROM (
-            SELECT id, sender, message, created_at FROM mascot_messages WHERE user_id = ? ORDER BY id DESC LIMIT $limit
+        SELECT sender, message, meta, created_at FROM (
+            SELECT id, sender, message, meta, created_at FROM mascot_messages WHERE user_id = ? ORDER BY id DESC LIMIT $limit
         ) recent ORDER BY id ASC
     ");
     $stmt->execute([$userId]);
@@ -347,12 +360,21 @@ function ai_handle_chat(PDO $pdo, int $userId, string $message, Anthropic\Client
 
     $result = ai_run_conversation($send, $messages, $runTool, AI_MAX_ROUNDS, microtime(true) + 75);
 
-    ai_store_message($pdo, $userId, 'mascot', $result['text']);
-
     // If the schedule changed after the plan was built, show the up-to-date plan.
     if ($effects['plan'] !== null) {
         $effects['plan'] = compute_planner_data($pdo, $userId);
     }
+
+    // Remember what was done this turn, so the next message knows it really happened.
+    $meta = $result['tools_used'] || $effects['changes']
+        ? json_encode([
+            'tools' => $result['tools_used'],
+            'changes' => $effects['changes'],
+            'showed_plan' => $effects['plan'] !== null,
+            'showed_partners' => count($effects['cards']),
+        ])
+        : null;
+    ai_store_message($pdo, $userId, 'mascot', $result['text'], $meta);
 
     return [
         'reply' => $result['text'],

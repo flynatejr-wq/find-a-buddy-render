@@ -41,6 +41,7 @@ CREATE TABLE mascot_messages (
   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   sender mascot_sender NOT NULL,
   message TEXT NOT NULL,
+  meta TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

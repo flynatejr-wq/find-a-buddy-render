@@ -45,6 +45,7 @@ CREATE TABLE mascot_messages (
   user_id INT NOT NULL,
   sender ENUM('user','mascot') NOT NULL,
   message TEXT NOT NULL,
+  meta TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
