@@ -119,3 +119,33 @@ CREATE TABLE IF NOT EXISTS planner_settings (
   day_start SMALLINT NOT NULL,
   day_end SMALLINT NOT NULL
 );
+
+-- Lock the tables down. Supabase (and similar hosts) expose the public schema through a web API for
+-- the roles "anon" and "authenticated". This app talks to the database directly as the table owner,
+-- which is not affected, so no API access is wanted at all: switch on row level security with no
+-- policies (blocks everything) and remove any grants those roles were given. Harmless on other hosts.
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_courses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE buddy_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE mascot_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE study_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE password_resets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE course_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE course_grades ENABLE ROW LEVEL SECURITY;
+ALTER TABLE schedule_blocks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE planner_settings ENABLE ROW LEVEL SECURITY;
+
+DO $$
+DECLARE r text;
+BEGIN
+  FOREACH r IN ARRAY ARRAY['anon', 'authenticated'] LOOP
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = r) THEN
+      EXECUTE format('REVOKE ALL ON ALL TABLES IN SCHEMA public FROM %I', r);
+      EXECUTE format('REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM %I', r);
+    END IF;
+  END LOOP;
+END
+$$;

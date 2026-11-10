@@ -115,6 +115,17 @@ Reset links can be emailed with [Resend](https://resend.com). Set these environm
 
 `APP_URL` is used to build the link, so the link can never be pointed at another site through a forged request. If any of the three is missing, the Forgot password page says emails are not set up yet, and an admin can create a one-time link for a student from the admin page instead.
 
+## Using Supabase (or another hosted Postgres)
+
+Any Postgres host works. Set `DATABASE_URL` to its connection address and the app creates its own tables on the first request. For Supabase:
+
+1. Create a project and choose a database password (letters and numbers keep it simple).
+2. Click **Connect** and copy the **Session pooler** address. Do not use *Direct connection* (it needs IPv6, which many hosts lack) or *Transaction pooler* (it does not support prepared statements). It looks like `postgresql://postgres.PROJECTREF:PASSWORD@aws-0-REGION.pooler.supabase.com:5432/postgres`.
+3. Put your real password in place of `PASSWORD` (percent-encode special characters) and add `?sslmode=require` to the end.
+4. Set that as `DATABASE_URL` on the server.
+
+The schema turns on row level security for every table and removes the `anon` and `authenticated` roles' access, so Supabase's built-in web API cannot read or change app data. The app connects directly as the table owner, which is unaffected. Free Supabase projects are paused after about a week with little database activity and can be resumed from the dashboard.
+
 ## Running the tests
 
 ```bash
