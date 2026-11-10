@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Find a Buddy — SSU</title>
+<meta name="theme-color" content="#0a3a8c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a3a8c'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' font-family='Arial' font-weight='700' fill='%23ff7a1a'%3EF%3C/text%3E%3C/svg%3E">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
@@ -321,6 +323,205 @@
   @media (max-width: 420px) { .email-group input { flex-basis: 100%; } .email-suffix { flex: 1 1 100%; border-left: 0; border-top: 1px solid var(--line); padding: 0.4rem 0.8rem; } }
 
   .save-status { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.8rem; color: var(--success); font-size: 0.9rem; font-weight: 600; }
+
+  /* =====================================================================
+     POLISH LAYER: depth, motion and finish. Loaded last so it refines the styles above.
+     ===================================================================== */
+  :root {
+    --shadow-sm: 0 1px 2px rgba(23,19,16,0.06), 0 1px 1px rgba(23,19,16,0.04);
+    --shadow-md: 0 8px 20px -8px rgba(23,19,16,0.18), 0 2px 5px rgba(23,19,16,0.05);
+    --shadow-lg: 0 22px 44px -18px rgba(10,58,140,0.32), 0 5px 12px rgba(23,19,16,0.06);
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --ring: 0 0 0 3px rgba(255,122,26,0.28);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: radial-gradient(1100px 420px at 50% -140px, rgba(255,122,26,0.10), transparent 62%), var(--paper-50); }
+  ::selection { background: rgba(255,122,26,0.3); }
+
+  /* ---- Keyframes ---- */
+  @keyframes viewIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px) scale(0.985); } to { opacity: 1; transform: none; } }
+  @keyframes popIn { from { opacity: 0; transform: translateY(6px) scale(0.96); } to { opacity: 1; transform: none; } }
+  @keyframes shimmer { 100% { transform: translateX(100%); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes floaty { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -16px, 0); } }
+  @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  @keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
+  @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
+  @keyframes dots { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+  @keyframes grow { from { width: 0; } }
+
+  /* ---- Screen changes and list entrances ---- */
+  .view.active { animation: viewIn 0.38s var(--ease) backwards; }
+  .stagger > * { animation: fadeUp 0.45s var(--ease) backwards; }
+  .stagger > *:nth-child(1) { animation-delay: 0.02s; } .stagger > *:nth-child(2) { animation-delay: 0.07s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.12s; } .stagger > *:nth-child(4) { animation-delay: 0.17s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.22s; } .stagger > *:nth-child(6) { animation-delay: 0.27s; }
+  .stagger > *:nth-child(7) { animation-delay: 0.32s; } .stagger > *:nth-child(8) { animation-delay: 0.37s; }
+  .stagger > *:nth-child(n+9) { animation-delay: 0.42s; }
+
+  /* ---- Cards: depth, and a lift on hover ---- */
+  .info-card, .panel-card, .person-card, .match-card, .session-card, .course-row, .block-row, .plan-day, .auth-card, .chat-messages, .ai-thread, .home-cta-band {
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s;
+  }
+  .info-card:hover, .person-card:hover, .match-card:hover, .session-card:hover, .plan-day:hover, .course-row:hover, .block-row:hover {
+    transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: #cdbf9f;
+  }
+  .ai-cards .match-card:hover { transform: translateY(-2px); }
+  .empty-note { text-align: center; padding: 1.4rem 1rem; background: rgba(255,255,255,0.6); border: 1.5px dashed var(--line); border-radius: var(--r-md); color: var(--ink-600); }
+
+  /* ---- Buttons ---- */
+  .btn {
+    background: linear-gradient(180deg, #ff8d3a, var(--orange-500) 55%, var(--orange-600));
+    box-shadow: 0 1px 0 rgba(255,255,255,0.28) inset, 0 5px 12px -5px rgba(232,98,12,0.6);
+    transition: transform 0.15s var(--ease), box-shadow 0.2s, filter 0.2s;
+  }
+  .btn:hover { background: linear-gradient(180deg, #ff8d3a, var(--orange-500) 55%, var(--orange-600)); filter: brightness(1.05); transform: translateY(-1px); box-shadow: 0 1px 0 rgba(255,255,255,0.28) inset, 0 9px 16px -6px rgba(232,98,12,0.65); }
+  .btn:active { transform: translateY(0) scale(0.98); }
+  .btn:disabled, .btn:disabled:hover { filter: none; transform: none; box-shadow: none; opacity: 0.6; }
+  .btn.secondary, .btn.secondary:hover { background: transparent; box-shadow: none; }
+  .btn.secondary:hover { background: rgba(10,58,140,0.08); }
+  .btn.outline-light, .btn.outline-light:hover { background: transparent; box-shadow: none; }
+  .btn.outline-light:hover { background: rgba(250,247,240,0.12); }
+  .btn.danger, .btn.danger:hover { background: var(--danger); box-shadow: none; }
+  .btn:focus-visible, .nav-link:focus-visible, .nav-toggle:focus-visible, .pill-btn:focus-visible, .ai-chip:focus-visible, .link-btn:focus-visible, .help-toggle:focus-visible, .wordmark:focus-visible { outline: none; box-shadow: var(--ring); }
+  #login-submit:disabled::after, #register-submit:disabled::after, #profile-submit:disabled::after, #ss-submit:disabled::after {
+    content: ''; width: 0.95em; height: 0.95em; border: 2px solid rgba(255,255,255,0.45); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-left: 0.5rem; display: inline-block;
+  }
+
+  /* ---- Form fields ---- */
+  .field input, .profile-form .field select, .profile-form .field textarea, .done-form select, .chat-form input, .search-box input, .new-course-form input, .field select {
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .field input:focus, .profile-form .field select:focus, .profile-form .field textarea:focus, .done-form select:focus, .chat-form input:focus, .search-box input:focus, .new-course-form input:focus {
+    outline: none; border-color: var(--orange-500); box-shadow: var(--ring); background: #fff;
+  }
+  .email-group { transition: border-color 0.2s, box-shadow 0.2s; }
+  .email-group:focus-within { box-shadow: var(--ring); background: #fff; }
+  .form-error { animation: shake 0.45s; border-left: 4px solid var(--danger); }
+  .form-success { animation: fadeUp 0.35s var(--ease); border-left: 4px solid var(--success); }
+
+  /* ---- Top bars ---- */
+  .public-nav { position: sticky; top: 0; z-index: 30; background: rgba(242,237,225,0.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .public-nav .wordmark { transition: transform 0.2s var(--ease); }
+  .public-nav .wordmark:hover { transform: scale(1.04); }
+  .link-btn { transition: color 0.2s; }
+  .link-btn:hover { color: var(--orange-600); }
+
+  .app-nav { position: sticky; top: 0; z-index: 40; background: linear-gradient(180deg, #0c42a1, var(--navy-900)); box-shadow: 0 8px 22px -12px rgba(10,58,140,0.75); gap: 0.4rem; }
+  .app-nav .nav-links { display: flex; align-items: center; gap: 0.2rem; flex-wrap: wrap; }
+  .app-nav button.nav-link { border-radius: 999px; padding: 0.5rem 0.85rem; position: relative; transition: background 0.2s, color 0.2s, box-shadow 0.2s; }
+  .app-nav button.nav-link:hover { background: rgba(250,247,240,0.13); color: #fff; }
+  .app-nav button.nav-link.current, .app-nav button.nav-link.current:hover { color: var(--navy-900); background: linear-gradient(180deg, #ff8d3a, var(--orange-500)); box-shadow: 0 6px 14px -5px rgba(255,122,26,0.85); }
+  .app-nav .logout:hover { background: rgba(250,247,240,0.13); }
+  .app-nav .wordmark { transition: transform 0.2s var(--ease); }
+  .app-nav .wordmark:hover { transform: scale(1.04); }
+  .nav-badge { box-shadow: 0 2px 6px -1px rgba(232,98,12,0.7); }
+  .nav-badge.bump { animation: bump 0.4s var(--ease); }
+  .nav-toggle { display: none; }
+  @media (max-width: 1180px) {
+    .nav-toggle { display: inline-flex; align-items: center; gap: 0.45rem; background: rgba(250,247,240,0.14); color: var(--paper-0); border: 0; border-radius: 999px; padding: 0.5rem 0.95rem; font: 600 0.86rem 'IBM Plex Sans', sans-serif; cursor: pointer; transition: background 0.2s; }
+    .nav-toggle:hover { background: rgba(250,247,240,0.22); }
+    .app-nav .wordmark { margin-right: 0; flex: 1; text-align: left; }
+    .app-nav .nav-links { display: none; width: 100%; flex-direction: column; align-items: stretch; margin-top: 0.5rem; gap: 0.15rem; }
+    .app-nav.open .nav-links { display: flex; animation: slideDown 0.25s var(--ease) both; }
+    .app-nav .nav-links .nav-link { text-align: left; border-radius: var(--r-sm); padding: 0.8rem 1rem; display: flex; align-items: center; justify-content: space-between; }
+    .app-nav .nav-links .logout { border: 0; border-top: 1px solid rgba(250,247,240,0.18); border-radius: 0 0 var(--r-sm) var(--r-sm); margin-top: 0.3rem; }
+  }
+
+  /* ---- Page headers and section titles ---- */
+  main.app-main h1.display { font-size: 2.3rem; position: relative; padding-bottom: 0.55rem; margin-bottom: 0.6rem; }
+  main.app-main h1.display::after { content: ''; position: absolute; left: 0; bottom: 0; width: 60px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--orange-500), var(--navy-800)); animation: grow 0.7s var(--ease) backwards; }
+  main.app-main h1.display > svg.icon { width: 1.5em; height: 1.5em; padding: 0.32em; border-radius: 12px; background: rgba(255,122,26,0.14); color: var(--orange-600); stroke-width: 2.1; }
+  section.block > h2 { display: flex; align-items: center; gap: 0.55rem; }
+  section.block > h2::before { content: ''; width: 5px; height: 1.05em; border-radius: 3px; background: var(--orange-500); }
+
+  /* ---- Home page ---- */
+  .hero { position: relative; overflow: hidden; background: linear-gradient(120deg, #0a3a8c, #0d47ab 42%, #0b2f73 70%, #0a3a8c); background-size: 220% 220%; animation: gradientShift 18s ease infinite; }
+  .hero::before, .hero::after { content: ''; position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.5; pointer-events: none; }
+  .hero::before { width: 440px; height: 440px; background: radial-gradient(circle, rgba(255,122,26,0.6), transparent 65%); top: -170px; left: -130px; animation: floaty 9s ease-in-out infinite; }
+  .hero::after { width: 400px; height: 400px; background: radial-gradient(circle, rgba(100,160,255,0.55), transparent 65%); bottom: -190px; right: -110px; animation: floaty 12s ease-in-out infinite reverse; }
+  .hero-inner { position: relative; z-index: 1; }
+  .hero-inner > * { animation: fadeUp 0.75s var(--ease) backwards; }
+  .hero-inner > *:nth-child(1) { animation-delay: 0.05s; } .hero-inner > *:nth-child(2) { animation-delay: 0.16s; }
+  .hero-inner > *:nth-child(3) { animation-delay: 0.27s; } .hero-inner > *:nth-child(4) { animation-delay: 0.38s; }
+  .hero-inner > *:nth-child(5) { animation-delay: 0.5s; } .hero-inner > *:nth-child(6) { animation-delay: 0.6s; }
+  .hero .kicker { backdrop-filter: blur(4px); border: 1px solid rgba(250,247,240,0.14); }
+  .hero-stats strong { text-shadow: 0 2px 14px rgba(255,122,26,0.5); }
+  .home-cta-band { background: linear-gradient(135deg, var(--paper-100), #f4e4c9); }
+  .info-card .icon-badge { box-shadow: 0 8px 16px -6px rgba(10,58,140,0.55); transition: transform 0.3s var(--ease); }
+  .value-grid .info-card .icon-badge { box-shadow: 0 8px 16px -6px rgba(232,98,12,0.6); }
+  .info-card:hover .icon-badge { transform: scale(1.1) rotate(-6deg); }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s var(--ease), transform 0.65s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s; transition-delay: var(--d, 0s), var(--d, 0s), 0s, 0s; }
+  .reveal.in { opacity: 1; transform: none; }
+  .info-card.reveal.in:hover { transform: translateY(-3px); transition-delay: 0s; }
+
+  /* ---- Sign in and sign up ---- */
+  .auth-wrap { background: radial-gradient(520px 320px at 15% 20%, rgba(255,122,26,0.10), transparent 70%), radial-gradient(520px 320px at 85% 80%, rgba(13,71,171,0.10), transparent 70%); }
+  .auth-card { position: relative; overflow: hidden; box-shadow: var(--shadow-lg); animation: fadeUp 0.55s var(--ease) backwards; }
+  .auth-card:hover { transform: none; box-shadow: var(--shadow-lg); }
+  .auth-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, var(--orange-500), var(--navy-800)); }
+
+  /* ---- Avatars, scores and tags ---- */
+  .match-avatar { box-shadow: 0 6px 12px -4px rgba(10,58,140,0.5); transition: transform 0.3s var(--ease); }
+  .match-card:hover .match-avatar, .person-card:hover .match-avatar { transform: scale(1.08) rotate(-5deg); }
+  .match-avatar[data-tone="1"] { background: linear-gradient(155deg, #ff9d4d, var(--orange-600)); color: #fff; }
+  .match-avatar[data-tone="2"] { background: linear-gradient(155deg, #22b0a5, #0e6f78); color: #fff; }
+  .match-avatar[data-tone="3"] { background: linear-gradient(155deg, #8a6bff, #4b36c9); color: #fff; }
+  .match-avatar[data-tone="4"] { background: linear-gradient(155deg, #43bd80, #1f7a4d); color: #fff; }
+  .score-bar { height: 5px; border-radius: 99px; background: var(--paper-100); overflow: hidden; margin: 0.2rem 0 0.55rem; max-width: 230px; }
+  .score-bar > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--orange-500), #ffb872); animation: grow 0.9s var(--ease) backwards; animation-delay: 0.2s; }
+  .match-tag { transition: transform 0.15s var(--ease); }
+  .match-tag:hover { transform: translateY(-1px); }
+
+  /* ---- Small controls ---- */
+  .pill-btn, .loc-pill, .help-toggle, .ai-chip { transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s var(--ease), box-shadow 0.2s; }
+  .pill-btn:hover, .loc-pill:hover, .ai-chip:hover { transform: translateY(-1px); }
+  .pill-btn:active, .loc-pill:active, .ai-chip:active { transform: scale(0.96); }
+  .avail-grid td { transition: background 0.15s, transform 0.12s, color 0.15s; }
+  .avail-grid td:hover { transform: scale(1.05); }
+  .avail-grid td.on { animation: popIn 0.22s var(--ease); }
+  .plan-item { transition: transform 0.2s var(--ease), box-shadow 0.2s; }
+  .plan-item.study:hover { transform: translateX(3px); box-shadow: var(--shadow-sm); }
+  .plan-day.today { border-color: var(--orange-500); box-shadow: 0 0 0 3px rgba(255,122,26,0.16), var(--shadow-sm); }
+  .today-chip { margin-left: 0.55rem; font: 700 0.65rem 'IBM Plex Sans', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; background: var(--orange-500); color: #fff; padding: 0.12rem 0.55rem; border-radius: 99px; vertical-align: middle; }
+  .progress-pick .pill-btn.on-pass, .progress-pick .pill-btn.on-fail { box-shadow: 0 5px 12px -5px rgba(23,19,16,0.4); }
+
+  /* ---- Messages and Rowdy ---- */
+  .chat-messages .bubble:last-child { animation: popIn 0.28s var(--ease) backwards; }
+  .bubble.me { background: linear-gradient(135deg, var(--navy-800), var(--navy-900)); box-shadow: var(--shadow-sm); }
+  .bubble.them { box-shadow: var(--shadow-sm); }
+  .ai-row { animation: popIn 0.32s var(--ease) backwards; }
+  .ai-row.me .ai-bubble { background: linear-gradient(135deg, var(--navy-800), var(--navy-900)); box-shadow: var(--shadow-sm); }
+  .ai-row.rowdy .ai-bubble { box-shadow: var(--shadow-sm); }
+  .ai-typing { font-style: normal; display: inline-flex; align-items: center; gap: 0.6rem; }
+  .typing-dots { display: inline-flex; gap: 5px; align-items: center; }
+  .typing-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-400); animation: dots 1.2s infinite ease-in-out; }
+  .typing-dots i:nth-child(2) { animation-delay: 0.15s; } .typing-dots i:nth-child(3) { animation-delay: 0.3s; }
+  .ai-chip { box-shadow: var(--shadow-sm); }
+
+  /* ---- Loading skeletons ---- */
+  .skeleton-card { display: flex; gap: 1rem; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md); padding: 1rem 1.1rem; margin-bottom: 0.8rem; position: relative; overflow: hidden; }
+  .skeleton-card::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,0.75), transparent); animation: shimmer 1.3s infinite; }
+  .sk-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--paper-100); flex-shrink: 0; }
+  .sk-lines { flex: 1; display: grid; gap: 0.55rem; }
+  .sk-line { height: 0.75rem; border-radius: 6px; background: var(--paper-100); }
+  .sk-line.w40 { width: 40%; } .sk-line.w60 { width: 60%; } .sk-line.w80 { width: 80%; }
+
+  /* ---- Toasts ---- */
+  #toasts { position: fixed; left: 50%; bottom: 1.4rem; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: 0.5rem; align-items: center; pointer-events: none; width: min(92vw, 400px); }
+  .toast { pointer-events: auto; background: var(--ink-900); color: #fff; padding: 0.7rem 1.1rem; border-radius: 999px; font-size: 0.88rem; font-weight: 600; box-shadow: var(--shadow-lg); animation: fadeUp 0.3s var(--ease) backwards; display: flex; gap: 0.55rem; align-items: center; transition: opacity 0.3s, transform 0.3s; }
+  .toast.ok::before { content: '\2713'; color: #7be0a3; font-weight: 700; }
+  .toast.err::before { content: '!'; color: #ff9d9d; font-weight: 700; }
+  .toast.leaving { opacity: 0; transform: translateY(10px); }
+
+  /* ---- Respect people who prefer less motion ---- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -869,6 +1070,8 @@
   </main>
 </section>
 
+<div id="toasts" aria-live="polite" aria-atomic="false"></div>
+
 <script>
   // ===================== Username -> full school address =====================
   const SSU_DOMAIN = '@student.savannahstate.edu';
@@ -955,11 +1158,13 @@
     document.querySelectorAll('nav.app-nav[data-current]').forEach(nav => {
       const current = nav.dataset.current;
       nav.innerHTML = '<button class="wordmark" data-nav="home">FIND A <span>BUDDY</span></button>' +
+        '<button class="nav-toggle" type="button" aria-expanded="false" aria-label="Open menu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg> Menu</button>' +
+        '<div class="nav-links">' +
         APP_NAV_ITEMS.map(([name, label]) => {
           const badge = (name === 'buddies' || name === 'messages' || name === 'sessions') ? `<span class="nav-badge" data-badge="${name}" hidden></span>` : '';
           return `<button class="nav-link${name === current ? ' current' : ''}" data-nav="${name}">${label}${badge}</button>`;
         }).join('') +
-        '<button class="nav-link logout" data-logout>Log out</button>';
+        '<button class="nav-link logout" data-logout>Log out</button></div>';
     });
   }
   renderAppNavs();
@@ -967,8 +1172,10 @@
   function setBadges({ buddies = 0, messages = 0, sessions = 0 }) {
     document.querySelectorAll('nav.app-nav .nav-badge[data-badge]').forEach(b => {
       const n = b.dataset.badge === 'sessions' ? sessions : b.dataset.badge === 'messages' ? messages : buddies;
+      const prev = b.hidden ? 0 : Number(b.textContent);
       b.textContent = n;
       b.hidden = !n;
+      if (n > prev) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
     });
   }
   function updateBuddyBadge() {
@@ -988,6 +1195,8 @@
   const views = document.querySelectorAll('.view');
   const APP_VIEWS = ['profile', 'courses', 'matches', 'buddies', 'messages', 'chat', 'sessions', 'planner', 'assistant', 'settings'];
   function showView(name) {
+    document.querySelectorAll('nav.app-nav.open').forEach(closeNavMenu);
+    window.scrollTo({ top: 0, behavior: 'auto' });
     views.forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + name).classList.add('active');
     if (name !== 'chat') stopChatPolling();
@@ -1306,6 +1515,7 @@
     }
     try {
       await api.saveGrade({ course: donePick, grade, available_to_help: asking ? answer.value : 'no' });
+      toast('Grade saved');
       doneForm.hidden = true;
       donePick = null;
       loadCourses();
@@ -1378,6 +1588,7 @@
         study_place: document.getElementById('pf-place').value,
         help_text: document.getElementById('pf-help').value,
       });
+      toast('Profile saved');
       const status = document.getElementById('profile-status');
       status.hidden = false;
       setTimeout(() => { status.hidden = true; }, 2500);
@@ -1404,7 +1615,7 @@
 
   async function loadMatches() {
     matchesError.hidden = true;
-    matchesList.innerHTML = '<p class="empty-note">Looking for classmates…</p>';
+    matchesList.innerHTML = skeletonCards(3);
     try {
       const data = await api.getMatches();
       if (!data.has_courses) {
@@ -1428,6 +1639,7 @@
             <div class="match-avatar" aria-hidden="true">${escapeHtml(m.first_name.charAt(0).toUpperCase())}</div>
             <div class="match-info">
               <div class="match-top"><strong>${escapeHtml(m.first_name)}</strong><span class="match-score">${m.score}% match</span></div>
+              <div class="score-bar" aria-hidden="true"><span style="width:${m.score}%"></span></div>
               <div class="match-meta">${meta || 'Profile not filled in yet'}</div>
               <div class="match-tags">${helps}${assists}${courses}${slots}</div>
             </div>
@@ -1451,6 +1663,7 @@
     try {
       await api.sendRequest(Number(btn.dataset.request));
       btn.textContent = 'Request sent';
+      toast('Request sent');
     } catch (err) {
       matchesError.textContent = err.message;
       matchesError.hidden = false;
@@ -1477,6 +1690,7 @@
 
   async function loadBuddies() {
     buddiesError.hidden = true;
+    if (!buddiesList.children.length) { incomingList.innerHTML = skeletonCards(1); buddiesList.innerHTML = skeletonCards(2); sentList.innerHTML = ''; }
     try {
       const data = await api.getBuddies();
       setBadges({ buddies: data.incoming.length, messages: data.unread_messages, sessions: data.pending_sessions });
@@ -1529,6 +1743,7 @@
       answerBtn.disabled = true;
       try {
         await api.respondRequest(Number(answerBtn.dataset.requestId), answerBtn.dataset.answer);
+        toast(answerBtn.dataset.answer === 'accept' ? 'You are now study buddies!' : 'Request declined');
       } catch (err) {
         buddiesError.textContent = err.message;
         buddiesError.hidden = false;
@@ -1664,6 +1879,7 @@
   // ===================== Settings =====================
   function flash(el) {
     el.hidden = false;
+    toast(el.textContent.trim());
     setTimeout(() => { el.hidden = true; }, 3000);
   }
 
@@ -1803,6 +2019,7 @@
     btn.disabled = true;
     try {
       await api.respondSession(Number(btn.dataset.sessionId), btn.dataset.sessionAction);
+      toast({ accept: 'Session accepted', decline: 'Session declined', cancel: 'Session cancelled' }[btn.dataset.sessionAction] || 'Done');
     } catch (err) {
       sessionsError.textContent = err.message;
       sessionsError.hidden = false;
@@ -1913,7 +2130,8 @@
           <span>${escapeHtml(i.label)}</span>
           ${i.priority ? '<span class="tag">PRIORITY</span>' : ''}
         </div>`).join('') || '<div class="plan-free">Free day</div>';
-      return `<div class="plan-day"><h3>${name}</h3>${rows}</div>`;
+      const isToday = day === ((new Date().getDay() + 6) % 7);
+      return `<div class="plan-day${isToday ? ' today' : ''}"><h3>${name}${isToday ? '<span class="today-chip">Today</span>' : ''}</h3>${rows}</div>`;
     }).join('');
   }
 
@@ -1978,6 +2196,7 @@
 
   async function loadMessagesInbox() {
     messagesError.hidden = true;
+    if (!messagesListEl.children.length) messagesListEl.innerHTML = skeletonCards(3);
     try {
       const data = await api.getBuddies();
       setBadges({ buddies: data.incoming.length, messages: data.unread_messages, sessions: data.pending_sessions });
@@ -2011,6 +2230,8 @@
   const aiInput = document.getElementById('ai-input');
   const aiSend = document.getElementById('ai-send');
   let aiBusy = false;
+  let aiLoadSeq = 0;
+  let aiSentSinceLoad = false;
 
   // Safe formatting for replies: escape everything first, then allow **bold** and "- " bullet lists.
   function renderAiText(text) {
@@ -2044,6 +2265,7 @@
         <div class="match-avatar" aria-hidden="true">${escapeHtml(m.first_name.charAt(0).toUpperCase())}</div>
         <div class="match-info">
           <div class="match-top"><strong>${escapeHtml(m.first_name)}</strong><span class="match-score">${m.score}% match</span></div>
+              <div class="score-bar" aria-hidden="true"><span style="width:${m.score}%"></span></div>
           <div class="match-meta">${meta || 'Profile not filled in yet'}</div>
           <div class="match-tags">${helps}${assists}${courses}${slots}</div>
         </div>
@@ -2071,11 +2293,15 @@
   }
 
   async function loadAssistant() {
+    const seq = ++aiLoadSeq;
+    aiSentSinceLoad = false;
     try {
       const data = await api.aiHistory();
       document.getElementById('ai-setup').hidden = data.configured;
       document.getElementById('ai-main').hidden = !data.configured;
       if (!data.configured) return;
+      // If the student already sent a message while the history was loading, do not wipe it from the screen.
+      if (aiSentSinceLoad || seq !== aiLoadSeq) return;
       const greeting = aiRowdyHtml("Hi! I'm Rowdy. I can answer questions about your courses, build you a weekly study schedule, and find people to study with. Tell me your classes and times, or just ask.");
       aiThread.innerHTML = greeting + data.messages.map(m => m.sender === 'user'
         ? `<div class="ai-row me"><div class="ai-bubble">${escapeHtml(m.message)}</div></div>`
@@ -2089,9 +2315,10 @@
 
   async function sendToRowdy(message) {
     if (aiBusy || !message.trim()) return;
+    aiSentSinceLoad = true;
     setAiBusy(true);
     aiThread.insertAdjacentHTML('beforeend', `<div class="ai-row me"><div class="ai-bubble">${escapeHtml(message)}</div></div>`);
-    aiThread.insertAdjacentHTML('beforeend', '<div class="ai-row rowdy" id="ai-typing"><div class="ai-bubble ai-typing">Rowdy is thinking…</div></div>');
+    aiThread.insertAdjacentHTML('beforeend', '<div class="ai-row rowdy" id="ai-typing"><div class="ai-bubble ai-typing"><span class="typing-dots"><i></i><i></i><i></i></span>Rowdy is thinking</div></div>');
     aiScrollDown();
     try {
       const data = await api.aiChat(message);
@@ -2137,12 +2364,82 @@
     try {
       await api.sendRequest(Number(btn.dataset.aiRequest));
       btn.textContent = 'Request sent';
+      toast('Request sent');
     } catch (err) {
       btn.textContent = 'Send request';
       btn.disabled = false;
       alert(err.message);
     }
   });
+
+  // ===================== Polish: toasts, skeletons, nav menu, entrances =====================
+  function toast(message, kind = 'ok') {
+    const host = document.getElementById('toasts');
+    if (!host || !message) return;
+    const el = document.createElement('div');
+    el.className = 'toast ' + kind;
+    el.textContent = message;
+    host.appendChild(el);
+    while (host.children.length > 3) host.firstChild.remove();
+    setTimeout(() => { el.classList.add('leaving'); setTimeout(() => el.remove(), 320); }, 2600);
+  }
+
+  function skeletonCards(n) {
+    const card = '<div class="skeleton-card" aria-hidden="true"><div class="sk-avatar"></div><div class="sk-lines"><div class="sk-line w40"></div><div class="sk-line w60"></div><div class="sk-line w80"></div></div></div>';
+    return card.repeat(n);
+  }
+
+  function closeNavMenu(nav) {
+    nav.classList.remove('open');
+    const t = nav.querySelector('.nav-toggle');
+    if (t) { t.setAttribute('aria-expanded', 'false'); t.setAttribute('aria-label', 'Open menu'); }
+  }
+  document.addEventListener('click', (event) => {
+    const toggle = event.target.closest('.nav-toggle');
+    if (!toggle) return;
+    const nav = toggle.closest('nav.app-nav');
+    const open = !nav.classList.contains('open');
+    nav.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+
+  // Lists slide in one after another.
+  ['matches-list', 'incoming-list', 'buddies-list', 'sent-list', 'messages-list', 'course-list', 'completed-list',
+   'planner-blocks', 'plan-week', 'sessions-incoming', 'sessions-upcoming', 'sessions-waiting']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('stagger'); });
+
+  // A stable colour for each initial, so avatars are not all the same.
+  function tintAvatar(el) {
+    if (el.dataset.tone) return;
+    // Use the whole first name so different people with the same initial still get different colours.
+    const card = el.closest('.match-card, .person-card');
+    const name = ((card && card.querySelector('strong') ? card.querySelector('strong').textContent : el.textContent) || '?').trim().split(' ')[0];
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % 997;
+    el.dataset.tone = String(h % 5);
+  }
+  new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      m.addedNodes.forEach(node => {
+        if (node.nodeType !== 1) return;
+        if (node.classList && node.classList.contains('match-avatar')) tintAvatar(node);
+        node.querySelectorAll && node.querySelectorAll('.match-avatar').forEach(tintAvatar);
+      });
+    }
+  }).observe(document.body, { childList: true, subtree: true });
+
+  // Home page sections fade in as you scroll to them.
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('in'); io.unobserve(entry.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('#view-home .home-section > h2, #view-home .home-section > p, #view-home .info-card, #view-home .home-cta-band').forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.setProperty('--d', ((i % 4) * 0.08) + 's');
+      io.observe(el);
+    });
+  }
 </script>
 </body>
 </html>
