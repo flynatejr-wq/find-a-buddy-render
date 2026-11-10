@@ -312,6 +312,14 @@
   .ai-cards .match-card { margin-bottom: 0; background: var(--card); }
   .ai-meta { font-size: 0.78rem; color: var(--ink-400); }
 
+  /* ---- Username + fixed school address ---- */
+  .email-group { display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--paper-0); overflow: hidden; flex-wrap: wrap; }
+  .email-group:focus-within { border-color: var(--orange-500); }
+  .email-group input { flex: 1 1 120px; min-width: 0; border: 0 !important; border-radius: 0 !important; background: transparent !important; width: auto !important; }
+  .email-group input:focus { outline: none; }
+  .email-suffix { display: flex; align-items: center; padding: 0 0.8rem; background: var(--paper-100); color: var(--ink-600); font-size: 0.86rem; font-weight: 600; white-space: nowrap; border-left: 1px solid var(--line); }
+  @media (max-width: 420px) { .email-group input { flex-basis: 100%; } .email-suffix { flex: 1 1 100%; border-left: 0; border-top: 1px solid var(--line); padding: 0.4rem 0.8rem; } }
+
   .save-status { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: 0.8rem; color: var(--success); font-size: 0.9rem; font-weight: 600; }
 </style>
 </head>
@@ -412,13 +420,13 @@
     <div class="auth-card">
       <div class="kicker-text">Savannah State University</div>
       <h1 class="display">Log in</h1>
-      <p class="sub">Enter your SSU email and password to continue.</p>
+      <p class="sub">Enter your SSU username and password to continue.</p>
       <p id="login-success" class="form-success" hidden>Account created! Log in below.</p>
       <p id="login-error" class="form-error" hidden></p>
       <form id="login-form" novalidate>
         <div class="field">
-          <label for="login-email">SSU Email</label>
-          <input id="login-email" name="email" type="email" placeholder="you@student.savannahstate.edu" required>
+          <label for="login-email">SSU username</label>
+          <div class="email-group"><input id="login-email" name="email" type="text" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="jdoe" required><span class="email-suffix">@student.savannahstate.edu</span></div>
         </div>
         <div class="field">
           <label for="login-password">Password</label>
@@ -456,9 +464,9 @@
           </div>
         </div>
         <div class="field">
-          <label for="reg-email">SSU Email</label>
-          <input id="reg-email" name="email" type="email" placeholder="you@student.savannahstate.edu" required>
-          <div class="hint">Must end in @student.savannahstate.edu</div>
+          <label for="reg-email">SSU username</label>
+          <div class="email-group"><input id="reg-email" name="email" type="text" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="jdoe" required><span class="email-suffix">@student.savannahstate.edu</span></div>
+          <div class="hint">Just type the part before the @. We add @student.savannahstate.edu for you.</div>
         </div>
         <div class="field">
           <label for="reg-password">Password</label>
@@ -702,13 +710,13 @@
     <div class="auth-card">
       <div class="kicker-text">Savannah State University</div>
       <h1 class="display">Reset your password</h1>
-      <p class="sub">Enter your SSU email and we will help you choose a new password.</p>
+      <p class="sub">Enter your SSU username and we will help you choose a new password.</p>
       <p id="forgot-error" class="form-error" hidden></p>
       <p id="forgot-message" class="form-success" hidden></p>
       <form id="forgot-form" novalidate>
         <div class="field">
-          <label for="forgot-email">SSU Email</label>
-          <input id="forgot-email" type="email" placeholder="you@student.savannahstate.edu" required>
+          <label for="forgot-email">SSU username</label>
+          <div class="email-group"><input id="forgot-email"  type="text" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" placeholder="jdoe" required><span class="email-suffix">@student.savannahstate.edu</span></div>
         </div>
         <button class="btn" type="submit" id="forgot-submit">Send reset link</button>
       </form>
@@ -862,6 +870,17 @@
 </section>
 
 <script>
+  // ===================== Username -> full school address =====================
+  const SSU_DOMAIN = '@student.savannahstate.edu';
+  // Students type just "jdoe". Typing the whole address also works. Any other address is passed
+  // through unchanged so the server can turn it down with a clear message.
+  function ssuEmail(typed) {
+    let v = String(typed || '').replace(/\s+/g, '').toLowerCase();
+    if (v.endsWith(SSU_DOMAIN)) v = v.slice(0, -SSU_DOMAIN.length);
+    if (v.includes('@')) return v;
+    return v ? v + SSU_DOMAIN : '';
+  }
+
   // ===================== Shared API helper (inlined, formerly api.js) =====================
   const API_BASE = '../backend';
 
@@ -1067,6 +1086,14 @@
     loginSubmit.textContent = 'Logging in…';
 
     const data = Object.fromEntries(new FormData(loginForm).entries());
+    data.email = ssuEmail(data.email);
+    if (!data.email) {
+      loginError.textContent = 'Enter your SSU username.';
+      loginError.hidden = false;
+      loginSubmit.disabled = false;
+      loginSubmit.textContent = 'Log in';
+      return;
+    }
     try {
       await api.login(data);
       loginSubmit.disabled = false;
@@ -1094,6 +1121,14 @@
     registerSubmit.textContent = 'Creating account…';
 
     const data = Object.fromEntries(new FormData(registerForm).entries());
+    data.email = ssuEmail(data.email);
+    if (!data.email) {
+      registerError.textContent = 'Enter your SSU username.';
+      registerError.hidden = false;
+      registerSubmit.disabled = false;
+      registerSubmit.textContent = 'Register';
+      return;
+    }
     try {
       await api.register(data);
       registerSubmit.disabled = false;
@@ -1581,7 +1616,9 @@
     errorEl.hidden = true;
     messageEl.hidden = true;
     try {
-      const data = await api.requestReset(document.getElementById('forgot-email').value);
+      const email = ssuEmail(document.getElementById('forgot-email').value);
+      if (!email) throw new Error('Enter your SSU username.');
+      const data = await api.requestReset(email);
       messageEl.textContent = data.message;
       messageEl.hidden = false;
     } catch (err) {
