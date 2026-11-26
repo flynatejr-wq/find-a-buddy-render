@@ -51,6 +51,17 @@ function parse_available_flag($value): ?bool
     return null;
 }
 
+/** Records (or replaces) a student's final grade for a course. Only passing grades can offer help. */
+function save_course_grade(PDO $pdo, int $userId, int $courseId, string $grade, bool $available): void
+{
+    $sql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql'
+        ? 'INSERT INTO course_grades (user_id, course_id, grade, available_to_help) VALUES (?, ?, ?, ?)
+           ON CONFLICT (user_id, course_id) DO UPDATE SET grade = EXCLUDED.grade, available_to_help = EXCLUDED.available_to_help, updated_at = CURRENT_TIMESTAMP'
+        : 'INSERT INTO course_grades (user_id, course_id, grade, available_to_help) VALUES (?, ?, ?, ?)
+           ON DUPLICATE KEY UPDATE grade = VALUES(grade), available_to_help = VALUES(available_to_help), updated_at = CURRENT_TIMESTAMP';
+    $pdo->prepare($sql)->execute([$userId, $courseId, $grade, $available && grade_is_passing($grade) ? 1 : 0]);
+}
+
 /** Adds a column to an existing table if it is missing (for tables created by an earlier version). */
 function ensure_column(PDO $pdo, string $table, string $column, string $definition): void
 {

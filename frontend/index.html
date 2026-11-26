@@ -522,6 +522,20 @@
     *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
     .reveal { opacity: 1; transform: none; }
   }
+  /* ---- Finish my semester ---- */
+  .wrapup-banner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; background: linear-gradient(120deg, var(--navy-900), #0f4ab3); color: #fff; border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 1.6rem; box-shadow: 0 12px 26px -14px rgba(10,50,130,0.7); }
+  .wrapup-banner[hidden] { display: none; }
+  .wrapup-banner span { display: block; font-size: 0.92rem; opacity: 0.88; }
+  .wrapup-banner .btn { width: auto; }
+  li.course-row.wrapup-row { display: block; }
+  .wrapup-top { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+  .wrapup-top select { font: inherit; padding: 0.55rem 0.7rem; border: 1px solid #d8cfbd; border-radius: 10px; background: #fff; min-width: 13rem; max-width: 100%; }
+  .wrapup-row .done-help { margin-top: 0.8rem; }
+  .wrapup-row .form-error { margin: 0.6rem 0 0; }
+  .wrapup-clear { display: flex; gap: 0.6rem; align-items: flex-start; margin: 1.2rem 0; font-size: 0.95rem; }
+  .wrapup-clear input { margin-top: 0.25rem; width: auto; }
+  .wrapup-actions { display: flex; align-items: center; gap: 1.2rem; }
+  .wrapup-actions .btn { width: auto; }
 </style>
 </head>
 <body>
@@ -546,7 +560,7 @@
         <button class="btn outline-light" data-nav="login">I already have an account</button>
       </div>
       <div class="hero-stats">
-        <div><strong>@student.savannahstate.edu</strong><span>only, verified at signup</span></div>
+        <div><strong>@student.savannahstate.edu</strong><span>required to sign up</span></div>
         <div><strong>100%</strong><span>private until a request is accepted</span></div>
         <div><strong>Free</strong><span>for every Tiger</span></div>
       </div>
@@ -681,11 +695,33 @@
 </section>
 
 <!-- ===================== COURSES VIEW ===================== -->
+<section id="view-wrapup" class="view">
+  <nav class="app-nav" data-current="courses"></nav>
+  <main class="app-main">
+    <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><path d="M5 21V4h11l-2 4 2 4H5"/></svg> Finish my semester</h1>
+    <p class="subhead">Pick a result for each course. Nobody ever sees your grades. If you passed with a C or better, you choose whether students taking that course can find you.</p>
+    <form id="wrapup-form" novalidate>
+      <ul id="wrapup-list" style="list-style:none; margin:0; padding:0;"></ul>
+      <label class="wrapup-clear"><input type="checkbox" id="wrapup-clear"> <span>Also clear my work and other weekly times from the planner. Class times for finished or removed courses are cleared automatically.</span></label>
+      <p id="wrapup-error" class="form-error" role="alert" hidden></p>
+      <div class="wrapup-actions">
+        <button type="submit" class="btn" id="wrapup-submit">Finish semester</button>
+        <button type="button" class="link-btn" data-nav="courses">Cancel</button>
+      </div>
+    </form>
+  </main>
+</section>
+
 <section id="view-courses" class="view">
   <nav class="app-nav" data-current="courses"></nav>
   <main class="app-main">
     <h1 class="display"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h11a2 2 0 0 1 2 2v14l-7-3-7 3V6a2 2 0 0 1 2-2z"/></svg> My Courses</h1>
     <p class="subhead">Add your current courses, then set where and when you like to study.</p>
+
+    <div class="wrapup-banner" id="wrapup-banner" hidden>
+      <div><strong>Semester ending?</strong><span>Enter all your final grades at once and clear out your old schedule.</span></div>
+      <button type="button" class="btn" data-nav="wrapup">Finish my semester</button>
+    </div>
 
     <section class="block">
       <h2>Add a course</h2>
@@ -1120,6 +1156,7 @@
     savePlannerPrefs: (payload) => apiRequest('save_planner_prefs.php', { method: 'POST', body: JSON.stringify(payload) }),
     setProgress: (courseId, status) => apiRequest('set_progress.php', { method: 'POST', body: JSON.stringify({ course_id: courseId, status }) }),
     setHelpAvailability: (courseId, available) => apiRequest('set_help_availability.php', { method: 'POST', body: JSON.stringify({ course_id: courseId, available }) }),
+    finishSemester: (payload) => apiRequest('finish_semester.php', { method: 'POST', body: JSON.stringify(payload) }),
     saveGrade: (payload) => apiRequest('save_grade.php', { method: 'POST', body: JSON.stringify(payload) }),
     updateAccount: (payload) => apiRequest('update_account.php', { method: 'POST', body: JSON.stringify(payload) }),
     changePassword: (payload) => apiRequest('change_password.php', { method: 'POST', body: JSON.stringify(payload) }),
@@ -1193,7 +1230,7 @@
 
   // ===================== View navigation =====================
   const views = document.querySelectorAll('.view');
-  const APP_VIEWS = ['profile', 'courses', 'matches', 'buddies', 'messages', 'chat', 'sessions', 'planner', 'assistant', 'settings'];
+  const APP_VIEWS = ['profile', 'courses', 'wrapup', 'matches', 'buddies', 'messages', 'chat', 'sessions', 'planner', 'assistant', 'settings'];
   function showView(name) {
     document.querySelectorAll('nav.app-nav.open').forEach(closeNavMenu);
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -1201,6 +1238,7 @@
     document.getElementById('view-' + name).classList.add('active');
     if (name !== 'chat') stopChatPolling();
     if (name === 'courses') loadCourses();
+    if (name === 'wrapup') loadWrapup();
     if (name === 'profile') loadProfile();
     if (name === 'matches') loadMatches();
     if (name === 'buddies') loadBuddies();
@@ -1366,6 +1404,7 @@
 
   async function loadCourses() {
     const { courses, completed } = await api.getCourses();
+    document.getElementById('wrapup-banner').hidden = !courses.length;
     courseListEl.innerHTML = courses.map(c => `
       <li class="course-row">
         <div class="course-main">
@@ -1523,6 +1562,106 @@
       doneError.textContent = err.message;
       doneError.hidden = false;
     }
+  });
+
+  // ---- Finish my semester ----
+  const wrapupForm = document.getElementById('wrapup-form');
+  const wrapupList = document.getElementById('wrapup-list');
+  const wrapupError = document.getElementById('wrapup-error');
+  const wrapupSubmit = document.getElementById('wrapup-submit');
+
+  async function loadWrapup() {
+    wrapupError.hidden = true;
+    document.getElementById('wrapup-clear').checked = false;
+    wrapupList.innerHTML = '';
+    wrapupSubmit.disabled = true;
+    try {
+      const { courses } = await api.getCourses();
+      wrapupList.innerHTML = courses.map(c => {
+        const id = escapeHtml(String(c.id));
+        const code = escapeHtml(c.course_code);
+        return `
+        <li class="course-row wrapup-row" data-course="${id}">
+          <div class="wrapup-top">
+            <div><span class="course-code">${code}</span>${c.section ? ' — ' + escapeHtml(c.section) : ''} <span class="course-name">${escapeHtml(c.course_name) || ''}</span></div>
+            <select aria-label="Result for ${code}">
+              <option value="">Choose a result…</option>
+              <optgroup label="Final grade"><option>A</option><option>B</option><option>C</option><option>D</option><option>F</option></optgroup>
+              <option value="keep">No grade yet, keep it</option>
+              <option value="drop">Remove without a grade</option>
+            </select>
+          </div>
+          <fieldset class="done-help" hidden>
+            <legend>Are you available to buddy with students taking this class?</legend>
+            <label><input type="radio" name="wrap-help-${id}" value="yes"> Yes, I can help</label>
+            <label><input type="radio" name="wrap-help-${id}" value="no"> No, not right now</label>
+          </fieldset>
+          <p class="form-error" data-row-error hidden></p>
+        </li>`;
+      }).join('') || '<li class="empty-note">You have no current courses to finish.</li>';
+      wrapupSubmit.disabled = false;
+    } catch (err) {
+      wrapupError.textContent = err.message;
+      wrapupError.hidden = false;
+    }
+  }
+
+  function showRowError(row, message) {
+    const p = row.querySelector('[data-row-error]');
+    p.textContent = message;
+    p.hidden = false;
+  }
+
+  wrapupList.addEventListener('change', (event) => {
+    const row = event.target.closest('.wrapup-row');
+    if (!row) return;
+    row.querySelector('[data-row-error]').hidden = true;
+    if (event.target.tagName === 'SELECT') {
+      row.querySelector('.done-help').hidden = !['A', 'B', 'C'].includes(event.target.value);
+    }
+  });
+
+  wrapupForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    wrapupError.hidden = true;
+    let firstBad = null;
+    const courses = Array.from(wrapupList.querySelectorAll('.wrapup-row')).map(row => {
+      const result = row.querySelector('select').value;
+      const answer = row.querySelector('input[type="radio"]:checked');
+      const asking = ['A', 'B', 'C'].includes(result);
+      const problem = !result ? 'Choose a result for this course.' : (asking && !answer ? 'Answer yes or no.' : '');
+      row.querySelector('[data-row-error]').hidden = true;
+      if (problem) { showRowError(row, problem); firstBad = firstBad || row; }
+      return { course_id: Number(row.dataset.course), result, available: asking && answer ? answer.value : 'no' };
+    });
+    if (firstBad) { firstBad.querySelector('select').focus(); return; }
+
+    const dropped = courses.filter(c => c.result === 'drop').length;
+    if (dropped && !window.confirm(`Remove ${dropped} course${dropped > 1 ? 's' : ''} without saving a grade?`)) return;
+
+    wrapupSubmit.disabled = true;
+    try {
+      const done = await api.finishSemester({ courses, clear_schedule: document.getElementById('wrapup-clear').checked });
+      const parts = [];
+      if (done.graded) parts.push(`${done.graded} grade${done.graded > 1 ? 's' : ''} saved`);
+      if (done.dropped) parts.push(`${done.dropped} removed`);
+      if (done.helping) parts.push(`helping in ${done.helping}`);
+      toast(parts.length ? 'Semester wrapped up: ' + parts.join(', ') : 'Schedule cleared');
+      showView('courses');
+    } catch (err) {
+      const errors = err.data && err.data.errors ? err.data.errors : null;
+      if (errors) {
+        Object.entries(errors).forEach(([key, message]) => {
+          const row = wrapupList.querySelector(`.wrapup-row[data-course="${Number(key)}"]`);
+          if (row) showRowError(row, message);
+          else { wrapupError.textContent = message; wrapupError.hidden = false; }
+        });
+      } else {
+        wrapupError.textContent = err.message;
+        wrapupError.hidden = false;
+      }
+    }
+    wrapupSubmit.disabled = false;
   });
 
   document.querySelectorAll('.loc-pill').forEach(pill => {
@@ -2406,7 +2545,7 @@
 
   // Lists slide in one after another.
   ['matches-list', 'incoming-list', 'buddies-list', 'sent-list', 'messages-list', 'course-list', 'completed-list',
-   'planner-blocks', 'plan-week', 'sessions-incoming', 'sessions-upcoming', 'sessions-waiting']
+   'wrapup-list', 'planner-blocks', 'plan-week', 'sessions-incoming', 'sessions-upcoming', 'sessions-waiting']
     .forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('stagger'); });
 
   // A stable colour for each initial, so avatars are not all the same.
